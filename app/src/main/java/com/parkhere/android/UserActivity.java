@@ -12,13 +12,19 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class UserActivity extends AppCompatActivity {
 
     private Button  signOutButton;
+    private Button  createListingButton;
+    private Button  deleteListingButton;
     private TextView helloUserText;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("user");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,9 @@ public class UserActivity extends AppCompatActivity {
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
         signOutButton = (Button) findViewById(R.id.sign_out);
+        createListingButton = (Button) findViewById(R.id.create_listing);
+        deleteListingButton = (Button) findViewById(R.id.delete_listing);
+
         helloUserText = (TextView) findViewById(R.id.text_user);
 
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -48,6 +57,20 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signOutButton();
+            }
+        });
+
+        createListingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRef.setValue(auth.getCurrentUser().getEmail());
+            }
+        });
+
+        deleteListingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRef.removeValue();
             }
         });
 

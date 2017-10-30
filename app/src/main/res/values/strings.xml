@@ -13,6 +13,7 @@
     <string name="err_msg_email">Enter a valid email.</string>
     <string name="err_msg_required">Required !!</string>
     <string name="err_msg_password">Enter a valid password with min 6 characters.</string>
-    <string name="btn_link_to_signup">Don\'t have an account, Signup !!
-    </string>
+    <string name="btn_link_to_signup">Don\'t have an account, Signup !! </string>
+    <string name="btn_create_listing"> Create Listing </string>
+    <string name="btn_delete_listing"> Delete Listing </string>
 </resources>

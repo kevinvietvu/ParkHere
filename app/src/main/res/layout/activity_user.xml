@@ -20,9 +20,9 @@
             android:id="@+id/text_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Menu"/>
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Menu"
+            android:textStyle="bold" />
 
 
         <ProgressBar
@@ -30,6 +30,28 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:visibility="gone" />
+
+        <Button
+            android:id="@+id/create_listing"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/btn_create_listing"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/delete_listing"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/btn_delete_listing"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/sign_out"
