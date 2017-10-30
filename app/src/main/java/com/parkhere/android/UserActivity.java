@@ -1,19 +1,34 @@
 package com.parkhere.android;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 public class UserActivity extends AppCompatActivity {
 
@@ -25,6 +40,9 @@ public class UserActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("user");
+
+    private DatabaseReference geoFireRef = database.getReference("user/listings");
+    private GeoFire geoFire = new GeoFire(geoFireRef);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +81,31 @@ public class UserActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRef.setValue(auth.getCurrentUser().getEmail());
+                //myRef.setValue(auth.getCurrentUser().getEmail());
+                try {
+                    Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA");
+                    geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
+                }
+                catch (IOException e) {
+                    Log.e("IOException", e.getMessage());
+                }
             }
         });
 
         deleteListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRef.removeValue();
+                //myRef.removeValue();
+                geoFire.removeLocation("test listing");
             }
         });
 
+    }
+
+    public Address getGeoLocation(String address) throws IOException {
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> myAddress = geocoder.getFromLocationName(address, 1);
+        return myAddress.get(0);
     }
 
     //sign out method
