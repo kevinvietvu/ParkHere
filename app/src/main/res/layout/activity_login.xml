@@ -11,12 +11,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp">
+        <!-- remove this hardcoded text in EditText later  -->
         <EditText
             android:id="@+id/login_input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
+            android:text="k@gmail.com"
             android:hint="Email" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
@@ -25,12 +27,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp">
+        <!-- remove this hardcoded text in EditText later  -->
         <EditText
             android:id="@+id/login_input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
+            android:text="qwerty"
             android:hint="@string/hint_password" />
     </android.support.design.widget.TextInputLayout>
     <Button android:id="@+id/btn_login"

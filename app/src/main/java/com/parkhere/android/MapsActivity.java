@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    //private int markerCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in California, San Jose and move/zoom the camera
+        // Add a marker in California, San Jose and move/zoom the camera on create
         LatLng SanJose = new LatLng(37.3382, -121.8863);
         mMap.addMarker(new MarkerOptions().position(SanJose).title("Marker in San Jose"));
         //higher the float value, the more zoomed in
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,11));
+
+        /**
+         *  Adds marker to google map on click
+         */
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(point.latitude, point.longitude)).title("New Marker");
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(point));
+
+            }
+        });
     }
 }
