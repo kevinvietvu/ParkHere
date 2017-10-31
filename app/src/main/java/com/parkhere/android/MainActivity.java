@@ -44,12 +44,14 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //To Sign Out
+        auth = FirebaseAuth.getInstance();
 
 
         /**
@@ -112,6 +114,14 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    //sign out method
+    public void signOutButton() {
+
+        auth.signOut();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -130,6 +140,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_notifications) {
 
         } else if (id == R.id.nav_logout) {
+            signOutButton();
 
         } else if (id == R.id.nav_edit_profile) {
 

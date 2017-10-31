@@ -1,5 +1,6 @@
 package com.parkhere.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -60,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
 
+
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
                 /**
                  //myRef.setValue(auth.getCurrentUser().getEmail());
                  try {
-                 Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA");
+                 Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA", UserActivity.this);
                  geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
                  }
                  catch (IOException e) {
@@ -108,10 +111,16 @@ public class ProfileActivity extends AppCompatActivity {
      */
 
     //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public Address getGeoLocation(String address) throws IOException {
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> myAddress = geocoder.getFromLocationName(address, 1);
-        return myAddress.get(0);
+    public static Address getGeoLocationFromAddress(String address, Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = geocoder.getFromLocationName(address, 1);
+        return addresses.get(0);
+    }
+    //might have to use LatLong object instead
+    public static Address getAddressFromGeoLocation(GeoLocation LatLong, Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
+        return addresses.get(0);
     }
 
     //sign out method
