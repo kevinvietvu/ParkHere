@@ -43,84 +43,13 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Button  signOutButton;
-    private Button  createListingButton;
-    private Button  deleteListingButton;
-    private TextView helloUserText;
-    private FirebaseAuth.AuthStateListener authListener;
-    private FirebaseAuth auth;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("user");
 
-    private DatabaseReference geoFireRef = database.getReference("user/listings");
-    private GeoFire geoFire = new GeoFire(geoFireRef);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //get firebase auth instance
-        auth = FirebaseAuth.getInstance();
-        signOutButton = (Button) findViewById(R.id.sign_out);
-        createListingButton = (Button) findViewById(R.id.create_listing);
-        deleteListingButton = (Button) findViewById(R.id.delete_listing);
-
-        helloUserText = (TextView) findViewById(R.id.text_user);
-
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    // if user is null launch login activity
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
-                else {
-                    helloUserText.setText("Hello  " + user.getEmail() +"");
-                }
-            }
-        };
-
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOutButton();
-            }
-        });
-
-        createListingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**
-                 //myRef.setValue(auth.getCurrentUser().getEmail());
-                 try {
-                 Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA");
-                 geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
-                 }
-                 catch (IOException e) {
-                 Log.e("IOException", e.getMessage());
-                 } */
-
-                Intent mapIntent = new Intent(MainActivity.this, MapsActivity.class);
-                //mapIntent.setPackage("com.google.android.apps.maps");
-                //if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(mapIntent);
-                //}
-
-
-
-            }
-        });
-
-        deleteListingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //myRef.removeValue();
-                geoFire.removeLocation("test listing");
-            }
-        });
 
 
         /**
@@ -151,41 +80,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /**
-     *
-     * User Activity
-     */
-
-    //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public Address getGeoLocation(String address) throws IOException {
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> myAddress = geocoder.getFromLocationName(address, 1);
-        return myAddress.get(0);
-    }
-
-    //sign out method
-    public void signOutButton() {
-        auth.signOut();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        auth.addAuthStateListener(authListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (authListener != null) {
-            auth.removeAuthStateListener(authListener);
-        }
-    }
 
 
 
@@ -233,17 +127,30 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_notifications) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_logout) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_edit_profile) {
+
+        } else if (id == R.id.nav_change_password) {
+
+        }else if (id == R.id.nav_edit_email) {
+
+        }else if (id == R.id.nav_edit_phone) {
+
+        }else if (id == R.id.nav_payment_method) {
+
+        }else if (id == R.id.nav_legal) {
 
         }
 

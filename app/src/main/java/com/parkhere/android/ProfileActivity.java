@@ -3,36 +3,24 @@ package com.parkhere.android;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Locale;
 
-public class UserActivity extends AppCompatActivity {
-
-    private Button  signOutButton;
+public class ProfileActivity extends AppCompatActivity {
+    private Button signOutButton;
     private Button  createListingButton;
     private Button  deleteListingButton;
     private TextView helloUserText;
@@ -47,7 +35,7 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
+        setContentView(R.layout.activity_profile);
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -63,7 +51,7 @@ public class UserActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
                     // if user is null launch login activity
-                    startActivity(new Intent(UserActivity.this, LoginActivity.class));
+                    startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
                     finish();
                 }
                 else {
@@ -83,20 +71,22 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /**
-                //myRef.setValue(auth.getCurrentUser().getEmail());
-                try {
-                    Address address = getGeoLocationFromAddress("1600 Amphitheatre Parkway, Mountain View, CA");
-                    geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
-                }
-                catch (IOException e) {
-                    Log.e("IOException", e.getMessage());
-                } */
+                 //myRef.setValue(auth.getCurrentUser().getEmail());
+                 try {
+                 Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA");
+                 geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
+                 }
+                 catch (IOException e) {
+                 Log.e("IOException", e.getMessage());
+                 } */
 
-                Intent mapIntent = new Intent(UserActivity.this, MapsActivity.class);
+                Intent mapIntent = new Intent(ProfileActivity.this, MapsActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
+                startActivity(mapIntent);
                 //}
+
+
 
             }
         });
@@ -111,17 +101,17 @@ public class UserActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     *
+     * User Activity
+     */
+
     //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public Address getGeoLocationFromAddress(String address) throws IOException {
+    public Address getGeoLocation(String address) throws IOException {
         Geocoder geocoder = new Geocoder(this);
-        List<Address> addresses = geocoder.getFromLocationName(address, 1);
-        return addresses.get(0);
-    }
-    //might have to use LatLong object instead
-    public Address getAddressFromGeoLocation(GeoLocation LatLong) throws IOException {
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
-        return addresses.get(0);
+        List<Address> myAddress = geocoder.getFromLocationName(address, 1);
+        return myAddress.get(0);
     }
 
     //sign out method
