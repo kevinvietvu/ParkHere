@@ -73,6 +73,7 @@ public class UserActivity extends AppCompatActivity {
             }
         };
 
+
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

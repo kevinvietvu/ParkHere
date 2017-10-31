@@ -27,6 +27,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+
         submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
