@@ -85,7 +85,7 @@ public class UserActivity extends AppCompatActivity {
                 /**
                 //myRef.setValue(auth.getCurrentUser().getEmail());
                 try {
-                    Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA");
+                    Address address = getGeoLocationFromAddress("1600 Amphitheatre Parkway, Mountain View, CA");
                     geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
                 }
                 catch (IOException e) {
@@ -97,8 +97,6 @@ public class UserActivity extends AppCompatActivity {
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 //}
-
-
 
             }
         });
@@ -114,10 +112,16 @@ public class UserActivity extends AppCompatActivity {
     }
 
     //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public Address getGeoLocation(String address) throws IOException {
+    public Address getGeoLocationFromAddress(String address) throws IOException {
         Geocoder geocoder = new Geocoder(this);
-        List<Address> myAddress = geocoder.getFromLocationName(address, 1);
-        return myAddress.get(0);
+        List<Address> addresses = geocoder.getFromLocationName(address, 1);
+        return addresses.get(0);
+    }
+    //might have to use LatLong object instead
+    public Address getAddressFromGeoLocation(GeoLocation LatLong) throws IOException {
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
+        return addresses.get(0);
     }
 
     //sign out method
