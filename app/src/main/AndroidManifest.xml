@@ -46,20 +46,23 @@
         </activity>
         <activity android:name=".SignupActivity" />
         <activity
-            android:name=".MapsActivity"
+            android:name=".CreateListingMapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".ChooseEndDateActivity" />
-        <activity android:name=".ChooseEndTimeActivity" />
-        <activity android:name=".ChooseStartDateActivity" />
-        <activity android:name=".ChooseStartTimeActivity" />
-        <activity android:name=".ConfirmListingActivity" />
-        <activity android:name=".ConfirmationOfCreationActivity" />
-        <activity android:name=".CreateActivity"></activity>
+        <activity android:name=".CreateListingEndDateActivity" />
+        <activity android:name=".CreateListingEndTimeActivity" />
+        <activity android:name=".CreateListingStartDateActivity" />
+        <activity android:name=".CreateListingStartTimeActivity" />
+        <activity android:name=".CreateListingConfirmActivity" />
+        <activity android:name=".CreateListingFinalActivity" />
+        <activity android:name=".CreateListingDetailsActivity" />
+        <activity android:name=".BrowseListingConfirmActivity" />
+        <activity android:name=".BrowseListingFinalActivity" />
+        <activity android:name=".BrowseListingPaymentActivity"></activity>
     </application>
 
 </manifest>

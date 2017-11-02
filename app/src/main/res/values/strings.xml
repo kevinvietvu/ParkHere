@@ -40,5 +40,13 @@
     <string name="btn_next_step">Next Step</string>
     <string name="btn_confirm">Confirm</string>>
     <string name="btn_okay">Okay</string>
+    <string name="btn_browse">Rent Listing</string>
+
+    <!-- Strings related to browse listing -->
+    <string name="enter_card_number">Enter Card Number</string>
+    <string name="enter_cvv">Enter CVV</string>
+    <string name="card_number">Card Number</string>
+    <string name="purchase_listing_confirmed">Listing has been purchased!</string>
+    <string name="cvv">CVV</string>
 
 </resources>

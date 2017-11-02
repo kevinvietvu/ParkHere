@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -19,16 +20,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class CreateListingMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Button submitAddressButton;
     private String placeToSend;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_create_listing_maps);
 
         submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
 
@@ -64,9 +66,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         submitAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addressIntent = new Intent(MapsActivity.this, CreateActivity.class);
+                Intent addressIntent = new Intent(CreateListingMapsActivity.this, CreateListingDetailsActivity.class);
                 if (placeToSend == null) {
-                    Toast.makeText(MapsActivity.this, "Please Enter an Address",
+                    Toast.makeText(CreateListingMapsActivity.this, "Please Enter an Address",
                             Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -97,6 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //higher the float value, the more zoomed in
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,11));
 
+
         /**
          * might need to implement later
          */
@@ -106,7 +109,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-
     }
 
     /** Called when the user clicks a marker. */

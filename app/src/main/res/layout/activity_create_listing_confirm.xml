@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.parkhere.android.ConfirmListingActivity">
+    tools:context="com.parkhere.android.CreateListingConfirmActivity">
 
     <TextView
         android:id="@+id/listing_price"

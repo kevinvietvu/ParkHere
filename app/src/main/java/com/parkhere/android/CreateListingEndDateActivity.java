@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 
-public class ChooseEndDateActivity extends AppCompatActivity {
+public class CreateListingEndDateActivity extends AppCompatActivity {
 
     private Button nextStep;
     private Bundle bundle;
@@ -16,7 +16,7 @@ public class ChooseEndDateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_end_date);
+        setContentView(R.layout.activity_create_listing_end_date);
         nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();
@@ -30,7 +30,7 @@ public class ChooseEndDateActivity extends AppCompatActivity {
                 String year = String.format("%02d", datePicker.getYear());
                 date = month + "-" + day + "-" + year;
 
-                Intent intent = new Intent(ChooseEndDateActivity.this, ChooseEndTimeActivity.class);
+                Intent intent = new Intent(CreateListingEndDateActivity.this, CreateListingEndTimeActivity.class);
                 intent.putExtras(bundle);
                 intent.putExtra("end_date", date);
                 startActivity(intent);

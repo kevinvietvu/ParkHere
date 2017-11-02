@@ -62,7 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
 
-
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,13 +82,11 @@ public class ProfileActivity extends AppCompatActivity {
                  Log.e("IOException", e.getMessage());
                  } */
 
-                Intent mapIntent = new Intent(ProfileActivity.this, MapsActivity.class);
+                Intent mapIntent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
                 //}
-
-
 
             }
         });
@@ -98,15 +95,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //myRef.removeValue();
-                geoFire.removeLocation("test listing");
+                //geoFire.removeLocation("test listing");
             }
         });
-
     }
 
-
     /**
-     *
      * User Activity
      */
 

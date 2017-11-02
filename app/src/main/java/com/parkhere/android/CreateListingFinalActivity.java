@@ -6,21 +6,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class ConfirmationOfCreationActivity extends AppCompatActivity {
+public class CreateListingFinalActivity extends AppCompatActivity {
 
     Button okay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirmation_of_creation);
+        setContentView(R.layout.activity_create_listing_final);
 
         okay = (Button) findViewById(R.id.okay_button);
 
         okay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConfirmationOfCreationActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(CreateListingFinalActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

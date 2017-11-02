@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
 
-public class ChooseEndTimeActivity extends AppCompatActivity {
+public class CreateListingStartTimeActivity extends AppCompatActivity {
 
     private Button nextStep;
     private Bundle bundle;
@@ -16,7 +16,7 @@ public class ChooseEndTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_end_time);
+        setContentView(R.layout.activity_create_start_time);
         nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();
@@ -47,9 +47,9 @@ public class ChooseEndTimeActivity extends AppCompatActivity {
                 String minute = String.format("%02d", m);
                 time = hour + ":" + minute + " " + meridiem;
 
-                Intent intent = new Intent(ChooseEndTimeActivity.this, ConfirmListingActivity.class);
+                Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
                 intent.putExtras(bundle);
-                intent.putExtra("end_time", time);
+                intent.putExtra("start_time", time);
                 startActivity(intent);
             }
         });

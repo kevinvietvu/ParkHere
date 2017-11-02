@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class CreateActivity extends AppCompatActivity {
+public class CreateListingDetailsActivity extends AppCompatActivity {
 
     private Bundle bundle;
     private Button nextStep;
@@ -19,7 +19,7 @@ public class CreateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create);
+        setContentView(R.layout.activity_create_listing_details);
         nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();
@@ -32,7 +32,7 @@ public class CreateActivity extends AppCompatActivity {
                 Spinner spinner = findViewById(R.id.choose_spot_type);
                 spot_type = spinner.getSelectedItem().toString();
 
-                Intent intent = new Intent(CreateActivity.this, ChooseStartDateActivity.class);
+                Intent intent = new Intent(CreateListingDetailsActivity.this, CreateListingStartDateActivity.class);
                 intent.putExtra("price", price);
                 intent.putExtra("description", description);
                 intent.putExtra("spot_type", spot_type);
