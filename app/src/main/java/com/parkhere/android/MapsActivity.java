@@ -1,8 +1,10 @@
 package com.parkhere.android;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.google.android.gms.common.api.Status;
@@ -21,12 +23,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Button submitAddressButton;
+    private String placeToSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
 
         submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
 
@@ -43,6 +45,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(point));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,11));
+                placeToSend = place.getAddress().toString();
+                Log.d("testAddressInput", placeToSend);
             }
 
             @Override
@@ -56,6 +60,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        submitAddressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addressIntent = new Intent(MapsActivity.this, CreateActivity.class);
+                if (placeToSend == null) {
+                    Toast.makeText(MapsActivity.this, "Please Enter an Address",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    addressIntent.putExtra("address", placeToSend);
+                    startActivity(addressIntent);
+                }
+            }
+        });
 
     }
 

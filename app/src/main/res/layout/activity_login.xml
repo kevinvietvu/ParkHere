@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
-            android:text="k@gmail.com"
+            android:text="t@gmail.com"
             android:hint="Email" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
