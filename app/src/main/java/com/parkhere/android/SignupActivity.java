@@ -30,6 +30,13 @@ public class SignupActivity extends AppCompatActivity {
     private EditText signupInputEmail, signupInputPassword;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
 
+    private static boolean isEmailValid(String email) {
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private static boolean isPasswordValid(String password){
+        return (password.length() >= 6);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 submitForm();
+
             }
         });
 
@@ -97,7 +105,7 @@ public class SignupActivity extends AppCompatActivity {
                             Log.d(TAG,"Authentication failed." + task.getException());
 
                         } else {
-                            startActivity(new Intent(SignupActivity.this, UserActivity.class));
+                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
                         }
                     }
@@ -131,14 +139,6 @@ public class SignupActivity extends AppCompatActivity {
         }
         signupInputLayoutPassword.setErrorEnabled(false);
         return true;
-    }
-
-    private static boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private static boolean isPasswordValid(String password){
-        return (password.length() >= 6);
     }
 
     private void requestFocus(View view) {
