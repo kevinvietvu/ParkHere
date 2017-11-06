@@ -18,9 +18,12 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String card_number;
     private String cvv;
 
+    public static BrowseListingConfirmActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_browse_listing_confirm);
         confirm = findViewById(R.id.confirm_button);
 
@@ -32,11 +35,11 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
         card_number_text_view = findViewById(R.id.card_number);
         card_number = bundle.getString("card_number");
-        card_number_text_view.setText(String.format("%s %s", "Listing address:", card_number));
+        card_number_text_view.setText(String.format("%s %s", "Card Number:", card_number));
 
         cvv_text_view = findViewById(R.id.cvv);
         cvv = bundle.getString("cvv");
-        cvv_text_view.setText(String.format("%s %s", "Listing address:", cvv));
+        cvv_text_view.setText(String.format("%s %s", "CVV:", cvv));
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,4 +50,12 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
+    }
 }
+
+
+

@@ -29,9 +29,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,11 +46,16 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private FirebaseAuth auth;
     private DatabaseReference geoFireRef;
+    private DatabaseReference userListingRef;
+    private DatabaseReference locationsRef;
     private GeoFire geoFire;
     private GeoQuery geoQuery;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Map<String,Marker> markers;
+    private FirebaseUser user;
 
+    private String userKey;
+    private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
     private String selectedMarker;
     private Button browseButton;
@@ -71,13 +79,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        //To Sign Out
+        //To Sign Out MIGHT NEED TO ADD AUTH LISTENER FROM PROFILE ACTIVITY
         auth = FirebaseAuth.getInstance();
+
+        user = auth.getCurrentUser();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
+
+
+        //Setting up database references
+        userListingRef = database.getReference("Users");
+        locationsRef = database.getReference("Locations");
 
         /**
          * Nav Menu
@@ -97,94 +112,10 @@ public class MainActivity extends AppCompatActivity
 
         geoFireRef = database.getReference("/geoFireListings");
         geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 5);
-
-        //userListingRef = database.getReference("users/ +" + user.getUid() +"/listings");
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 100);
 
         this.markers = new HashMap<String, Marker>();
-    }
 
-    /**
-     * Nav Menu
-     */
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-*/
-    //sign out method
-    public void signOutButton() {
-
-        auth.signOut();
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-            Intent intent = new Intent(MainActivity.this, MainActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_profile) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_notifications) {
-
-        } else if (id == R.id.nav_logout) {
-            signOutButton();
-
-        } else if (id == R.id.nav_edit_profile) {
-
-        } else if (id == R.id.nav_change_password) {
-
-        } else if (id == R.id.nav_edit_email) {
-
-        } else if (id == R.id.nav_edit_phone) {
-
-        } else if (id == R.id.nav_payment_method) {
-
-        } else if (id == R.id.nav_legal) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     /**
@@ -200,11 +131,13 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+
         // Add a marker in California, San Jose and move/zoom the camera on create
         LatLng SanJose = new LatLng(37.3382, -121.8863);
-        mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
+        //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
         //higher the float value, the more zoomed in
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
+
 
         /**
          * might need to implement later
@@ -215,6 +148,8 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        mMap.setOnMarkerClickListener(this);
     }
 
     @Override
@@ -238,12 +173,46 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
-        Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+        final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+        final String address = key;
+        locationsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
+                    userKey = d.getKey();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+        userListingRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
+                    //CREATE INFO WINDOW
+                    markerDetails = post.getPrice() + '\n' + post.getDescription() + '\n' +  post.getStartDate() + '\n' + post.getEndDate()
+                            + '\n' + post.getStartTime() + '\n' + post.getEndTime();
+                    marker.setSnippet(markerDetails);
+
+                }
+                else {
+                    System.out.println("userListing doesn't exist");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
         this.markers.put(key, marker);
     }
 
     @Override
     public void onKeyExited(String key) {
+        System.out.println(String.format("Key %s is no longer in the search area", key));
         // Remove any old marker
         Marker marker = this.markers.get(key);
         if (marker != null) {
@@ -259,6 +228,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onGeoQueryReady() {
+        System.out.println("All initial data has been loaded and events have been fired!");
     }
 
     @Override
@@ -273,11 +243,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-
+        //Add code to deal with a null marker later on
         // Retrieve the data from the marker.
         Integer clickCount = (Integer) marker.getTag();
         selectedMarker = marker.getTitle();
-        Log.d("MARKER CHECK", selectedMarker);
+
+        System.out.println(selectedMarker);
         // Check if a click count was set, then display the click count.
         if (clickCount != null) {
             clickCount = clickCount + 1;
@@ -293,4 +264,91 @@ public class MainActivity extends AppCompatActivity
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
+
+    /**
+     * Nav Menu
+     */
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //sign out method
+    public void signOutButton() {
+
+        auth.signOut();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
+        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            //finish();
+
+        } else if (id == R.id.nav_notifications) {
+
+        } else if (id == R.id.nav_logout) {
+            signOutButton();
+            finish();
+
+        } else if (id == R.id.nav_edit_profile) {
+
+        } else if (id == R.id.nav_change_password) {
+
+        } else if (id == R.id.nav_edit_email) {
+
+        } else if (id == R.id.nav_edit_phone) {
+
+        } else if (id == R.id.nav_payment_method) {
+
+        } else if (id == R.id.nav_legal) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
 }

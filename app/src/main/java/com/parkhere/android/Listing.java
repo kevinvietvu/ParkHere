@@ -1,5 +1,7 @@
 package com.parkhere.android;
 
+import android.location.Address;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
@@ -11,17 +13,47 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class Listing {
 
-    public Spot spot;
-    public double price;
-    public Date date;
+    public String address;
+    public String description;
+    public String endDate;
+    public String endTime;
+    public String price;
+    public String spotType;
+    public String startDate;
+    public String startTime;
 
     public Listing() {
         // Default constructor required for calls to DataSnapshot.getValue(Listing.class)
     }
 
-    public Listing(Spot spot, double price, Date date) {
-        this.spot = spot;
-        this.price = price;
-        this.date = date;
+    public String getAddress() {
+        return address;
     }
+
+    public String getDescription() { return description; }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public String getSpotType() {
+        return spotType;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
 }
