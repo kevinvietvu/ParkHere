@@ -16,5 +16,8 @@ or
 1. sideload apk through adb 
 2. adb install <path_to_apk>
 
+Github URL
+https://github.com/kevinvietvu/ParkHere
+
 Sidenote 
 Inputting an invalid address will crash the application.
