@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -54,7 +55,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        //getActionBar().hide();
         setContentView(R.layout.activity_main);
+        //getActionBar().show();
 
         browseButton = (Button) findViewById(R.id.btn_browse_listing);
 
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
+*/
     //sign out method
     public void signOutButton() {
 
