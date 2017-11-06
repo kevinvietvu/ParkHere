@@ -36,17 +36,22 @@
     <string name="choose_end_date">Choose End Date</string>
     <string name="choose_start_time">Choose Start Time</string>
     <string name="choose_end_time">Choose End Time</string>>
-    <string name="create_listing_confirmed">Listing has been created!</string>
+    <string name="listing_confirmed">Listing has been created! </string>
     <string name="btn_next_step">Next Step</string>
     <string name="btn_confirm">Confirm</string>>
     <string name="btn_okay">Okay</string>
+    <string name="btn_browse">Rent Listing</string>
 
     <!-- Strings related to browse listing -->
+    <string name="btn_submit">Submit</string>
     <string name="enter_card_number">Enter Card Number</string>
     <string name="enter_cvv">Enter CVV</string>
     <string name="card_number">Card Number</string>
     <string name="purchase_listing_confirmed">Listing has been purchased!</string>
-
     <string name="cvv">CVV</string>
+
+    <!-- Strings related to view listings or reservations -->
+    <string name="btn_my_listing">My Listings</string>
+    <string name="btn_my_reservations">My Reservations</string>
 
 </resources>
