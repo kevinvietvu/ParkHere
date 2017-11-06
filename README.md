@@ -21,3 +21,12 @@ https://github.com/kevinvietvu/ParkHere
 
 Sidenote 
 Inputting an invalid address will crash the application.
+
+# Authors
+Kevin Vu
+Stanley Plagata
+Ricky Reyes
+Nelson Nguyen
+
+# Acknowledgments
+Google Api
