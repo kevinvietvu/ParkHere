@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@+id/listing_end_date" />
 
     <TextView
-        android:id="@+id/listing_address"
+        android:id="@+id/Listing_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"

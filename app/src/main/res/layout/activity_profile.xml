@@ -42,24 +42,24 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/delete_listing"
+            android:id="@+id/my_listings"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimary"
-            android:text="@string/btn_delete_listing"
+            android:text="@string/btn_my_listing"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/sign_out"
+            android:id="@+id/my_reservations"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimary"
-            android:text="@string/btn_sign_out"
+            android:text="@string/btn_my_reservations"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
