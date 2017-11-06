@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">ParkHere</string>
+
+    <!-- Strings related to login/signup -->
+    <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
+    <string name="auth_failed">Authentication error, Please enter a valid email and password or sign up</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_link_to_login">Already registered? Login </string>
+    <string name="btn_sign_out">Sign Out</string>
+    <string name="btn_sign_up">Sign Up </string>
+    <string name="err_msg_email">Enter a valid email.</string>
+    <string name="err_msg_required">Required !!</string>
+    <string name="err_msg_password">Enter a valid password with min 6 characters.</string>
+    <string name="btn_link_to_signup">Don\'t have an account? Signup </string>
+    <string name="btn_create_listing"> Create Listing </string>
+    <string name="btn_delete_listing"> Delete Listing </string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!-- Strings related to navigation -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings related to create listing -->
+    <string name="enter_price">Enter Price</string>
+    <string name="enter_spot_description">Enter Description</string>
+    <string-array name="spot_types">
+        <item>Single Spot</item>
+        <item>Parking Lot</item>
+        <item>Parking Garage</item>
+    </string-array>
+    <string name="choose_start_date">Choose Start Date</string>
+    <string name="choose_end_date">Choose End Date</string>
+    <string name="choose_start_time">Choose Start Time</string>
+    <string name="choose_end_time">Choose End Time</string>>
+    <string name="listing_confirmed">Listing has been created! </string>
+    <string name="btn_next_step">Next Step</string>
+    <string name="btn_confirm">Confirm</string>>
+    <string name="btn_okay">Okay</string>
+    <string name="btn_browse">Rent Listing</string>
+
+    <!-- Strings related to browse listing -->
+    <string name="enter_card_number">Enter Card Number</string>
+    <string name="enter_cvv">Enter CVV</string>
+    <string name="card_number">Card Number</string>
+    <string name="purchase_listing_confirmed">Listing has been purchased!</string>
+    <string name="cvv">CVV</string>
+
+    <!-- Strings related to view listings or reservations -->
+    <string name="btn_my_listing">My Listings</string>
+    <string name="btn_my_reservations">My Reservations</string>
+
+</resources>
