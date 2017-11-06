@@ -11,4 +11,4 @@ install apk:
 or 
 
 -sideload apk through adb 
--"adb install <path_to_apk>"
+- adb install <path_to_apk>
