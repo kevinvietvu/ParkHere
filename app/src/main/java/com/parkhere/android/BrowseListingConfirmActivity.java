@@ -26,11 +26,9 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
         bundle = getIntent().getExtras();
 
-        /* comment this back in when address is added to the bundle
         listing_address_text_view = findViewById(R.id.listing_address);
         listing_address = bundle.getString("listing_address");
         listing_address_text_view.setText(String.format("%s %s", "Listing address:", listing_address));
-        */
 
         card_number_text_view = findViewById(R.id.card_number);
         card_number = bundle.getString("card_number");

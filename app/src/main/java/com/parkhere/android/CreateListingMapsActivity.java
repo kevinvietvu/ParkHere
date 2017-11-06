@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -22,15 +23,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class CreateListingMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private Button next_step;
+    private Button submitAddressButton;
     private String placeToSend;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_listing_maps);
 
-        next_step = (Button) findViewById(R.id.address_submit_btn);
+        submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -61,7 +63,7 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        next_step.setOnClickListener(new View.OnClickListener() {
+        submitAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent addressIntent = new Intent(CreateListingMapsActivity.this, CreateListingDetailsActivity.class);
@@ -97,6 +99,7 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
         //higher the float value, the more zoomed in
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,11));
 
+
         /**
          * might need to implement later
          */
@@ -106,7 +109,6 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
 
             }
         });
-
     }
 
     /** Called when the user clicks a marker. */

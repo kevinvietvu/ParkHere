@@ -9,7 +9,7 @@ import android.widget.DatePicker;
 
 public class CreateListingEndDateActivity extends AppCompatActivity {
 
-    private Button next_step;
+    private Button nextStep;
     private Bundle bundle;
     private String date;
 
@@ -17,11 +17,11 @@ public class CreateListingEndDateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_listing_end_date);
-        next_step = findViewById(R.id.next_step);
+        nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();
 
-        next_step.setOnClickListener(new View.OnClickListener() {
+        nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePicker datePicker = findViewById(R.id.datePicker);

@@ -14,7 +14,8 @@ public class CreateListingFinalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_listing_final);
-        okay = findViewById(R.id.okay_button);
+
+        okay = (Button) findViewById(R.id.okay_button);
 
         okay.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -10,8 +10,8 @@ import android.widget.Spinner;
 
 public class CreateListingDetailsActivity extends AppCompatActivity {
 
-    private Button next_step;
     private Bundle bundle;
+    private Button nextStep;
     private String price;
     private String description;
     private String spot_type;
@@ -20,11 +20,11 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_listing_details);
-        next_step = findViewById(R.id.next_step);
+        nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();
 
-        next_step.setOnClickListener(new View.OnClickListener() {
+        nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 price = ((EditText) findViewById(R.id.enter_price)).getText().toString();
@@ -33,10 +33,11 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                 spot_type = spinner.getSelectedItem().toString();
 
                 Intent intent = new Intent(CreateListingDetailsActivity.this, CreateListingStartDateActivity.class);
-                intent.putExtras(bundle);
                 intent.putExtra("price", price);
                 intent.putExtra("description", description);
                 intent.putExtra("spot_type", spot_type);
+                intent.putExtras(bundle);
+
                 startActivity(intent);
             }
         });

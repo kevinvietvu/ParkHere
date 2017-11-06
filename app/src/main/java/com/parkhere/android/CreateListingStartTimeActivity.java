@@ -9,19 +9,19 @@ import android.widget.TimePicker;
 
 public class CreateListingStartTimeActivity extends AppCompatActivity {
 
-    private Button next_step;
+    private Button nextStep;
     private Bundle bundle;
     private String time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_listing_start_time);
-        next_step = findViewById(R.id.next_step);
+        setContentView(R.layout.activity_create_start_time);
+        nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();
 
-        next_step.setOnClickListener(new View.OnClickListener() {
+        nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePicker timePicker = findViewById(R.id.timePicker);

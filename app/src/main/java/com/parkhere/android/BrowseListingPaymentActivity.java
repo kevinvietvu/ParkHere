@@ -20,9 +20,7 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browse_listing_payment);
         next_step = findViewById(R.id.next_step);
 
-        /* comment this back in when address is added to the bundle
         bundle = getIntent().getExtras();
-        */
 
         next_step.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,10 +30,7 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(BrowseListingPaymentActivity.this, BrowseListingConfirmActivity.class);
 
-                /* comment this back in when address is added to the bundle
                 intent.putExtras(bundle);
-                */
-
                 intent.putExtra("card_number", card_number);
                 intent.putExtra("cvv", cvv);
                 startActivity(intent);
