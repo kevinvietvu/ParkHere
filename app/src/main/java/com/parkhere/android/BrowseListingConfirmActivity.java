@@ -32,11 +32,11 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
         card_number_text_view = findViewById(R.id.card_number);
         card_number = bundle.getString("card_number");
-        card_number_text_view.setText(String.format("%s %s", "Listing address:", card_number));
+        card_number_text_view.setText(String.format("%s %s", "Card Number:", card_number));
 
         cvv_text_view = findViewById(R.id.cvv);
         cvv = bundle.getString("cvv");
-        cvv_text_view.setText(String.format("%s %s", "Listing address:", cvv));
+        cvv_text_view.setText(String.format("%s %s", "CVV:", cvv));
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override

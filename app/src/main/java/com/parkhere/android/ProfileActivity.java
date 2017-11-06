@@ -72,15 +72,6 @@ public class ProfileActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 //myRef.setValue(auth.getCurrentUser().getEmail());
-                 try {
-                 Address address = getGeoLocation("1600 Amphitheatre Parkway, Mountain View, CA", UserActivity.this);
-                 geoFire.setLocation("test listing", new GeoLocation(address.getLatitude(),address.getLongitude()));
-                 }
-                 catch (IOException e) {
-                 Log.e("IOException", e.getMessage());
-                 } */
 
                 Intent mapIntent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");

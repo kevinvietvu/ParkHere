@@ -43,6 +43,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
+    private DatabaseReference locationsRef;
     private DatabaseReference geoFireRef;
     private GeoFire geoFire;
     private FirebaseAuth auth;
@@ -58,8 +59,9 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
-        userListingRef = database.getReference("users/ +" + user.getUid() +"/listings");
-        geoFireRef = database.getReference("/geoFireListings");
+        userListingRef = database.getReference("Users");
+        locationsRef = database.getReference("Locations");
+        geoFireRef = database.getReference("geoFireListings");
         geoFire = new GeoFire(geoFireRef);
 
         bundle = getIntent().getExtras();
@@ -126,12 +128,20 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                 System.out.println("end time: " + end_time);
                 */
 
+                 /**
+                 locationsRef.child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Users").child("Nelson's ID").setValue(true);
+                 userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
+                 */
+
                 try {
+
                     Address addressToInsertInFirebase = ProfileActivity.getGeoLocationFromAddress(address, CreateListingConfirmActivity.this);
                     geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(),addressToInsertInFirebase.getLongitude()));
-                    userListingRef.updateChildren(listingData);
+                    //setValue to user's name later
+                    locationsRef.child(address).child("Users").child(user.getUid()).setValue(true);
+                    userListingRef.child(user.getUid()).child("Listings").child(address).child("Details").setValue(listingData);
                 }
-                catch (IOException e) {
+                catch (Exception e) {
                     Log.e("IOException", e.getMessage());
                 }
 
