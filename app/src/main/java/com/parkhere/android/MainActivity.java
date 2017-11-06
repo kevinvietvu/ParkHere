@@ -54,9 +54,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        //getActionBar().hide();
         setContentView(R.layout.activity_main);
+        //getActionBar().show();
 
-        browseButton = (Button) findViewById(R.id.btn_browse_listing);
+        browseButton = findViewById(R.id.btn_browse_listing);
 
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         geoFireRef = database.getReference("/geoFireListings");
@@ -154,15 +157,18 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
             Intent intent = new Intent(MainActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.nav_profile) {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
+            //finish();
 
         } else if (id == R.id.nav_notifications) {
 
         } else if (id == R.id.nav_logout) {
             signOutButton();
+            finish();
 
         } else if (id == R.id.nav_edit_profile) {
 

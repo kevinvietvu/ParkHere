@@ -20,9 +20,19 @@ public class BrowseListingFinalActivity extends AppCompatActivity {
         okay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(BrowseListingFinalActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
+
+        if(BrowseListingPaymentActivity.instance != null) {
+            try {
+                BrowseListingPaymentActivity.instance.finish();
+            } catch (Exception e) {}
+        }
+        if(BrowseListingConfirmActivity.instance != null) {
+            try {
+                BrowseListingConfirmActivity.instance.finish();
+            } catch (Exception e) {}
+        }
     }
 }

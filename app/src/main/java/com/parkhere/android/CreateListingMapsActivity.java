@@ -26,10 +26,13 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
     private Button submitAddressButton;
     private String placeToSend;
 
+    public static CreateListingMapsActivity instance = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_create_listing_maps);
 
         submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
@@ -78,6 +81,12 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
             }
         });
 
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 
     /**

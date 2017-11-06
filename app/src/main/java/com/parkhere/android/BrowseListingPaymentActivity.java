@@ -14,9 +14,12 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private String card_number;
     private String cvv;
 
+    public static BrowseListingPaymentActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_browse_listing_payment);
         next_step = findViewById(R.id.next_step);
 
@@ -36,5 +39,11 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }

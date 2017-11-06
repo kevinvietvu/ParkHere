@@ -16,9 +16,12 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     private String description;
     private String spot_type;
 
+    public static CreateListingDetailsActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_create_listing_details);
         nextStep = findViewById(R.id.next_step);
 
@@ -41,5 +44,11 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }
