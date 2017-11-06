@@ -49,4 +49,8 @@
     <string name="purchase_listing_confirmed">Listing has been purchased!</string>
     <string name="cvv">CVV</string>
 
+    <!-- Strings related to view listings or reservations -->
+    <string name="btn_my_listing">My Listings</string>
+    <string name="btn_my_reservations">My Reservations</string>
+
 </resources>

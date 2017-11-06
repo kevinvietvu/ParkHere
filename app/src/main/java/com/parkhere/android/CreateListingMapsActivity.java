@@ -26,10 +26,12 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
     private Button submitAddressButton;
     private String placeToSend;
 
+    public static CreateListingMapsActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_create_listing_maps);
 
         submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
@@ -132,6 +134,12 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 
 }

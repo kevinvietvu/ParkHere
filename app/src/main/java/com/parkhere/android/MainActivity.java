@@ -175,9 +175,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
-                    System.out.println("boi" + d.getKey());
                     userKey = d.getKey();
-                    System.out.println("test " + userKey);
                 }
             }
             @Override
@@ -262,8 +260,7 @@ public class MainActivity extends AppCompatActivity
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
-
-
+    
     /**
      * Nav Menu
      */
@@ -318,15 +315,18 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
             Intent intent = new Intent(MainActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.nav_profile) {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
+            //finish();
 
         } else if (id == R.id.nav_notifications) {
 
         } else if (id == R.id.nav_logout) {
             signOutButton();
+            finish();
 
         } else if (id == R.id.nav_edit_profile) {
 

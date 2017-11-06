@@ -63,7 +63,9 @@
         <activity android:name=".BrowseListingConfirmActivity" />
         <activity android:name=".BrowseListingFinalActivity" />
         <activity android:name=".BrowseListingPaymentActivity" />
-        <activity android:name=".TestFirebaseActivity"></activity>
+        <activity android:name=".TestFirebaseActivity" />
+        <activity android:name=".ViewUserListingsActivity" />
+        <activity android:name=".ViewUserReservationsActivity" />
     </application>
 
 </manifest>

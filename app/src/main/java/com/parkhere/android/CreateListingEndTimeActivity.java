@@ -13,9 +13,13 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
     private Bundle bundle;
     private String time;
 
+
+    public static CreateListingEndTimeActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_create_listing_end_time);
         nextStep = findViewById(R.id.next_step);
 
@@ -53,5 +57,11 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }

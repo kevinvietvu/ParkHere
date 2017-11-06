@@ -21,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +73,6 @@ public class TestFirebaseActivity extends AppCompatActivity {
                 //System.out.println(snapshot.child("15564 Calgary St, San Leandro, CA 94579, USA").child("Users"));
                 //System.out.println(snapshot.child("15564 Calgary St, San Leandro, CA 94579, USA").child("Users").child("Kevin's ID").getKey());
 
-
                 //System.out.println(snapshot.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").getKey());
                 //System.out.println(snapshot.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").getValue());
 
@@ -90,7 +88,6 @@ public class TestFirebaseActivity extends AppCompatActivity {
                     System.out.println(d.getKey());
                     System.out.println(d.getValue());
                 }*/
-
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {

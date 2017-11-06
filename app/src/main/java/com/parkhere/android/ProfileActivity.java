@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
-    private Button signOutButton;
-    private Button  createListingButton;
-    private Button  deleteListingButton;
+    private Button createListingButton;
+    private Button myListingsButton;
+    private Button myReservationsButton;
     private TextView helloUserText;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -41,9 +41,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
-        signOutButton = (Button) findViewById(R.id.sign_out);
         createListingButton = (Button) findViewById(R.id.create_listing);
-        deleteListingButton = (Button) findViewById(R.id.delete_listing);
+        myListingsButton = findViewById(R.id.my_listings);
+        myReservationsButton = findViewById(R.id.my_reservations);
 
         helloUserText = (TextView) findViewById(R.id.text_user);
 
@@ -62,13 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
 
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOutButton();
-            }
-        });
-
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,11 +75,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        deleteListingButton.setOnClickListener(new View.OnClickListener() {
+
+        myListingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //myRef.removeValue();
-                //geoFire.removeLocation("test listing");
+                Intent intent = new Intent(ProfileActivity.this, ViewUserListingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        myReservationsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, ViewUserReservationsActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -106,11 +108,6 @@ public class ProfileActivity extends AppCompatActivity {
         Geocoder geocoder = new Geocoder(context);
         List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
         return addresses.get(0);
-    }
-
-    //sign out method
-    public void signOutButton() {
-        auth.signOut();
     }
 
     @Override

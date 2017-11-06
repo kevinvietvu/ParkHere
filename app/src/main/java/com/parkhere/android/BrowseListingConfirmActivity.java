@@ -18,9 +18,12 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String card_number;
     private String cvv;
 
+    public static BrowseListingConfirmActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_browse_listing_confirm);
         confirm = findViewById(R.id.confirm_button);
 
@@ -47,4 +50,12 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
+    }
 }
+
+
+

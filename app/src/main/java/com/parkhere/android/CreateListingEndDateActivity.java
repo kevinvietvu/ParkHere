@@ -13,9 +13,12 @@ public class CreateListingEndDateActivity extends AppCompatActivity {
     private Bundle bundle;
     private String date;
 
+    public static CreateListingEndDateActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_create_listing_end_date);
         nextStep = findViewById(R.id.next_step);
 
@@ -36,5 +39,11 @@ public class CreateListingEndDateActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }
