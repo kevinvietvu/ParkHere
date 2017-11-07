@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     private String userKey;
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
-    private String selectedMarker;
+    private Marker selectedMarker;
     private Button browseButton;
 
     @Override
@@ -70,7 +70,16 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                paymentIntent.putExtra("listing_address", selectedMarker); //title so far has address only, will cause problems later on with info window with extra details
+                Listing selectedListing = (Listing) selectedMarker.getTag();
+                paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
+                paymentIntent.putExtra("price", selectedListing.getPrice());
+                paymentIntent.putExtra("description", selectedListing.getDescription());
+                paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
+                paymentIntent.putExtra("start_date",selectedListing.getStartDate());
+                paymentIntent.putExtra("start_time", selectedListing.getStartTime());
+                paymentIntent.putExtra("end_date", selectedListing.getEndDate());
+                paymentIntent.putExtra("end_time",selectedListing.getEndTime());
+
                 startActivity(paymentIntent);
             }
         });
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity
 
         geoFireRef = database.getReference("/geoFireListings");
         geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 100);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 1000);
 
         this.markers = new HashMap<String, Marker>();
 
@@ -126,7 +135,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
 
         // Add a marker in California, San Jose and move/zoom the camera on create
         LatLng SanJose = new LatLng(37.3382, -121.8863);
@@ -166,6 +174,7 @@ public class MainActivity extends AppCompatActivity
         this.geoQuery.addGeoQueryEventListener(this);
     }
 
+    //try nesting https://stackoverflow.com/questions/42176718/when-i-nest-two-value-event-listeners-do-they-both-run-asynchronously-or-the-th
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
@@ -188,11 +197,13 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
-                    //CREATE INFO WINDOW
-                    markerDetails = post.getPrice() + '\n' + post.getDescription() + '\n' +  post.getStartDate() + '\n' + post.getEndDate()
-                            + '\n' + post.getStartTime() + '\n' + post.getEndTime();
-                    marker.setSnippet(markerDetails);
-
+                    //CREATE INFO WINDOW, ADDED POST != null
+                    if (post != null) {
+                        markerDetails = post.toString();
+                        marker.setSnippet(markerDetails);
+                        //Tag is an object associated with the marker
+                        marker.setTag(post);
+                    }
                 }
                 else {
                     System.out.println("userListing doesn't exist");
@@ -241,26 +252,26 @@ public class MainActivity extends AppCompatActivity
     public boolean onMarkerClick(final Marker marker) {
         //Add code to deal with a null marker later on
         // Retrieve the data from the marker.
-        Integer clickCount = (Integer) marker.getTag();
-        selectedMarker = marker.getTitle();
+        selectedMarker = marker;
 
         System.out.println(selectedMarker);
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1;
-            marker.setTag(clickCount);
-            Toast.makeText(this,
-                    marker.getTitle() +
-                            " has been clicked " + clickCount + " times.",
-                    Toast.LENGTH_SHORT).show();
-        }
+        /** Check if a click count was set, then display the click count.
+         Integer clickCount = (Integer) marker.getTag();
+         if (clickCount != null) {
+         marker.setTag(clickCount);
+         clickCount = clickCount + 1;
+         Toast.makeText(this,
+         marker.getTitle() +
+         " has been clicked " + clickCount + " times.",
+         Toast.LENGTH_SHORT).show();
+         } */
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
-    
+
     /**
      * Nav Menu
      */

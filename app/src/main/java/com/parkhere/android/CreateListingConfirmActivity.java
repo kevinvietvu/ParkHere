@@ -117,6 +117,8 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
 
         listingData.put("address" , address);
 
+        listingData.put("userID", user.getUid());
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +133,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                 System.out.println("end time: " + end_time);
                 */
 
-                 /**
+                /**
                  locationsRef.child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Users").child("Nelson's ID").setValue(true);
                  userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
                  */
