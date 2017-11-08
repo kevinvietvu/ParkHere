@@ -41,11 +41,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
-        createListingButton = findViewById(R.id.create_listing);
+        createListingButton = (Button) findViewById(R.id.create_listing);
         myListingsButton = findViewById(R.id.my_listings);
         myReservationsButton = findViewById(R.id.my_reservations);
 
-        helloUserText = findViewById(R.id.text_user);
+        helloUserText = (TextView) findViewById(R.id.text_user);
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -65,15 +65,21 @@ public class ProfileActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
-                startActivity(intent);
+
+                Intent mapIntent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
+                //mapIntent.setPackage("com.google.android.apps.maps");
+                //if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+                //}
+
             }
         });
+
 
         myListingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, ViewUserListingActivity.class);
+                Intent intent = new Intent(ProfileActivity.this, ViewUserListingsActivity.class);
                 startActivity(intent);
             }
         });
@@ -102,11 +108,6 @@ public class ProfileActivity extends AppCompatActivity {
         Geocoder geocoder = new Geocoder(context);
         List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
         return addresses.get(0);
-    }
-
-    //sign out method
-    public void signOutButton() {
-        auth.signOut();
     }
 
     @Override

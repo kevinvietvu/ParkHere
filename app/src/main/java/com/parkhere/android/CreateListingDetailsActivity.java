@@ -18,6 +18,7 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
 
     public static CreateListingDetailsActivity instance = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_map"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Notifications" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_menu_previous"
+            android:title="Logout" />
+    </group>
+
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/nav_edit_profile"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="Edit Profile" />
+            <item
+                android:id="@+id/nav_change_password"
+                android:icon="@drawable/ic_menu_secure"
+                android:title="Change Password" />
+            <item
+                android:id="@+id/nav_edit_email"
+                android:icon="@drawable/ic_menu_email"
+                android:title="Change Email" />
+            <item
+                android:id="@+id/nav_edit_phone"
+                android:icon="@drawable/ic_menu_dialer"
+                android:title="Edit Phone" />
+            <item
+                android:id="@+id/nav_payment_method"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Payment Method" />
+            <item
+                android:id="@+id/nav_legal"
+                android:icon="@drawable/ic_menu_info"
+                android:title="Legal" />
+
+        </menu>
+    </item>
+
+</menu>

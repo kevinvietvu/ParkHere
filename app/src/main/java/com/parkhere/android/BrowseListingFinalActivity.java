@@ -1,4 +1,3 @@
-
 package com.parkhere.android;
 
 import android.content.Intent;
@@ -14,6 +13,7 @@ public class BrowseListingFinalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_browse_listing_final);
         okay = findViewById(R.id.okay_button);
 

@@ -28,7 +28,6 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
 
     public static CreateListingMapsActivity instance = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +82,6 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
 
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        instance = null;
-    }
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -141,6 +134,12 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 
 }

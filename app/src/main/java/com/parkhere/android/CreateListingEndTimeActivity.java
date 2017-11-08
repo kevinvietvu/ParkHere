@@ -13,6 +13,7 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
     private Bundle bundle;
     private String time;
 
+
     public static CreateListingEndTimeActivity instance = null;
 
     @Override

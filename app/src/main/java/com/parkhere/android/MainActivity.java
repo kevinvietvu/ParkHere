@@ -28,9 +28,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,41 +45,59 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private FirebaseAuth auth;
     private DatabaseReference geoFireRef;
+    private DatabaseReference userListingRef;
+    private DatabaseReference locationsRef;
     private GeoFire geoFire;
     private GeoQuery geoQuery;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Map<String,Marker> markers;
+    private FirebaseUser user;
 
+    private String userKey;
+    private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
-    private String selectedMarker;
+    private Marker selectedMarker;
     private Button browseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        //getActionBar().hide();
         setContentView(R.layout.activity_main);
-        //getActionBar().show();
 
-        browseButton = findViewById(R.id.btn_browse_listing);
+        browseButton = (Button) findViewById(R.id.btn_browse_listing);
 
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                paymentIntent.putExtra("listing_address", selectedMarker); //title so far has address only, will cause problems later on with info window with extra details
+                Listing selectedListing = (Listing) selectedMarker.getTag();
+                paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
+                paymentIntent.putExtra("price", selectedListing.getPrice());
+                paymentIntent.putExtra("description", selectedListing.getDescription());
+                paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
+                paymentIntent.putExtra("start_date",selectedListing.getStartDate());
+                paymentIntent.putExtra("start_time", selectedListing.getStartTime());
+                paymentIntent.putExtra("end_date", selectedListing.getEndDate());
+                paymentIntent.putExtra("end_time",selectedListing.getEndTime());
+
                 startActivity(paymentIntent);
             }
         });
 
-        //To Sign Out
+        //To Sign Out MIGHT NEED TO ADD AUTH LISTENER FROM PROFILE ACTIVITY
         auth = FirebaseAuth.getInstance();
+
+        user = auth.getCurrentUser();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
+
+
+        //Setting up database references
+        userListingRef = database.getReference("Users");
+        locationsRef = database.getReference("Locations");
 
         /**
          * Nav Menu
@@ -91,16 +112,164 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         geoFireRef = database.getReference("/geoFireListings");
         geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 5);
-
-        //userListingRef = database.getReference("users/ +" + user.getUid() +"/listings");
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 1000);
 
         this.markers = new HashMap<String, Marker>();
+
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near San Jose, California.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in California, San Jose and move/zoom the camera on create
+        LatLng SanJose = new LatLng(37.3382, -121.8863);
+        //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
+        //higher the float value, the more zoomed in
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
+
+
+        /**
+         * might need to implement later
+         */
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point)  {
+
+            }
+        });
+
+        mMap.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // remove all event listeners to stop updating in the background
+        this.geoQuery.removeAllListeners();
+        for (Marker marker: this.markers.values()) {
+            marker.remove();
+        }
+        this.markers.clear();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // add an event listener to start updating locations again
+        this.geoQuery.addGeoQueryEventListener(this);
+    }
+
+    //try nesting https://stackoverflow.com/questions/42176718/when-i-nest-two-value-event-listeners-do-they-both-run-asynchronously-or-the-th
+    @Override
+    public void onKeyEntered(String key, GeoLocation location) {
+        // Add a new marker to the map
+        final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+        final String address = key;
+        locationsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
+                    userKey = d.getKey();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+        userListingRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
+                    //CREATE INFO WINDOW, ADDED POST != null
+                    if (post != null) {
+                        markerDetails = post.toString();
+                        marker.setSnippet(markerDetails);
+                        //Tag is an object associated with the marker
+                        marker.setTag(post);
+                    }
+                }
+                else {
+                    System.out.println("userListing doesn't exist");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+        this.markers.put(key, marker);
+    }
+
+    @Override
+    public void onKeyExited(String key) {
+        System.out.println(String.format("Key %s is no longer in the search area", key));
+        // Remove any old marker
+        Marker marker = this.markers.get(key);
+        if (marker != null) {
+            marker.remove();
+            this.markers.remove(key);
+        }
+    }
+
+    @Override
+    public void onKeyMoved(String key, GeoLocation location) {
+        // Move the marker
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+        System.out.println("All initial data has been loaded and events have been fired!");
+    }
+
+    @Override
+    public void onGeoQueryError(DatabaseError error) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("There was an unexpected error querying GeoFire: " + error.getMessage())
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        //Add code to deal with a null marker later on
+        // Retrieve the data from the marker.
+        selectedMarker = marker;
+
+        System.out.println(selectedMarker);
+        /** Check if a click count was set, then display the click count.
+         Integer clickCount = (Integer) marker.getTag();
+         if (clickCount != null) {
+         marker.setTag(clickCount);
+         clickCount = clickCount + 1;
+         Toast.makeText(this,
+         marker.getTitle() +
+         " has been clicked " + clickCount + " times.",
+         Toast.LENGTH_SHORT).show();
+         } */
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
     }
 
     /**
@@ -189,110 +358,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near San Jose, California.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in California, San Jose and move/zoom the camera on create
-        LatLng SanJose = new LatLng(37.3382, -121.8863);
-        mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
-        //higher the float value, the more zoomed in
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
-
-        /**
-         * might need to implement later
-         */
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng point)  {
-
-            }
-        });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // remove all event listeners to stop updating in the background
-        this.geoQuery.removeAllListeners();
-        for (Marker marker: this.markers.values()) {
-            marker.remove();
-        }
-        this.markers.clear();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // add an event listener to start updating locations again
-        this.geoQuery.addGeoQueryEventListener(this);
-    }
-
-    @Override
-    public void onKeyEntered(String key, GeoLocation location) {
-        // Add a new marker to the map
-        Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
-        this.markers.put(key, marker);
-    }
-
-    @Override
-    public void onKeyExited(String key) {
-        // Remove any old marker
-        Marker marker = this.markers.get(key);
-        if (marker != null) {
-            marker.remove();
-            this.markers.remove(key);
-        }
-    }
-
-    @Override
-    public void onKeyMoved(String key, GeoLocation location) {
-        // Move the marker
-    }
-
-    @Override
-    public void onGeoQueryReady() {
-    }
-
-    @Override
-    public void onGeoQueryError(DatabaseError error) {
-        new AlertDialog.Builder(this)
-                .setTitle("Error")
-                .setMessage("There was an unexpected error querying GeoFire: " + error.getMessage())
-                .setPositiveButton(android.R.string.ok, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    @Override
-    public boolean onMarkerClick(final Marker marker) {
-
-        // Retrieve the data from the marker.
-        Integer clickCount = (Integer) marker.getTag();
-        selectedMarker = marker.getTitle();
-        Log.d("MARKER CHECK", selectedMarker);
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1;
-            marker.setTag(clickCount);
-            Toast.makeText(this,
-                    marker.getTitle() +
-                            " has been clicked " + clickCount + " times.",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false;
-    }
 }
