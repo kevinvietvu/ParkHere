@@ -11,8 +11,8 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
     private Button next_step;
     private Bundle bundle;
-    private String card_number;
-    private String cvv;
+    public String card_number;
+    public String cvv;
 
     public static BrowseListingPaymentActivity instance = null;
 
@@ -40,6 +40,8 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     public void finish() {

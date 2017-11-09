@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        browseButton = (Button) findViewById(R.id.btn_browse_listing);
+        browseButton = findViewById(R.id.btn_browse_listing);
 
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
