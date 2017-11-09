@@ -16,7 +16,7 @@ public class CreateListingEndDateActivity extends AppCompatActivity {
 
     private Button nextStep;
     private Bundle bundle;
-    private String date;
+    private String end_date;
 
     public static CreateListingEndDateActivity instance = null;
 
@@ -50,11 +50,11 @@ public class CreateListingEndDateActivity extends AppCompatActivity {
                     String month = String.format("%02d",m);
                     String day = String.format("%02d", d);
                     String year = String.format("%02d", y);
-                    date = month + "-" + day + "-" + year;
+                    end_date = month + "-" + day + "-" + year;
 
                     Intent intent = new Intent(CreateListingEndDateActivity.this, CreateListingEndTimeActivity.class);
                     intent.putExtras(bundle);
-                    intent.putExtra("end_date", date);
+                    intent.putExtra("end_date", end_date);
                     startActivity(intent);
                 }
             }

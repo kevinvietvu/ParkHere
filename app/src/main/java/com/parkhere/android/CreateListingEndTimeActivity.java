@@ -11,13 +11,13 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class CreateListingEndTimeActivity extends AppCompatActivity {
 
     private Button nextStep;
     private Bundle bundle;
     private String end_time;
-
 
     public static CreateListingEndTimeActivity instance = null;
 
@@ -54,20 +54,10 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
                 if (!endsAfterStartDateAndTime(startMonth, startDay, startYear, startHour, startMinute,
                         endMonth, endDay, endYear, h, m)) {
                     Toast.makeText(CreateListingEndTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();
-                } else if (!isLongerThan1Hour(startHour, startMinute, h, m)) {
-                    Toast.makeText(CreateListingEndTimeActivity.this, "Please make sure your listing is at least one hour", Toast.LENGTH_LONG).show();
                 } else {
-                    String meridiem = "";
-                    if (h < 12) meridiem = "AM";
-                    else meridiem = "PM";
-                    /* converts to 12-hour time */
-                    h = h % 12;
-                    /* changes 0:00 to 12:00 */
-                    if (h == 0) { h = 12; }
-
-                    String hour = String.format("%d", h);
+                    String hour = String.format("%02d", h);
                     String minute = String.format("%02d", m);
-                    end_time = hour + ":" + minute + " " + meridiem;
+                    end_time = hour + ":" + minute;
 
                     Intent intent = new Intent(CreateListingEndTimeActivity.this, CreateListingConfirmActivity.class);
                     intent.putExtras(bundle);
@@ -133,28 +123,5 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public static boolean isLongerThan1Hour(int startHour, int startMinute, int endHour, int endMinute) {
-        String formattedStartHour = String.format("%02d", startHour);
-        String formattedStartMinute = String.format("%02d", startMinute);
-        String start_date = formattedStartHour + ":" + formattedStartMinute;
-
-        String formattedEndHour = String.format("%02d", endHour);
-        String formattedEndMinute = String.format("%02d", endMinute);
-        String end_date = formattedEndHour + ":" + formattedEndMinute;
-
-        int startHour2 = Integer.parseInt(start_date.substring(0, 2));
-        int startMinute2 = Integer.parseInt(start_date.substring(3, 5));
-
-        int endHour2 = Integer.parseInt(end_date.substring(0, 2));
-        int endMinute2 = Integer.parseInt(end_date.substring(3, 5));
-
-        int hourDifference = Math.abs(startHour2 - endHour2);
-        int minuteDifference = Math.abs(startMinute2 - endMinute2);
-        int timeLengthInMinutes = (hourDifference * 60) + minuteDifference;
-
-        if (timeLengthInMinutes >= 60) return true;
-        else return false;
     }
 }

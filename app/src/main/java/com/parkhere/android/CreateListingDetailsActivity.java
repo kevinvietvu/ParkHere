@@ -35,7 +35,9 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                 description = ((EditText) findViewById(R.id.enter_spot_description)).getText().toString();
                 Spinner spinner = findViewById(R.id.choose_spot_type);
                 spot_type = spinner.getSelectedItem().toString();
-                if (!priceMustBeBetween1And999(price)) {
+                if (!priceIsNotNull(price)) {
+                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
+                } else if (!priceMustBeBetween1And999(price)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter a price between 1 and 999", Toast.LENGTH_LONG).show();
                 } else if (!descriptionMustBeLessThan140Characters(description)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter less than 140 characters for description", Toast.LENGTH_LONG).show();
@@ -56,6 +58,11 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         instance = null;
+    }
+
+    public static boolean priceIsNotNull(Object o) {
+        if (o != null) return true;
+        else return false;
     }
 
     public static boolean priceMustBeBetween1And999(Double price) {
