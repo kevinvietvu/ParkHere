@@ -38,14 +38,18 @@ public class CreateListingEndDateActivity extends AppCompatActivity {
                 int startYear = Integer.parseInt(date.substring(6, 8));
 
                 DatePicker datePicker = findViewById(R.id.datePicker);
-                if (!endsOnOrAfterStartDate(startMonth, startDay, startYear, datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear())) {
+                int m = datePicker.getMonth() + 1;
+                int d = datePicker.getDayOfMonth();
+                int y = datePicker.getYear() % 100;
+
+                if (!endsOnOrAfterStartDate(startMonth, startDay, startYear, m, d, y)) {
                     Toast.makeText(CreateListingEndDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
-                } else if (!isNotLongerThan2Years(startYear, datePicker.getYear())) {
+                } else if (!isNotLongerThan2Years(startYear, y)) {
                     Toast.makeText(CreateListingEndDateActivity.this, "Please do not exceed 2 years", Toast.LENGTH_LONG).show();
                 } else {
-                    String month = String.format("%02d", datePicker.getMonth() + 1);
-                    String day = String.format("%02d", datePicker.getDayOfMonth());
-                    String year = String.format("%02d", datePicker.getYear());
+                    String month = String.format("%02d",m);
+                    String day = String.format("%02d", d);
+                    String year = String.format("%02d", y);
                     date = month + "-" + day + "-" + year;
 
                     Intent intent = new Intent(CreateListingEndDateActivity.this, CreateListingEndTimeActivity.class);
