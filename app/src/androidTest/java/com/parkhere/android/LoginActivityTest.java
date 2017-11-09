@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.allOf;
 public class LoginActivityTest {
 
     @Rule
-    public ActivityTestRule<LoginActivity> mActivityTestRule= new ActivityTestRule<LoginActivity>(LoginActivity.class);
+    public ActivityTestRule<LoginActivity> mLoginTestRule= new ActivityTestRule<LoginActivity>(LoginActivity.class);
 
     @Test
     public void LoginActivityTest_link() throws Exception{

@@ -33,84 +33,46 @@ import static org.hamcrest.Matchers.allOf;
 public class ProfileActivityTest {
 
     @Rule
-    public ActivityTestRule<ProfileActivity> SignupTestRule= new ActivityTestRule<ProfileActivity>(ProfileActivity.class);
+    public ActivityTestRule<ProfileActivity> mProfileTestRule= new ActivityTestRule<ProfileActivity>(ProfileActivity.class);
 
     @Test
-    public void SignUpActivityTest_btn_create() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    public void profileActivity_btn_create() {
+
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.create_listing), withText("CREATE LISTING"),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.create_listing),
                         isDisplayed()));
-        appCompatButton2.perform(click());
+        button.check(matches(isDisplayed()));
     }
-
     @Test
-    public void ProfileActivityTest_btn_my() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    public void profileActivity_btn_my() {
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.my_listings), withText("MY LISTINGS"),
-                        childAtPosition(
-                            childAtPosition(
-                                withId(android.R.id.content),
-                                0),
-                        2),
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.my_listings),
                         isDisplayed()));
-        appCompatButton2.perform(click());
+        button2.check(matches(isDisplayed()));
     }
-
     @Test
-    public void ProfileActivityTest_btn_reservations() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    public void profileActivity_btn_reservation() {
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.my_reservations), withText("MY RESERVATIONS"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
+        ViewInteraction button3 = onView(
+                allOf(withId(R.id.my_reservations),
                         isDisplayed()));
-        appCompatButton2.perform(click());
+        button3.check(matches(isDisplayed()));
     }
 
-
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
-    }
 }
+
