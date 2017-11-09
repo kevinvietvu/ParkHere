@@ -11,7 +11,6 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class CreateListingStartDateActivity extends AppCompatActivity {
 
@@ -34,30 +33,23 @@ public class CreateListingStartDateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DatePicker datePicker = findViewById(R.id.datePicker);
-                    String month = String.format("%02d", datePicker.getMonth());
-                    String day = String.format("%02d", datePicker.getDayOfMonth());
-                    String year = String.format("%02d", datePicker.getYear());
-                    int m = datePicker.getMonth();
-                    int d = datePicker.getDayOfMonth();
-                    int y = datePicker.getYear();
+                int m = datePicker.getMonth() + 1;
+                int d = datePicker.getDayOfMonth();
+                int y = datePicker.getYear() % 100;
+
+                if (!startsOnOrAfterCurrentDate(m, d, y)) {
+                    Toast.makeText(CreateListingStartDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
+                } else {
+                    String month = String.format("%02d", m);
+                    String day = String.format("%02d", d);
+                    String year = String.format("%02d", y);
                     date = month + "-" + day + "-" + year;
-                DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy");
-                String currentDate = dateFormat.format(Calendar.getInstance().getTime());
-                //Toast.makeText(CreateListingStartDateActivity.this, x, Toast.LENGTH_LONG).show();
-                Boolean x = startsOnOrAfterCurrentDate(m, d, y);
-                Toast.makeText(CreateListingStartDateActivity.this, date + currentDate + x.toString(), Toast.LENGTH_LONG).show();
-               /* if (x){
+
                     Intent intent = new Intent(CreateListingStartDateActivity.this, CreateListingStartTimeActivity.class);
                     intent.putExtras(bundle);
                     intent.putExtra("start_date", date);
                     startActivity(intent);
-                    }
-                if (!x){
-                    Toast.makeText(CreateListingStartDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
-                }*/
-
-
-
+                }
             }
         });
     }
@@ -72,27 +64,27 @@ public class CreateListingStartDateActivity extends AppCompatActivity {
         String formattedMonth = String.format("%02d", month);
         String formattedDay = String.format("%02d", day);
         String formattedYear = String.format("%02d", year);
-        String chosenDate = formattedMonth + "-" + formattedDay + "-" + formattedYear;
+        String start_date = formattedMonth + "-" + formattedDay + "-" + formattedYear;
 
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy");
-        String currentDate = dateFormat.format(Calendar.getInstance().getTime());
+        String current_date = dateFormat.format(Calendar.getInstance().getTime());
 
-        int chosenYear =  Integer.parseInt(chosenDate.substring(6, 8));
-        int currentYear = Integer.parseInt(currentDate.substring(6, 8));
+        int startYear =  Integer.parseInt(start_date.substring(6, 8));
+        int currentYear = Integer.parseInt(current_date.substring(6, 8));
 
-        if (chosenYear > currentYear) return true;
-        else if (chosenYear < currentYear) return false;
+        if (startYear > currentYear) return true;
+        else if (startYear < currentYear) return false;
         else {
-            int chosenMonth = Integer.parseInt(chosenDate.substring(0, 2));
-            int currentMonth = Integer.parseInt(currentDate.substring(0, 2));
+            int startMonth = Integer.parseInt(start_date.substring(0, 2));
+            int currentMonth = Integer.parseInt(current_date.substring(0, 2));
 
-            if (chosenMonth > currentMonth) return true;
-            else if (chosenMonth < currentMonth) return false;
+            if (startMonth > currentMonth) return true;
+            else if (startMonth < currentMonth) return false;
             else {
-                int chosenDay = Integer.parseInt(chosenDate.substring(3, 5));
-                int currentDay = Integer.parseInt(currentDate.substring(3, 5));
+                int startDay = Integer.parseInt(start_date.substring(3, 5));
+                int currentDay = Integer.parseInt(current_date.substring(3, 5));
 
-                if (chosenDay >= currentDay) return true;
+                if (startDay >= currentDay) return true;
                 else return false;
             }
         }

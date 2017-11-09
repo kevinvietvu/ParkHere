@@ -16,7 +16,7 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
 
     private Button nextStep;
     private Bundle bundle;
-    private String time;
+    private String start_time;
 
     public static CreateListingStartTimeActivity instance = null;
 
@@ -45,26 +45,20 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
                     Toast.makeText(CreateListingStartTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();
                 } else {
                     String meridiem = "";
-                    /* checks if time should be AM or PM */
-                    if (h < 12) {
-                        /* if hour is before 12, set time to AM */
-                        meridiem = "AM";
-                    } else {
-                        /* if hour is after 12, set time to PM and convert to 12-hour clock */
-                        h = h % 12;
-                        meridiem = "PM";
-                    }
-
+                    if (h < 12) meridiem = "AM";
+                    else meridiem = "PM";
+                    /* converts to 12-hour time */
+                    h = h % 12;
                     /* changes 0:00 to 12:00 */
                     if (h == 0) { h = 12; }
 
                     String hour = String.format("%d", h);
                     String minute = String.format("%02d", m);
-                    time = hour + ":" + minute + " " + meridiem;
+                    start_time = hour + ":" + minute + " " + meridiem;
 
                     Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
                     intent.putExtras(bundle);
-                    intent.putExtra("start_time", time);
+                    intent.putExtra("start_time", start_time);
                     startActivity(intent);
                 }
             }
@@ -83,39 +77,39 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
         String formattedYear = String.format("%02d", year);
         String formattedHour = String.format("%02d", hour);
         String formattedMinute = String.format("%02d", minute);
-        String chosenDate = formattedMonth + "-" + formattedDay + "-" + formattedYear + " " + formattedHour + ":" + formattedMinute;
+        String start_date = formattedMonth + "-" + formattedDay + "-" + formattedYear + " " + formattedHour + ":" + formattedMinute;
 
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy HH:mm");
-        String currentDate = dateFormat.format(Calendar.getInstance().getTime());
+        String current_date = dateFormat.format(Calendar.getInstance().getTime());
 
-        int chosenYear =  Integer.parseInt(chosenDate.substring(6, 8));
-        int currentYear = Integer.parseInt(currentDate.substring(6, 8));
+        int startYear =  Integer.parseInt(start_date.substring(6, 8));
+        int currentYear = Integer.parseInt(current_date.substring(6, 8));
 
-        if (chosenYear > currentYear) return true;
-        else if (chosenYear < currentYear) return false;
+        if (startYear > currentYear) return true;
+        else if (startYear < currentYear) return false;
         else {
-            int chosenMonth = Integer.parseInt(chosenDate.substring(0, 2));
-            int currentMonth = Integer.parseInt(currentDate.substring(0, 2));
+            int startMonth = Integer.parseInt(start_date.substring(0, 2));
+            int currentMonth = Integer.parseInt(current_date.substring(0, 2));
 
-            if (chosenMonth > currentMonth) return true;
-            else if (chosenMonth < currentMonth) return false;
+            if (startMonth > currentMonth) return true;
+            else if (startMonth < currentMonth) return false;
             else {
-                int chosenDay = Integer.parseInt(chosenDate.substring(3, 5));
-                int currentDay = Integer.parseInt(currentDate.substring(3, 5));
+                int startDay = Integer.parseInt(start_date.substring(3, 5));
+                int currentDay = Integer.parseInt(current_date.substring(3, 5));
 
-                if (chosenDay > currentDay) return true;
-                else if (chosenDay < chosenDay) return false;
+                if (startDay > currentDay) return true;
+                else if (startDay < currentDay) return false;
                 else {
-                    int chosenHour =  Integer.parseInt(chosenDate.substring(9, 11));
-                    int currentHour = Integer.parseInt(currentDate.substring(9, 11));
+                    int startHour =  Integer.parseInt(start_date.substring(9, 11));
+                    int currentHour = Integer.parseInt(current_date.substring(9, 11));
 
-                    if (chosenHour > currentHour) return true;
-                    else if (chosenHour < currentHour) return false;
+                    if (startHour > currentHour) return true;
+                    else if (startHour < currentHour) return false;
                     else {
-                        int chosenMinute =  Integer.parseInt(chosenDate.substring(12, 14));
-                        int currentMinute = Integer.parseInt(currentDate.substring(12, 14));
+                        int startMinute =  Integer.parseInt(start_date.substring(12, 14));
+                        int currentMinute = Integer.parseInt(current_date.substring(12, 14));
 
-                        if (chosenMinute >= currentMinute) {
+                        if (startMinute >= currentMinute) {
                             return true;
                         } else {
                             return false;
