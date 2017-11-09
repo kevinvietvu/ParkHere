@@ -65,13 +65,11 @@ public class ProfileActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent mapIntent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
                 //}
-
             }
         });
 
@@ -128,4 +126,5 @@ public class ProfileActivity extends AppCompatActivity {
             auth.removeAuthStateListener(authListener);
         }
     }
+
 }
