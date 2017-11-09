@@ -30,6 +30,8 @@ public class SignupActivity extends AppCompatActivity {
     private EditText signupInputEmail, signupInputPassword;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
 
+    public static SignupActivity instance = null;
+
     private static boolean isEmailValid(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -42,6 +44,9 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        instance = this;
+
         auth = FirebaseAuth.getInstance();
 
         signupInputLayoutEmail = (TextInputLayout) findViewById(R.id.signup_input_layout_email);
@@ -151,5 +156,11 @@ public class SignupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }

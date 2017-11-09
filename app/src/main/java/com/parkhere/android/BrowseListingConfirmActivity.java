@@ -30,10 +30,13 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String end_date;
     private String end_time;
     private String address;
+    private String creator_id;
     private String card_number;
     private String cvv;
 
+    private DatabaseReference geoFireRef;
     private DatabaseReference userReservationRef;
+    private DatabaseReference locationRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private FirebaseAuth auth;
@@ -53,6 +56,8 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userReservationRef = database.getReference("Users");
+        locationRef = database.getReference("Locations");
+        geoFireRef = database.getReference("/geoFireListings");
 
         bundle = getIntent().getExtras();
 
@@ -74,6 +79,8 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
         end_time = bundle.getString("end_time");
 
+        creator_id = bundle.getString("creator_id");
+
         listingData.put("price", price);
 
         listingData.put("description" , description );
@@ -90,7 +97,7 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
         listingData.put("address" , address);
 
-        listingData.put("userID", user.getUid());
+        listingData.put("userID", creator_id);
 
 
         card_number_text_view = findViewById(R.id.card_number);
@@ -107,7 +114,10 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
                 userReservationRef.child(user.getUid()).child("Reservations").child(address).child("Details").setValue(listingData);
 
-                //need to implement listing remove in firebase
+                //might
+                locationRef.child(address).child("Users").child(creator_id).setValue(user.getUid());
+
+                geoFireRef.child(address).removeValue();
 
                 Intent intent = new Intent(BrowseListingConfirmActivity.this, BrowseListingFinalActivity.class);
                 startActivity(intent);

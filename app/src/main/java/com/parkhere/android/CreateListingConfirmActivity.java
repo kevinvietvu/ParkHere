@@ -143,7 +143,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                     Address addressToInsertInFirebase = ProfileActivity.getGeoLocationFromAddress(address, CreateListingConfirmActivity.this);
                     geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(),addressToInsertInFirebase.getLongitude()));
                     //setValue to user's name later
-                    locationsRef.child(address).child("Users").child(user.getUid()).setValue(true);
+                    locationsRef.child(address).child("Users").child(user.getUid()).setValue("");
                     userListingRef.child(user.getUid()).child("Listings").child(address).child("Details").setValue(listingData);
                 }
                 catch (Exception e) {
