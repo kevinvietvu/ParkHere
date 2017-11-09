@@ -14,11 +14,11 @@ import static junit.framework.Assert.*;
 
 public class StartTimeMustBeOnOrAfterCurrentDateAndTimeTest {
     @Test
-    public void testTimeCanStartAfterCurrentDateAndTime() {
-        assertTrue(CreateListingStartTimeActivity.startsOnOrAfterCurrentDateAndTime(12, 14, 17, 3, 20));
+    public void testStartTimeCanBeAfterCurrentDateAndTime() {
+        assertTrue(CreateListingStartTimeActivity.startsOnOrAfterCurrentDateAndTime(11, 20, 18, 19, 20));
     }
     @Test
-    public void testTimeCannotStartBeforeCurrentDateAndTime() {
+    public void testStartTimeCannotBeBeforeCurrentDateAndTime() {
         assertFalse(CreateListingStartTimeActivity.startsOnOrAfterCurrentDateAndTime(4, 14, 17, 3, 20));
     }
     @Test

@@ -44,17 +44,9 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
                 if (!startsOnOrAfterCurrentDateAndTime(month, day, year, h, m)) {
                     Toast.makeText(CreateListingStartTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();
                 } else {
-                    String meridiem = "";
-                    if (h < 12) meridiem = "AM";
-                    else meridiem = "PM";
-                    /* converts to 12-hour time */
-                    h = h % 12;
-                    /* changes 0:00 to 12:00 */
-                    if (h == 0) { h = 12; }
-
-                    String hour = String.format("%d", h);
+                    String hour = String.format("%02d", h);
                     String minute = String.format("%02d", m);
-                    start_time = hour + ":" + minute + " " + meridiem;
+                    start_time = hour + ":" + minute;
 
                     Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
                     intent.putExtras(bundle);

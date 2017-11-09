@@ -14,20 +14,34 @@ import static junit.framework.Assert.*;
 
 public class StartDateMustBeOnOrAfterCurrentDateTest {
     @Test
-    public void testStartDateCanBeAfterCurrentDate() {
-        assertTrue(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(12, 3, 18));
+    public void testStartDateCanBeAfterCurrentDay() {
+        assertTrue(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(11, 31, 17));
     }
     @Test
-    public void testStartDateCannotBeBeforeCurrentDate() {
-        assertFalse(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(2, 6, 16));
+    public void testStartDateCanBeAfterCurrentMonth() {
+        assertTrue(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(12, 22, 17));
+    }
+    @Test
+    public void testStartDateCanBeAfterCurrentYear() {
+        assertTrue(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(11, 20, 18));
+    }
+    @Test
+    public void testStartDateCannotBeBeforeCurrentDay() {
+        assertFalse(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(11, 8, 17));
+    }
+    @Test
+    public void testStartDateCannotBeBeforeCurrentMonth() {
+        assertFalse(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(10, 31, 17));
+    }
+    @Test
+    public void testStartDateCannotBeBeforeCurrentYear() {
+        assertFalse(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(11, 29, 16));
     }
     @Test
     public void testStartDateCanBeOnCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy");
-        String currentDate = dateFormat.format(Calendar.getInstance().getTime());
-        int month = Integer.parseInt(currentDate.substring(0, 2));
-        int day = Integer.parseInt(currentDate.substring(3, 5));
-        int year = Integer.parseInt(currentDate.substring(6, 8));
+        int month = Integer.parseInt(new SimpleDateFormat("MM").format(Calendar.getInstance().getTime()));
+        int day = Integer.parseInt(new SimpleDateFormat("dd").format(Calendar.getInstance().getTime()));
+        int year = Integer.parseInt(new SimpleDateFormat("yy").format(Calendar.getInstance().getTime()));
 
         assertTrue(CreateListingStartDateActivity.startsOnOrAfterCurrentDate(month, day, year));
     }

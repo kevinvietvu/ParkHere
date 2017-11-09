@@ -94,7 +94,15 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         listingData.put("startDate", start_date );
 
         start_time_text_view = findViewById(R.id.listing_start_time);
-        start_time = bundle.getString("start_time");
+        String t1 = bundle.getString("start_time");
+        int h1 = Integer.parseInt(t1.substring(0, 2));
+        int m1 = Integer.parseInt(t1.substring(3, 5));
+        String meridiem1;
+        if (h1 < 12) meridiem1 = "AM";
+        else meridiem1 = "PM";
+        h1 = h1 % 12;
+        if (h1 == 0) { h1 = 12; }
+        start_time = h1 + ":" + m1 + " " + meridiem1;
         start_time_text_view.setText(String.format("%s %s", "Start Time:", start_time));
 
         listingData.put("startTime", start_time );
@@ -106,7 +114,15 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         listingData.put("endDate", end_date );
 
         end_time_text_view = findViewById(R.id.listing_end_time);
-        end_time = bundle.getString("end_time");
+        String t2 = bundle.getString("end_time");
+        int h2 = Integer.parseInt(t2.substring(0, 2));
+        int m2 = Integer.parseInt(t2.substring(3, 5));
+        String meridiem2;
+        if (h2 < 12) meridiem2 = "AM";
+        else meridiem2 = "PM";
+        h2 = h2 % 12;
+        if (h2 == 0) { h2 = 12; }
+        start_time = h2 + ":" + m2 + " " + meridiem2;
         end_time_text_view.setText(String.format("%s %s", "End Time:", end_time));
 
         listingData.put("endTime" , end_time);

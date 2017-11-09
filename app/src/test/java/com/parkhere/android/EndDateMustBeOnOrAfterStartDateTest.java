@@ -11,15 +11,31 @@ import static junit.framework.Assert.assertTrue;
 
 public class EndDateMustBeOnOrAfterStartDateTest {
     @Test
-    public void testEndDateCanBeAfterStartDate() {
-        assertTrue(CreateListingEndDateActivity.endsOnOrAfterStartDate(12, 3, 18, 12, 4, 18));
+    public void testEndDateCanBeAfterStartDay() {
+        assertTrue(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 11, 6, 17));
     }
     @Test
-    public void testEndDateCannotBeBeforeStartDate() {
-        assertFalse(CreateListingEndDateActivity.endsOnOrAfterStartDate(8, 7, 17, 7, 9, 17));
+    public void testEndDateCanBeAfterStartMonth() {
+        assertTrue(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 12, 5, 17));
+    }
+    @Test
+    public void testEndDateCanBeAfterStartYear() {
+        assertTrue(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 11, 5, 18));
+    }
+    @Test
+    public void testEndDateCannotBeBeforeStartDay() {
+        assertFalse(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 11, 4, 17));
+    }
+    @Test
+    public void testEndDateCannotBeBeforeStartMonth() {
+        assertFalse(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 10, 5, 17));
+    }
+    @Test
+    public void testEndDateCannotBeBeforeStartYear() {
+        assertFalse(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 11, 5, 16));
     }
     @Test
     public void testEndDateCanBeOnStartDate() {
-        assertTrue(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 2, 17, 11, 2, 17));
+        assertTrue(CreateListingEndDateActivity.endsOnOrAfterStartDate(11, 5, 17, 11, 5, 17));
     }
 }
