@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedMarkerIsNull(selectedMarker))  {
+                if (selectedMarkerIsNull(selectedMarker) || selectedMarker.getTag() == null )  {
                     Toast.makeText(MainActivity.this, "Please Select a Listing",
                             Toast.LENGTH_LONG).show();
                 }
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity
         // Retrieve the data from the marker.
         selectedMarker = marker;
 
-        System.out.println(selectedMarker);
+        System.out.println("Test Marker: " + selectedMarker);
         /** Check if a click count was set, then display the click count.
          Integer clickCount = (Integer) marker.getTag();
          if (clickCount != null) {
