@@ -29,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText loginInputEmail, loginInputPassword;
     private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
 
+    public static LoginActivity instance = null;
+
     private static boolean isEmailValid(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -41,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        instance = this;
+
         auth = FirebaseAuth.getInstance();
 
         loginInputLayoutEmail = (TextInputLayout) findViewById(R.id.login_input_layout_email);
@@ -147,5 +152,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }

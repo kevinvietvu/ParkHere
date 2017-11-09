@@ -34,10 +34,14 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference geoFireRef = database.getReference("user/listings");
     private GeoFire geoFire = new GeoFire(geoFireRef);
 
+    public static ProfileActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        instance = this;
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -65,13 +69,11 @@ public class ProfileActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent mapIntent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
                 //}
-
             }
         });
 
@@ -127,5 +129,11 @@ public class ProfileActivity extends AppCompatActivity {
         if (authListener != null) {
             auth.removeAuthStateListener(authListener);
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }
