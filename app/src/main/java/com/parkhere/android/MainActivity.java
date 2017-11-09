@@ -70,17 +70,20 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                Listing selectedListing = (Listing) selectedMarker.getTag();
-                paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
-                paymentIntent.putExtra("price", selectedListing.getPrice());
-                paymentIntent.putExtra("description", selectedListing.getDescription());
-                paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
-                paymentIntent.putExtra("start_date",selectedListing.getStartDate());
-                paymentIntent.putExtra("start_time", selectedListing.getStartTime());
-                paymentIntent.putExtra("end_date", selectedListing.getEndDate());
-                paymentIntent.putExtra("end_time",selectedListing.getEndTime());
-
-                startActivity(paymentIntent);
+                if (selectedMarker.getTag() != null);
+                {
+                    Listing selectedListing = (Listing) selectedMarker.getTag();
+                    paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
+                    paymentIntent.putExtra("price", selectedListing.getPrice());
+                    paymentIntent.putExtra("description", selectedListing.getDescription());
+                    paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
+                    paymentIntent.putExtra("start_date", selectedListing.getStartDate());
+                    paymentIntent.putExtra("start_time", selectedListing.getStartTime());
+                    paymentIntent.putExtra("end_date", selectedListing.getEndDate());
+                    paymentIntent.putExtra("end_time", selectedListing.getEndTime());
+                    paymentIntent.putExtra("creator_id", selectedListing.getUserID());
+                    startActivity(paymentIntent);
+                }
             }
         });
 
@@ -117,9 +120,9 @@ public class MainActivity extends AppCompatActivity
 
         geoFireRef = database.getReference("/geoFireListings");
         geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 1000);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
 
-        this.markers = new HashMap<String, Marker>();
+        this.markers = new HashMap<>();
 
     }
 
