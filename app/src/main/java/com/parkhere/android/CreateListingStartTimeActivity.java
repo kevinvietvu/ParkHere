@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,33 +32,41 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePicker timePicker = findViewById(R.id.timePicker);
+                String date = bundle.getString("start_date");
+                int month = Integer.parseInt(date.substring(0, 2));
+                int day = Integer.parseInt(date.substring(3, 5));
+                int year = Integer.parseInt(date.substring(6, 8));
 
+                TimePicker timePicker = findViewById(R.id.timePicker);
                 int h = timePicker.getCurrentHour();
                 int m = timePicker.getCurrentMinute();
-                String meridiem = "";
 
-                /* checks if time should be AM or PM */
-                if (h < 12) {
-                    /* if hour is before 12, set time to AM */
-                    meridiem = "AM";
+                if (!startsOnOrAfterCurrentDateAndTime(month, day, year, h, m)) {
+                    Toast.makeText(CreateListingStartTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();
                 } else {
-                    /* if hour is after 12, set time to PM and convert to 12-hour clock */
-                    h = h % 12;
-                    meridiem = "PM";
+                    String meridiem = "";
+                    /* checks if time should be AM or PM */
+                    if (h < 12) {
+                        /* if hour is before 12, set time to AM */
+                        meridiem = "AM";
+                    } else {
+                        /* if hour is after 12, set time to PM and convert to 12-hour clock */
+                        h = h % 12;
+                        meridiem = "PM";
+                    }
+
+                    /* changes 0:00 to 12:00 */
+                    if (h == 0) { h = 12; }
+
+                    String hour = String.format("%d", h);
+                    String minute = String.format("%02d", m);
+                    time = hour + ":" + minute + " " + meridiem;
+
+                    Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
+                    intent.putExtras(bundle);
+                    intent.putExtra("start_time", time);
+                    startActivity(intent);
                 }
-
-                /* changes 0:00 to 12:00 */
-                if (h == 0) { h = 12; }
-
-                String hour = String.format("%d", h);
-                String minute = String.format("%02d", m);
-                time = hour + ":" + minute + " " + meridiem;
-
-                Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
-                intent.putExtras(bundle);
-                intent.putExtra("start_time", time);
-                startActivity(intent);
             }
         });
     }
@@ -68,8 +77,7 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
         instance = null;
     }
 
-    public boolean startsOnOrAfterCurrentDateAndTime(String month, String day, String year,
-                                                 String hour, String minute) {
+    public static boolean startsOnOrAfterCurrentDateAndTime(int month, int day, int year, int hour, int minute) {
         String formattedMonth = String.format("%02d", month);
         String formattedDay = String.format("%02d", day);
         String formattedYear = String.format("%02d", year);
@@ -80,32 +88,41 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy HH:mm");
         String currentDate = dateFormat.format(Calendar.getInstance().getTime());
 
-        int chosenYear =  Integer.parseInt(chosenDate.substring(7, 9));
-        int currentYear = Integer.parseInt(currentDate.substring(7, 9));
+        int chosenYear =  Integer.parseInt(chosenDate.substring(6, 8));
+        int currentYear = Integer.parseInt(currentDate.substring(6, 8));
 
-        if (chosenYear >= currentYear) {
+        if (chosenYear > currentYear) return true;
+        else if (chosenYear < currentYear) return false;
+        else {
             int chosenMonth = Integer.parseInt(chosenDate.substring(0, 2));
             int currentMonth = Integer.parseInt(currentDate.substring(0, 2));
 
-            if (chosenMonth >= currentMonth) {
-                int chosenDay = Integer.parseInt(chosenDate.substring(4, 6));
-                int currentDay = Integer.parseInt(currentDate.substring(4, 6));
+            if (chosenMonth > currentMonth) return true;
+            else if (chosenMonth < currentMonth) return false;
+            else {
+                int chosenDay = Integer.parseInt(chosenDate.substring(3, 5));
+                int currentDay = Integer.parseInt(currentDate.substring(3, 5));
 
-                if (chosenDay >= currentDay) {
+                if (chosenDay > currentDay) return true;
+                else if (chosenDay < chosenDay) return false;
+                else {
                     int chosenHour =  Integer.parseInt(chosenDate.substring(9, 11));
                     int currentHour = Integer.parseInt(currentDate.substring(9, 11));
 
-                    if (chosenHour >= currentHour) {
+                    if (chosenHour > currentHour) return true;
+                    else if (chosenHour < currentHour) return false;
+                    else {
                         int chosenMinute =  Integer.parseInt(chosenDate.substring(12, 14));
                         int currentMinute = Integer.parseInt(currentDate.substring(12, 14));
 
                         if (chosenMinute >= currentMinute) {
                             return true;
+                        } else {
+                            return false;
                         }
                     }
                 }
             }
         }
-        return false;
     }
 }
