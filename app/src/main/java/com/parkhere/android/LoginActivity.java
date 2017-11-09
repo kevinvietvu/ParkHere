@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = loginInputEmail.getText().toString().trim();
         if (email.isEmpty() || !isEmailValid(email)) {
 
-            loginInputLayoutEmail.setErrorEnabled(true);
+            loginInputLayoutEmail.setError("Enter a valid email.");
             loginInputEmail.setError(getString(R.string.err_msg_required));
             requestFocus(loginInputEmail);
             return false;
