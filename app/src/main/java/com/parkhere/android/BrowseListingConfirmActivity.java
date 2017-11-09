@@ -131,6 +131,3 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         instance = null;
     }
 }
-
-
-

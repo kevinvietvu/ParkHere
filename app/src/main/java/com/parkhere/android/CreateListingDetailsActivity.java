@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class CreateListingDetailsActivity extends AppCompatActivity {
 
@@ -17,7 +18,6 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     private String spot_type;
 
     public static CreateListingDetailsActivity instance = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +35,19 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                 description = ((EditText) findViewById(R.id.enter_spot_description)).getText().toString();
                 Spinner spinner = findViewById(R.id.choose_spot_type);
                 spot_type = spinner.getSelectedItem().toString();
+                if (!priceMustBeBetween1And999(price)) {
+                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter a price between 1 and 999", Toast.LENGTH_LONG).show();
+                } else if (!descriptionMustBeLessThan140Characters(description)) {
+                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter less than 140 characters for description", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(CreateListingDetailsActivity.this, CreateListingStartDateActivity.class);
+                    intent.putExtra("price", price);
+                    intent.putExtra("description", description);
+                    intent.putExtra("spot_type", spot_type);
+                    intent.putExtras(bundle);
 
-                Intent intent = new Intent(CreateListingDetailsActivity.this, CreateListingStartDateActivity.class);
-                intent.putExtra("price", price);
-                intent.putExtra("description", description);
-                intent.putExtra("spot_type", spot_type);
-                intent.putExtras(bundle);
-
-                startActivity(intent);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -54,16 +59,13 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     }
 
     public static boolean priceMustBeBetween1And999(Double price) {
-        if (price >= 1 && price <= 999)
-            return true;
-        else
-            return false;
+        if (price >= 1.0 && price <= 999.0) return true;
+        return false;
     }
 
     public static boolean descriptionMustBeLessThan140Characters(String description) {
-        if (description.length() <= 140)
-            return true;
-        else
-            return false;
+        if (description.length() <= 140) return true;
+        return false;
     }
+
 }
