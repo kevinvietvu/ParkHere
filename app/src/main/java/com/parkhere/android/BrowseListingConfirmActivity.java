@@ -114,7 +114,7 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
                 userReservationRef.child(user.getUid()).child("Reservations").child(address).child("Details").setValue(listingData);
 
-                //might
+                //might need to change database structure later
                 locationRef.child(address).child("Users").child(creator_id).setValue(user.getUid());
 
                 geoFireRef.child(address).removeValue();

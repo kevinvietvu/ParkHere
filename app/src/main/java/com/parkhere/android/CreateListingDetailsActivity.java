@@ -12,7 +12,7 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
 
     private Bundle bundle;
     private Button nextStep;
-    private String price;
+    private Double price;
     private String description;
     private String spot_type;
 
@@ -31,7 +31,7 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = ((EditText) findViewById(R.id.enter_price)).getText().toString();
+                price = Double.parseDouble(((EditText) findViewById(R.id.enter_price)).getText().toString());
                 description = ((EditText) findViewById(R.id.enter_spot_description)).getText().toString();
                 Spinner spinner = findViewById(R.id.choose_spot_type);
                 spot_type = spinner.getSelectedItem().toString();
@@ -51,5 +51,19 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         instance = null;
+    }
+
+    public static boolean priceMustBeBetween1And999(Double price) {
+        if (price >= 1 && price <= 999)
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean descriptionMustBeLessThan140Characters(String description) {
+        if (description.length() <= 140)
+            return true;
+        else
+            return false;
     }
 }

@@ -69,7 +69,7 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
             @Override
             public void onClick(View v) {
                 Intent addressIntent = new Intent(CreateListingMapsActivity.this, CreateListingDetailsActivity.class);
-                if (placeToSend == null) {
+                if (addressIsNull(placeToSend)) {
                     Toast.makeText(CreateListingMapsActivity.this, "Please Enter an Address",
                             Toast.LENGTH_LONG).show();
                 }
@@ -80,6 +80,13 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
             }
         });
 
+    }
+
+    public static boolean addressIsNull(String address) {
+        if (address == null || address.isEmpty())
+            return true;
+        else
+            return false;
     }
 
     /**

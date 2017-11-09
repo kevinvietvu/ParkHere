@@ -32,7 +32,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
     private TextView end_time_text_view;
     private TextView address_text_view;
     private Bundle bundle;
-    private String price;
+    private Double price;
     private String description;
     private String spot_type;
     private String start_date;
@@ -70,7 +70,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         bundle = getIntent().getExtras();
 
         price_text_view = findViewById((R.id.listing_price));
-        price = bundle.getString("price");
+        price = bundle.getDouble("price");
         price_text_view.setText(String.format("%s %s", "Price:", price));
 
         listingData.put("price", price);
