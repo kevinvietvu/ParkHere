@@ -70,11 +70,6 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
-
-        String[] listings = {"Mock Data","Not Implemented"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listings);
-        ListView listView = findViewById(R.id.list_view);
-        listView.setAdapter(adapter);
     }
 
     @Override

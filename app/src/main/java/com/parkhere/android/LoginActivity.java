@@ -31,11 +31,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public static LoginActivity instance = null;
 
-    private static boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    public static boolean isEmailValid(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        //return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return !TextUtils.isEmpty(email) && email.matches(emailPattern);
     }
 
-    private static boolean isPasswordValid(String password){
+    public static boolean isPasswordValid(String password) {
         return (password.length() >= 6);
     }
 
@@ -68,6 +70,14 @@ public class LoginActivity extends AppCompatActivity {
         btnLinkToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (instance != null) {
+                    try {
+                        LoginActivity.instance.finish();
+                    }
+                    catch (Exception e) {
+
+                    }
+                }
                 Intent intent = new Intent(com.parkhere.android.LoginActivity.this, SignupActivity.class);
                 startActivity(intent);
             }

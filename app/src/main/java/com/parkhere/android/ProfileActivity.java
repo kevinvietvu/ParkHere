@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity {
     private Button createListingButton;
@@ -73,7 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
         myListingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,12 +99,25 @@ public class ProfileActivity extends AppCompatActivity {
     public static Address getGeoLocationFromAddress(String address, Context context) throws IOException {
         Geocoder geocoder = new Geocoder(context);
         List<Address> addresses = geocoder.getFromLocationName(address, 1);
+        if (addresses == null || addresses.get(0) == null) {
+            Address nullAddress = new Address(Locale.getDefault());
+            nullAddress.setLatitude(0);
+            nullAddress.setLongitude(0);
+            return nullAddress;
+        }
+        else
         return addresses.get(0);
     }
-    //might have to use LatLong object instead
+
     public static Address getAddressFromGeoLocation(GeoLocation LatLong, Context context) throws IOException {
         Geocoder geocoder = new Geocoder(context);
         List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
+        if (addresses == null || addresses.get(0) == null) {
+            Address nullAddress = new Address(Locale.getDefault());
+            nullAddress.setAddressLine(0,"");
+            return nullAddress;
+        }
+        else
         return addresses.get(0);
     }
 

@@ -64,14 +64,17 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        browseButton = (Button) findViewById(R.id.btn_browse_listing);
+        browseButton = findViewById(R.id.btn_browse_listing);
 
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                if (selectedMarker.getTag() != null);
-                {
+                if (selectedMarkerIsNull(selectedMarker))  {
+                    Toast.makeText(MainActivity.this, "Please Select a Listing",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
                     Listing selectedListing = (Listing) selectedMarker.getTag();
                     paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
                     paymentIntent.putExtra("price", selectedListing.getPrice());
@@ -318,6 +321,12 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
+
+    public boolean selectedMarkerIsNull(Marker marker) {
+        if (marker == null) return true;
+        else return false;
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

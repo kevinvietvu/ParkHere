@@ -37,7 +37,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private static boolean isPasswordValid(String password){
-        return (password.length() >= 6);
+        return (password.length() >= 8);
     }
 
     @Override
@@ -71,6 +71,14 @@ public class SignupActivity extends AppCompatActivity {
         btnLinkToLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (instance != null) {
+                    try {
+                        SignupActivity.instance.finish();
+                    }
+                    catch (Exception e) {
+
+                    }
+                }
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
