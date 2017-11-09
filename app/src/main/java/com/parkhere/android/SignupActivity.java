@@ -125,7 +125,11 @@ public class SignupActivity extends AppCompatActivity {
 
                         } else {
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
-                            finish();
+                            if(LoginActivity.instance != null) {
+                                try {
+                                    LoginActivity.instance.finish();
+                                } catch (Exception e) {}
+                            }
                         }
                     }
                 });
