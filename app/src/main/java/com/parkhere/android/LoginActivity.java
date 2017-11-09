@@ -23,20 +23,35 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private static final String TAG = "LoginActivity";
+    public static LoginActivity instance = null;
     private Button btnLogin, btnLinkToSignUp;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private EditText loginInputEmail, loginInputPassword;
     private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
 
-    public static LoginActivity instance = null;
-
-    private static boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    public static boolean isEmailValid(String email) {
+        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        //return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return !TextUtils.isEmpty(email) && email.matches(emailPattern);
     }
 
-    private static boolean isPasswordValid(String password){
-        return (password.length() >= 6);
+    public static boolean isPasswordValid(String password){
+
+        if(password == null) return false;
+        if(password.length() < 8) return false;
+
+        boolean checkUpperCase = false;
+        boolean checkLowerCase = false;
+        boolean checkDigit = false;
+
+        for(char ch: password.toCharArray()){
+            if(Character.isUpperCase(ch)) checkUpperCase = true;
+            if(Character.isLowerCase(ch)) checkLowerCase = true;
+            if(Character.isDigit(ch)) checkDigit = true;
+        }
+        return (checkUpperCase && checkLowerCase && checkDigit);
     }
 
     @Override
@@ -119,7 +134,6 @@ public class LoginActivity extends AppCompatActivity {
         if (email.isEmpty() || !isEmailValid(email)) {
 
             loginInputLayoutEmail.setErrorEnabled(true);
-            loginInputLayoutEmail.setError(getString(R.string.err_msg_email));
             loginInputEmail.setError(getString(R.string.err_msg_required));
             requestFocus(loginInputEmail);
             return false;

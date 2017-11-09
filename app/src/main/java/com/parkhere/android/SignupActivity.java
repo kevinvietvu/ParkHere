@@ -24,20 +24,34 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity" ;
+    public static SignupActivity instance = null;
     private Button btnSignUp,btnLinkToLogIn;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private EditText signupInputEmail, signupInputPassword;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
 
-    public static SignupActivity instance = null;
-
-    private static boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    public static boolean isEmailValid(String email) {
+        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        //return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return !TextUtils.isEmpty(email) && email.matches(emailPattern);
     }
 
-    private static boolean isPasswordValid(String password){
-        return (password.length() >= 6);
+    public static boolean isPasswordValid(String password){
+        if(password == null) return false;
+        if(password.length() < 8) return false;
+
+        boolean checkUpperCase = false;
+        boolean checkLowerCase = false;
+        boolean checkDigit = false;
+
+        for(char ch: password.toCharArray()){
+            if(Character.isUpperCase(ch)) checkUpperCase = true;
+            if(Character.isLowerCase(ch)) checkLowerCase = true;
+            if(Character.isDigit(ch)) checkDigit = true;
+        }
+        return (checkUpperCase && checkLowerCase && checkDigit);
     }
 
     @Override
@@ -123,6 +137,7 @@ public class SignupActivity extends AppCompatActivity {
         if (email.isEmpty() || !isEmailValid(email)) {
 
             signupInputLayoutEmail.setErrorEnabled(true);
+            signupInputLayoutEmail.setError(getString(R.string.err_msg_email));
             signupInputLayoutEmail.setError(getString(R.string.err_msg_email));
             signupInputEmail.setError(getString(R.string.err_msg_required));
             requestFocus(signupInputEmail);
