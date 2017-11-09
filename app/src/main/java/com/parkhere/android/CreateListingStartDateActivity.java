@@ -34,20 +34,30 @@ public class CreateListingStartDateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DatePicker datePicker = findViewById(R.id.datePicker);
-                if (!startsOnOrAfterCurrentDate(datePicker.getMonth() + 1, datePicker.getDayOfMonth(), datePicker.getYear())) {
-                    Toast.makeText(CreateListingStartDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
-                } else {
-                    String month = String.format("%02d", datePicker.getMonth() + 1);
+                    String month = String.format("%02d", datePicker.getMonth());
                     String day = String.format("%02d", datePicker.getDayOfMonth());
                     String year = String.format("%02d", datePicker.getYear());
+                    int m = datePicker.getMonth();
+                    int d = datePicker.getDayOfMonth();
+                    int y = datePicker.getYear();
                     date = month + "-" + day + "-" + year;
-
+                DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy");
+                String currentDate = dateFormat.format(Calendar.getInstance().getTime());
+                //Toast.makeText(CreateListingStartDateActivity.this, x, Toast.LENGTH_LONG).show();
+                Boolean x = startsOnOrAfterCurrentDate(m, d, y);
+                Toast.makeText(CreateListingStartDateActivity.this, date + currentDate + x.toString(), Toast.LENGTH_LONG).show();
+               /* if (x){
                     Intent intent = new Intent(CreateListingStartDateActivity.this, CreateListingStartTimeActivity.class);
                     intent.putExtras(bundle);
                     intent.putExtra("start_date", date);
-
                     startActivity(intent);
-                }
+                    }
+                if (!x){
+                    Toast.makeText(CreateListingStartDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
+                }*/
+
+
+
             }
         });
     }
