@@ -109,7 +109,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
 
         end_date_text_view = findViewById(R.id.listing_end_date);
         end_date = bundle.getString("end_date");
-        end_date_text_view.setText(String.format("%s %s", "Start Time:", end_date));
+        end_date_text_view.setText(String.format("%s %s", "End Date:", end_date));
 
         listingData.put("endDate", end_date );
 
@@ -122,8 +122,9 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         else meridiem2 = "PM";
         h2 = h2 % 12;
         if (h2 == 0) { h2 = 12; }
-        start_time = h2 + ":" + m2 + " " + meridiem2;
+        end_time = h2 + ":" + m2 + " " + meridiem2;
         end_time_text_view.setText(String.format("%s %s", "End Time:", end_time));
+
 
         listingData.put("endTime" , end_time);
 
