@@ -58,6 +58,29 @@ public class MainActivityTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
     }
+
+    @Test
+    public void MainActivity_btn_rent_listing() {
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.btn_browse_listing), withText("Rent Listing"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.support.design.widget.CoordinatorLayout")),
+                                        1),
+                                1),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+    }
+
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 

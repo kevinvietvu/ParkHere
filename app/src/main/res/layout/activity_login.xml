@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
-            android:text="test@black.box"
             android:hint="Email" />
             <!--android:text="test@black.box"-->
     </android.support.design.widget.TextInputLayout>
@@ -35,7 +34,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
-            android:text="Blackb0x"
             android:hint="@string/hint_password" />
             <!--android:text="Blackb0x"-->
 
