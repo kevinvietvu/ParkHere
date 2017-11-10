@@ -17,20 +17,19 @@ public class addressIsNullTest {
 
 
     @Test
-    public void addressIsNullTestBad() throws Exception {
+    public void addressIsNullTestBadValidAddress() throws Exception {
         String bad = "1 Washington Square, San Jose";
         assertFalse(CreateListingMapsActivity.addressIsNull(bad));
-
     }
 
     @Test
-    public void addressIsNullTestGoodEmpty() throws Exception {
+    public void addressIsNullTestGoodEmptyAddress() throws Exception {
         String good = "";
         assertTrue(CreateListingMapsActivity.addressIsNull(good));
     }
 
     @Test
-    public void addressIsNullTestGoodNull() throws Exception {
+    public void addressIsNullTestGoodNullAddress() throws Exception {
         String good = null;
         assertTrue(CreateListingMapsActivity.addressIsNull(good));
     }
