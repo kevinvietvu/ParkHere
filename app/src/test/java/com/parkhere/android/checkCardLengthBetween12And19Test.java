@@ -15,6 +15,12 @@ import static org.junit.Assert.*;
 public class checkCardLengthBetween12And19Test {
 
     @Test
+    public void checkCardLengthTestBadEmpty() throws Exception {
+        String bad = "";
+        assertFalse(BrowseListingPaymentActivity.checkCardLengthBetween12And19(bad));
+    }
+
+    @Test
     public void checkCardLengthTestBadLessThan12() throws Exception {
         String bad = "12345678910";
         assertFalse(BrowseListingPaymentActivity.checkCardLengthBetween12And19(bad));
@@ -22,8 +28,8 @@ public class checkCardLengthBetween12And19Test {
 
     @Test
     public void checkCardLengthTestBadGreaterThan19() throws Exception {
-        String good = "51238596812834968681293581";
-        assertFalse(BrowseListingPaymentActivity.checkCardLengthBetween12And19(good));
+        String bad = "51238596812834968681293581";
+        assertFalse(BrowseListingPaymentActivity.checkCardLengthBetween12And19(bad));
     }
 
     @Test
@@ -31,5 +37,18 @@ public class checkCardLengthBetween12And19Test {
         String good = "5938139206842982";
         assertTrue(BrowseListingPaymentActivity.checkCardLengthBetween12And19(good));
     }
+
+    @Test
+    public void checkCardLengthTestGoodLength12() throws Exception {
+        String good = "123456789012";
+        assertTrue(BrowseListingPaymentActivity.checkCardLengthBetween12And19(good));
+    }
+
+    @Test
+    public void checkCardLengthTestGoodLength19() throws Exception {
+        String good = "1234567890123456789";
+        assertTrue(BrowseListingPaymentActivity.checkCardLengthBetween12And19(good));
+    }
+
 
 }
