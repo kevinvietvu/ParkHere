@@ -24,7 +24,7 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
 
     private GoogleMap mMap;
     private Button submitAddressButton;
-    private String placeToSend;
+    public static String placeToSend;
 
     public static CreateListingMapsActivity instance = null;
 

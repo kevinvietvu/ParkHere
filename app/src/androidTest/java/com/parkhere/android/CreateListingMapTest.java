@@ -38,7 +38,7 @@ public class CreateListingMapTest {
     public ActivityTestRule<CreateListingMapsActivity> mActivityTestRule = new ActivityTestRule<CreateListingMapsActivity>(CreateListingMapsActivity.class);
 
     @Test
-    public void MainActivity_hamburger() {
+    public void CreateMapActivity_map_exists() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -56,34 +56,27 @@ public class CreateListingMapTest {
                                 2),
                         isDisplayed()));
         frameLayout.check(matches(isDisplayed()));
-
-        ViewInteraction button = onView(
-                allOf(withId(R.id.address_submit_btn), withText("Submit"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        button.perform(click());
-
-        ViewInteraction editText2 = onView(
-                allOf(withId(R.id.place_autocomplete_search_input), withText("Quimby Road"),
-                        childAtPosition(
-                                allOf(withId(R.id.place_autocomplete_fragment),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        editText2.perform(click());
-
+    }
+    @Test
+    public void CreateMapActivity_submit_clickable() {
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
 
+            ViewInteraction button = onView(
+                    allOf(withId(R.id.address_submit_btn), withText("Submit"),
+                            childAtPosition(
+                                    childAtPosition(
+                                            withId(android.R.id.content),
+                                            0),
+                                    1),
+                            isDisplayed()));
+            button.perform(click());
+        }
     }
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
