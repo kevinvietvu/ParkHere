@@ -61,5 +61,6 @@ public class CreateListingFinalActivity extends AppCompatActivity {
                 CreateListingEndTimeActivity.instance.finish();
             } catch (Exception e) {}
         }
+
     }
 }

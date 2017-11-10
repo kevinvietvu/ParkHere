@@ -32,7 +32,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
     private TextView end_time_text_view;
     private TextView address_text_view;
     private Bundle bundle;
-    private String price;
+    private Double price;
     private String description;
     private String spot_type;
     private String start_date;
@@ -70,7 +70,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         bundle = getIntent().getExtras();
 
         price_text_view = findViewById((R.id.listing_price));
-        price = bundle.getString("price");
+        price = bundle.getDouble("price");
         price_text_view.setText(String.format("%s %s", "Price:", price));
 
         listingData.put("price", price);
@@ -94,20 +94,37 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         listingData.put("startDate", start_date );
 
         start_time_text_view = findViewById(R.id.listing_start_time);
-        start_time = bundle.getString("start_time");
+        String t1 = bundle.getString("start_time");
+        int h1 = Integer.parseInt(t1.substring(0, 2));
+        int m1 = Integer.parseInt(t1.substring(3, 5));
+        String meridiem1;
+        if (h1 < 12) meridiem1 = "AM";
+        else meridiem1 = "PM";
+        h1 = h1 % 12;
+        if (h1 == 0) { h1 = 12; }
+        start_time = h1 + ":" + m1 + " " + meridiem1;
         start_time_text_view.setText(String.format("%s %s", "Start Time:", start_time));
 
         listingData.put("startTime", start_time );
 
         end_date_text_view = findViewById(R.id.listing_end_date);
         end_date = bundle.getString("end_date");
-        end_date_text_view.setText(String.format("%s %s", "Start Time:", end_date));
+        end_date_text_view.setText(String.format("%s %s", "End Date:", end_date));
 
         listingData.put("endDate", end_date );
 
         end_time_text_view = findViewById(R.id.listing_end_time);
-        end_time = bundle.getString("end_time");
+        String t2 = bundle.getString("end_time");
+        int h2 = Integer.parseInt(t2.substring(0, 2));
+        int m2 = Integer.parseInt(t2.substring(3, 5));
+        String meridiem2;
+        if (h2 < 12) meridiem2 = "AM";
+        else meridiem2 = "PM";
+        h2 = h2 % 12;
+        if (h2 == 0) { h2 = 12; }
+        end_time = h2 + ":" + m2 + " " + meridiem2;
         end_time_text_view.setText(String.format("%s %s", "End Time:", end_time));
+
 
         listingData.put("endTime" , end_time);
 
@@ -116,6 +133,8 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         address_text_view.setText(String.format("%s %s", "Listing Address:", address));
 
         listingData.put("address" , address);
+
+        listingData.put("userID", user.getUid());
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +150,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                 System.out.println("end time: " + end_time);
                 */
 
-                 /**
+                /**
                  locationsRef.child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Users").child("Nelson's ID").setValue(true);
                  userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
                  */
@@ -141,7 +160,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                     Address addressToInsertInFirebase = ProfileActivity.getGeoLocationFromAddress(address, CreateListingConfirmActivity.this);
                     geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(),addressToInsertInFirebase.getLongitude()));
                     //setValue to user's name later
-                    locationsRef.child(address).child("Users").child(user.getUid()).setValue(true);
+                    locationsRef.child(address).child("Users").child(user.getUid()).setValue("");
                     userListingRef.child(user.getUid()).child("Listings").child(address).child("Details").setValue(listingData);
                 }
                 catch (Exception e) {
