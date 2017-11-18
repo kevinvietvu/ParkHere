@@ -31,24 +31,31 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = Double.parseDouble(((EditText) findViewById(R.id.enter_price)).getText().toString());
-                description = ((EditText) findViewById(R.id.enter_spot_description)).getText().toString();
-                Spinner spinner = findViewById(R.id.choose_spot_type);
-                spot_type = spinner.getSelectedItem().toString();
-                if (!priceIsNotNull(price)) {
-                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
-                } else if (!priceMustBeBetween1And999(price)) {
-                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter a price between 1 and 999", Toast.LENGTH_LONG).show();
-                } else if (!descriptionMustBeLessThan140Characters(description)) {
-                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter less than 140 characters for description", Toast.LENGTH_LONG).show();
-                } else {
-                    Intent intent = new Intent(CreateListingDetailsActivity.this, CreateListingStartDateActivity.class);
-                    intent.putExtra("price", price);
-                    intent.putExtra("description", description);
-                    intent.putExtra("spot_type", spot_type);
-                    intent.putExtras(bundle);
 
-                    startActivity(intent);
+                String test = ((EditText) findViewById(R.id.enter_price)).getText().toString();
+                if (test.isEmpty()) {
+                    Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    price = Double.parseDouble(((EditText) findViewById(R.id.enter_price)).getText().toString());
+                    description = ((EditText) findViewById(R.id.enter_spot_description)).getText().toString();
+                    Spinner spinner = findViewById(R.id.choose_spot_type);
+                    spot_type = spinner.getSelectedItem().toString();
+                    if (!priceIsNotNull(price)) {
+                        Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
+                    } else if (!priceMustBeBetween1And999(price)) {
+                        Toast.makeText(CreateListingDetailsActivity.this, "Please enter a price between 1 and 999", Toast.LENGTH_LONG).show();
+                    } else if (!descriptionMustBeLessThan140Characters(description)) {
+                        Toast.makeText(CreateListingDetailsActivity.this, "Please enter less than 140 characters for description", Toast.LENGTH_LONG).show();
+                    } else {
+                        Intent intent = new Intent(CreateListingDetailsActivity.this, CreateListingStartDateActivity.class);
+                        intent.putExtra("price", price);
+                        intent.putExtra("description", description);
+                        intent.putExtra("spot_type", spot_type);
+                        intent.putExtras(bundle);
+
+                        startActivity(intent);
+                    }
                 }
             }
         });

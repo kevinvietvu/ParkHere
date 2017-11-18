@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -62,16 +63,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        //getActionBar().hide();
         setContentView(R.layout.activity_main);
+        //getActionBar().show();
 
         browseButton = findViewById(R.id.btn_browse_listing);
 
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                if (selectedMarker.getTag() != null);
-                {
+                if (selectedMarkerIsNull(selectedMarker) || selectedMarker.getTag() == null )  {
+                    Toast.makeText(MainActivity.this, "Please Select a Listing",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
                     Listing selectedListing = (Listing) selectedMarker.getTag();
                     paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
                     paymentIntent.putExtra("price", selectedListing.getPrice());
@@ -257,7 +264,7 @@ public class MainActivity extends AppCompatActivity
         // Retrieve the data from the marker.
         selectedMarker = marker;
 
-        System.out.println(selectedMarker);
+        System.out.println("Test Marker: " + selectedMarker);
         /** Check if a click count was set, then display the click count.
          Integer clickCount = (Integer) marker.getTag();
          if (clickCount != null) {
@@ -318,6 +325,12 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
+
+    public boolean selectedMarkerIsNull(Marker marker) {
+        if (marker == null) return true;
+        else return false;
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

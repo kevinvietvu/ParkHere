@@ -14,7 +14,7 @@ public class Listing {
     public String description;
     public String endDate;
     public String endTime;
-    public String price;
+    public Double price;
     public String spotType;
     public String startDate;
     public String startTime;
@@ -38,7 +38,7 @@ public class Listing {
         return endTime;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
