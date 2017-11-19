@@ -19,23 +19,25 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity" ;
     public static SignupActivity instance = null;
-    private Button btnSignUp,btnLinkToLogIn;
+    private Button btnSignUp, btnLinkToLogIn;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private EditText signupInputEmail, signupInputPassword;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
 
+
     public static boolean isEmailValid(String email) {
-        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        //return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        return !TextUtils.isEmpty(email) && email.matches(emailPattern);
+        //String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+        //        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        //return !TextUtils.isEmpty(email) && email.matches(emailPattern);
     }
 
     public static boolean isPasswordValid(String password){
@@ -95,7 +97,6 @@ public class SignupActivity extends AppCompatActivity {
      * Validating form
      */
     private void submitForm() {
-
         String email = signupInputEmail.getText().toString().trim();
         String password = signupInputPassword.getText().toString().trim();
 
@@ -105,6 +106,9 @@ public class SignupActivity extends AppCompatActivity {
         if(!checkPassword()) {
             return;
         }
+
+        findViewById(R.id.btn_signup).setEnabled(false);
+
         signupInputLayoutEmail.setErrorEnabled(false);
         signupInputLayoutPassword.setErrorEnabled(false);
 
@@ -114,17 +118,20 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
                         Log.d(TAG,"createUserWithEmail:onComplete:" + task.isSuccessful());
                         progressBar.setVisibility(View.GONE);
                         // If sign in fails, Log the message to the LogCat. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
 
+
                         if (!task.isSuccessful()) {
                             Log.d(TAG,"Authentication failed." + task.getException());
 
                         } else {
-                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                            sendEmailVerification();
+                            startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                             if(LoginActivity.instance != null) {
                                 try {
                                     LoginActivity.instance.finish();
@@ -135,6 +142,7 @@ public class SignupActivity extends AppCompatActivity {
                 });
         Toast.makeText(getApplicationContext(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
     }
+
 
     private boolean checkEmail() {
         String email = signupInputEmail.getText().toString().trim();
@@ -147,9 +155,44 @@ public class SignupActivity extends AppCompatActivity {
             requestFocus(signupInputEmail);
             return false;
         }
+
         signupInputLayoutEmail.setErrorEnabled(false);
         return true;
     }
+
+
+    //Send Email Verification
+    public void sendEmailVerification() {
+        final FirebaseUser user = auth.getCurrentUser();
+
+        // [START send_email_verification]
+            user.sendEmailVerification()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // [START_EXCLUDE]
+                            // Re-enable button
+                            findViewById(R.id.btn_signup).setEnabled(true);
+
+                            if (task.isSuccessful()) {
+                                Toast.makeText(SignupActivity.this,
+                                        "Verification email sent to " + user.getEmail(),
+                                        Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Log.e(TAG, "sendEmailVerification", task.getException());
+                                Toast.makeText(SignupActivity.this,
+                                        "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            // [END_EXCLUDE]
+                        }
+                    });
+
+
+        // [END send_email_verification]
+    }
+
 
     private boolean checkPassword() {
 
@@ -170,6 +213,8 @@ public class SignupActivity extends AppCompatActivity {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
+
+
 
     @Override
     protected void onResume() {
