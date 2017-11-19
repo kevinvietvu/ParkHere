@@ -41,7 +41,8 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GeoQueryEventListener, GoogleMap.OnMarkerClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GeoQueryEventListener, GoogleMap.OnMarkerClickListener
+{
 
     private GoogleMap mMap;
     private FirebaseAuth auth;
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity
     private Map<String,Marker> markers;
     private FirebaseUser user;
 
-    private String userKey;
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
     private Marker selectedMarker;
@@ -73,23 +73,33 @@ public class MainActivity extends AppCompatActivity
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedMarkerIsNull(selectedMarker) || selectedMarker.getTag() == null )  {
+                if (selectedMarkerIsNull(selectedMarker))  {
                     Toast.makeText(MainActivity.this, "Please Select a Listing",
                             Toast.LENGTH_LONG).show();
                 }
+                else if (selectedMarker.getTag() == null ) {
+                    Toast.makeText(MainActivity.this, "TAG PLEASE",
+                            Toast.LENGTH_LONG).show();
+                }
                 else {
-                    Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
                     Listing selectedListing = (Listing) selectedMarker.getTag();
-                    paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
-                    paymentIntent.putExtra("price", selectedListing.getPrice());
-                    paymentIntent.putExtra("description", selectedListing.getDescription());
-                    paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
-                    paymentIntent.putExtra("start_date", selectedListing.getStartDate());
-                    paymentIntent.putExtra("start_time", selectedListing.getStartTime());
-                    paymentIntent.putExtra("end_date", selectedListing.getEndDate());
-                    paymentIntent.putExtra("end_time", selectedListing.getEndTime());
-                    paymentIntent.putExtra("creator_id", selectedListing.getUserID());
-                    startActivity(paymentIntent);
+                    if (selectedListing.getUserID().equals(user.getUid())) {
+                        Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                        paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
+                        paymentIntent.putExtra("price", selectedListing.getPrice());
+                        paymentIntent.putExtra("description", selectedListing.getDescription());
+                        paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
+                        paymentIntent.putExtra("start_date", selectedListing.getStartDate());
+                        paymentIntent.putExtra("start_time", selectedListing.getStartTime());
+                        paymentIntent.putExtra("end_date", selectedListing.getEndDate());
+                        paymentIntent.putExtra("end_time", selectedListing.getEndTime());
+                        paymentIntent.putExtra("creator_id", selectedListing.getUserID());
+                        startActivity(paymentIntent);
+                    }
                 }
             }
         });
@@ -99,15 +109,19 @@ public class MainActivity extends AppCompatActivity
 
         user = auth.getCurrentUser();
 
+        //Setting up database references
+        userListingRef = database.getReference("Users");
+        locationsRef = database.getReference("Locations");
+
+        geoFireRef = database.getReference("/geoFireListings");
+        geoFire = new GeoFire(geoFireRef);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
+        this.markers = new HashMap<>();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
-
-
-        //Setting up database references
-        userListingRef = database.getReference("Users");
-        locationsRef = database.getReference("Locations");
 
         /**
          * Nav Menu
@@ -125,11 +139,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        geoFireRef = database.getReference("/geoFireListings");
-        geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
-
-        this.markers = new HashMap<>();
 
     }
 
@@ -164,7 +173,11 @@ public class MainActivity extends AppCompatActivity
         });
 
         mMap.setOnMarkerClickListener(this);
+
+        mMap.setInfoWindowAdapter(new InfoWindowAdapter(this));
+
     }
+
 
     @Override
     protected void onStop() {
@@ -194,36 +207,40 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
-                    userKey = d.getKey();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-        userListingRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
-                    //CREATE INFO WINDOW, ADDED POST != null
-                    if (post != null) {
-                        markerDetails = post.toString();
-                        marker.setSnippet(markerDetails);
-                        //Tag is an object associated with the marker
-                        marker.setTag(post);
+                    final String userKey = d.getKey();
+                    if (userKey != null) {
+                        userListingRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
+                                    //CREATE INFO WINDOW, ADDED POST != null
+                                    if (post != null) {
+                                        markerDetails = post.toString();
+                                        marker.setSnippet(markerDetails);
+                                        //Tag is an object associated with the marker
+                                        marker.setTag(post);
+                                    }
+                                } else {
+                                    System.out.println("userListing doesn't exist");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError firebaseError) {
+                                System.out.println("The read failed: " + firebaseError.getMessage());
+                            }
+                        });
                     }
                 }
-                else {
-                    System.out.println("userListing doesn't exist");
-                }
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+
         this.markers.put(key, marker);
     }
 
@@ -265,16 +282,6 @@ public class MainActivity extends AppCompatActivity
         selectedMarker = marker;
 
         System.out.println("Test Marker: " + selectedMarker);
-        /** Check if a click count was set, then display the click count.
-         Integer clickCount = (Integer) marker.getTag();
-         if (clickCount != null) {
-         marker.setTag(clickCount);
-         clickCount = clickCount + 1;
-         Toast.makeText(this,
-         marker.getTitle() +
-         " has been clicked " + clickCount + " times.",
-         Toast.LENGTH_SHORT).show();
-         } */
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
