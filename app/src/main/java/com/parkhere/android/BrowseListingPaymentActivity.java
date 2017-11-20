@@ -14,6 +14,10 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private Bundle bundle;
     public String card_number;
     public String cvv;
+    public String vehicle_make;
+    public String vehicle_model;
+    public String vehicle_color;
+    public String license_plate_number;
 
     public static BrowseListingPaymentActivity instance = null;
 
@@ -31,21 +35,35 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
             public void onClick(View v) {
                 card_number = ((EditText) findViewById(R.id.enter_card_number)).getText().toString();
                 cvv = ((EditText) findViewById(R.id.enter_cvv)).getText().toString();
+                vehicle_make = ((EditText) findViewById(R.id.enter_vehicle_make)).getText().toString();
+                vehicle_model = ((EditText) findViewById(R.id.enter_vehicle_model)).getText().toString();
+                vehicle_color = ((EditText) findViewById(R.id.enter_vehicle_color)).getText().toString();
+                license_plate_number = ((EditText) findViewById(R.id.enter_license_plate_number)).getText().toString();
 
                 if (!checkCardLengthBetween12And19(card_number)) {
                     Toast.makeText(BrowseListingPaymentActivity.this, "Card Length must be between 12 and 19 digits",
                             Toast.LENGTH_LONG).show();
-                }
-                else if (!checkCVVLengthIs3(cvv)) {
+                } else if (!checkCVVLengthIs3(cvv)) {
                     Toast.makeText(BrowseListingPaymentActivity.this, "CVV must be 3 digits",
                             Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else if (!vehicleInfoIsNotNull(vehicle_make)
+                        || !vehicleInfoIsNotNull(vehicle_model)
+                        || !vehicleInfoIsNotNull(vehicle_color)) {
+                    Toast.makeText(BrowseListingPaymentActivity.this, "Please enter vehicle information",
+                            Toast.LENGTH_LONG).show();
+                } else if (!checkIfLicensePlateNumberIsBetween1And7(license_plate_number)) {
+                    Toast.makeText(BrowseListingPaymentActivity.this, "Please enter a valid license plate number",
+                            Toast.LENGTH_LONG).show();
+                } else {
                     Intent intent = new Intent(BrowseListingPaymentActivity.this, BrowseListingConfirmActivity.class);
 
                     intent.putExtras(bundle);
                     intent.putExtra("card_number", card_number);
                     intent.putExtra("cvv", cvv);
+                    intent.putExtra("car_make", vehicle_make);
+                    intent.putExtra("car_model", vehicle_model);
+                    intent.putExtra("car_color", vehicle_color);
+                    intent.putExtra("license_plate_number", license_plate_number);
                     startActivity(intent);
                 }
             }
@@ -64,6 +82,16 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
             return true;
         else
             return false;
+    }
+
+    public static boolean vehicleInfoIsNotNull(Object o) {
+        if (o != null) return true;
+        else return false;
+    }
+
+    public static boolean checkIfLicensePlateNumberIsBetween1And7(String license_plate_number) {
+        if (license_plate_number.length() >= 1 && license_plate_number.length() <= 7) return true;
+        else return false;
     }
 
     @Override

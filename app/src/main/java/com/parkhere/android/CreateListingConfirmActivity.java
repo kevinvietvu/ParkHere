@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -157,7 +156,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
 
                 try {
 
-                    Address addressToInsertInFirebase = ProfileActivity.getGeoLocationFromAddress(address, CreateListingConfirmActivity.this);
+                    Address addressToInsertInFirebase = ManageListingsActivity.getGeoLocationFromAddress(address, CreateListingConfirmActivity.this);
                     geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(),addressToInsertInFirebase.getLongitude()));
                     //setValue to user's name later
                     locationsRef.child(address).child("Users").child(user.getUid()).setValue("");

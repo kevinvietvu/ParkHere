@@ -45,6 +45,10 @@
     <!-- Strings related to browse listing -->
     <string name="enter_card_number">Enter Card Number</string>
     <string name="enter_cvv">Enter CVV</string>
+    <string name="enter_make">Enter Vehicle Make</string>
+    <string name="enter_model">Enter Vehicle Model</string>
+    <string name="enter_color">Enter Vehicle Color</string>
+    <string name="enter_license_plate_number">Enter License Plate</string>
     <string name="card_number">Card Number</string>
     <string name="purchase_listing_confirmed">Listing has been purchased!</string>
     <string name="cvv">CVV</string>
@@ -58,6 +62,15 @@
 
     <!-- Strings related to view listings or reservations -->
     <string name="btn_my_listing">My Listings</string>
+    <string name="user_listings_heading">My Listings</string>
     <string name="btn_my_reservations">My Reservations</string>
+    <string name="user_reservations_heading">My Reservations</string>
+
+    <!-- Strings related to profile or review -->
+    <string name="write_review_heading">Write a Review</string>
+    <string name="enter_review">Enter Review</string>
+    <string name="btn_submit">Submit</string>
+    <string name="write_review_confirmed">Review has been submitted!</string>
+
 
 </resources>
