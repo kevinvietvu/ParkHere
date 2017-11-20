@@ -364,14 +364,24 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_edit_email) {
             // RICKY ADD YOUR THINGS HERE2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Intent intent = new Intent(MainActivity.this, ChangeEmailActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_change_password) {
             // RICKY ADD YOUR THINGS HERE3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_phone) {
             // RICKY ADD YOUR THINGS HERE4 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Intent intent = new Intent(MainActivity.this, PhoneNumberActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_payment_method) {
+            Intent intent = new Intent(MainActivity.this, PaymentMethodActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_legal) {
 
+            Intent intent = new Intent(MainActivity.this, LegalActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
