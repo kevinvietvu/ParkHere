@@ -156,7 +156,7 @@ public class TestFirebaseActivity extends AppCompatActivity {
                 listingData.put("endTime", "4");
                 listingData.put("address" , "15564 Calgary St, San Leandro, CA 94579, USA");
 
-                userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
+                userListingRef.child("Kevin's ID").child("Profile").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
 
             }
         });

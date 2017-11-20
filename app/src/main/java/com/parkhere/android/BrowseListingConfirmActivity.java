@@ -21,6 +21,10 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private TextView listing_address_text_view;
     private TextView card_number_text_view;
     private TextView cvv_text_view;
+    private TextView vehicle_make_text_view;
+    private TextView vehicle_model_text_view;
+    private TextView vehicle_color_text_view;
+    private TextView license_plate_number_text_view;
     private Bundle bundle;
     private String price;
     private String description;
@@ -31,6 +35,10 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String end_time;
     private String address;
     private String creator_id;
+    private String vehicle_make;
+    private String vehicle_model;
+    private String vehicle_color;
+    private String license_plate_number;
     private String card_number;
     private String cvv;
 
@@ -107,6 +115,23 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         cvv_text_view = findViewById(R.id.cvv);
         cvv = bundle.getString("cvv");
         cvv_text_view.setText(String.format("%s %s", "CVV:", cvv));
+
+        vehicle_make_text_view = findViewById(R.id.vehicle_make);
+        vehicle_make = bundle.getString("vehicle_make");
+        vehicle_make_text_view.setText(String.format("%s %s", "Make:", vehicle_make));
+
+        vehicle_model_text_view = findViewById(R.id.vehicle_model);
+        vehicle_model = bundle.getString("vehicle_model");
+        vehicle_model_text_view.setText(String.format("%s %s", "Model:", vehicle_model));
+
+        vehicle_color_text_view = findViewById(R.id.vehicle_color);
+        vehicle_color = bundle.getString("vehicle_color");
+        vehicle_color_text_view.setText(String.format("%s %s", "Color:", vehicle_color));
+
+        license_plate_number_text_view = findViewById(R.id.license_plate_number);
+        license_plate_number = bundle.getString("license_plate_number");
+        license_plate_number_text_view.setText(String.format("%s %s", "License Plate:", license_plate_number));
+
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override

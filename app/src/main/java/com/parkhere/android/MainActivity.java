@@ -401,13 +401,17 @@ public class MainActivity extends AppCompatActivity
             finish();
 
         } else if (id == R.id.nav_profile) {
-
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            startActivity(intent);
             //finish();
         }
         else if (id == R.id.nav_logout) {
             signOutButton();
             finish();
-
+        }
+        else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_manage_listings) {
             Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
@@ -415,15 +419,20 @@ public class MainActivity extends AppCompatActivity
             //finish();
         }
         else if (id == R.id.nav_change_password) {
-
+            Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_email) {
-
+            Intent intent = new Intent(MainActivity.this, ChangeEmailActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_phone) {
-
+            Intent intent = new Intent(MainActivity.this, PhoneNumberActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_payment_method) {
-
+            Intent intent = new Intent(MainActivity.this, PaymentMethodActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_legal) {
-
+            Intent intent = new Intent(MainActivity.this, LegalActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

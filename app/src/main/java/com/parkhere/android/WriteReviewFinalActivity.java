@@ -1,19 +1,18 @@
 package com.parkhere.android;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class BrowseListingFinalActivity extends AppCompatActivity {
+public class WriteReviewFinalActivity extends AppCompatActivity {
 
     private Button okay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse_listing_final);
+        setContentView(R.layout.activity_write_review_final);
         okay = findViewById(R.id.okay_button);
 
         okay.setOnClickListener(new View.OnClickListener() {
@@ -23,14 +22,9 @@ public class BrowseListingFinalActivity extends AppCompatActivity {
             }
         });
 
-        if(BrowseListingPaymentActivity.instance != null) {
+        if(WriteReviewDetailsActivity.instance != null) {
             try {
-                BrowseListingPaymentActivity.instance.finish();
-            } catch (Exception e) {}
-        }
-        if(BrowseListingConfirmActivity.instance != null) {
-            try {
-                BrowseListingConfirmActivity.instance.finish();
+                WriteReviewDetailsActivity.instance.finish();
             } catch (Exception e) {}
         }
     }
