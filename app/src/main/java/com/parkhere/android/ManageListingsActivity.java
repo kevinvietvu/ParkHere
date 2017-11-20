@@ -35,6 +35,36 @@ public class ManageListingsActivity extends AppCompatActivity {
     private DatabaseReference geoFireRef = database.getReference("user/listings");
     private GeoFire geoFire = new GeoFire(geoFireRef);
 
+    /**
+     * User Activity
+     */
+
+    //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
+    public static Address getGeoLocationFromAddress(String address, Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = geocoder.getFromLocationName(address, 1);
+        if (addresses == null || addresses.get(0) == null) {
+            Address nullAddress = new Address(Locale.getDefault());
+            nullAddress.setLatitude(0);
+            nullAddress.setLongitude(0);
+            return nullAddress;
+        }
+        else
+        return addresses.get(0);
+    }
+
+    public static Address getAddressFromGeoLocation(GeoLocation LatLong, Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
+        if (addresses == null || addresses.get(0) == null) {
+            Address nullAddress = new Address(Locale.getDefault());
+            nullAddress.setAddressLine(0,"");
+            return nullAddress;
+        }
+        else
+        return addresses.get(0);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,36 +119,6 @@ public class ManageListingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    /**
-     * User Activity
-     */
-
-    //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public static Address getGeoLocationFromAddress(String address, Context context) throws IOException {
-        Geocoder geocoder = new Geocoder(context);
-        List<Address> addresses = geocoder.getFromLocationName(address, 1);
-        if (addresses == null || addresses.get(0) == null) {
-            Address nullAddress = new Address(Locale.getDefault());
-            nullAddress.setLatitude(0);
-            nullAddress.setLongitude(0);
-            return nullAddress;
-        }
-        else
-        return addresses.get(0);
-    }
-
-    public static Address getAddressFromGeoLocation(GeoLocation LatLong, Context context) throws IOException {
-        Geocoder geocoder = new Geocoder(context);
-        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
-        if (addresses == null || addresses.get(0) == null) {
-            Address nullAddress = new Address(Locale.getDefault());
-            nullAddress.setAddressLine(0,"");
-            return nullAddress;
-        }
-        else
-        return addresses.get(0);
     }
 
     @Override
