@@ -24,7 +24,7 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
-        setContentView(R.layout.activity_create_start_time);
+        setContentView(R.layout.activity_create_listing_start_time);
         nextStep = findViewById(R.id.next_step);
 
         bundle = getIntent().getExtras();

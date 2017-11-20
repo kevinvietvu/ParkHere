@@ -52,7 +52,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ManageListingsActivity" />
         <activity android:name=".CreateListingEndDateActivity" />
         <activity android:name=".CreateListingEndTimeActivity" />
         <activity android:name=".CreateListingStartDateActivity" />
@@ -66,6 +66,7 @@
         <activity android:name=".TestFirebaseActivity" />
         <activity android:name=".ViewUserListingsActivity" />
         <activity android:name=".ViewUserReservationsActivity" />
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>

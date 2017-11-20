@@ -8,12 +8,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -350,26 +348,23 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-
         } else if (id == R.id.nav_profile) {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
-            //finish();
-
-        } else if (id == R.id.nav_notifications) {
-
+        } else if (id == R.id.nav_edit_profile) {
+            // RICKY ADD YOUR THINGS HERE1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        } else if (id == R.id.nav_manage_listings) {
+            Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_logout) {
             signOutButton();
             finish();
-
-        } else if (id == R.id.nav_edit_profile) {
-
-        } else if (id == R.id.nav_change_password) {
-
         } else if (id == R.id.nav_edit_email) {
-
+            // RICKY ADD YOUR THINGS HERE2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        } else if (id == R.id.nav_change_password) {
+            // RICKY ADD YOUR THINGS HERE3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         } else if (id == R.id.nav_edit_phone) {
-
+            // RICKY ADD YOUR THINGS HERE4 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         } else if (id == R.id.nav_payment_method) {
 
         } else if (id == R.id.nav_legal) {
