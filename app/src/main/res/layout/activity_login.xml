@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
+            android:text="t@gmail.com"
             android:hint="Email" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
@@ -33,6 +34,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
+            android:text="Qwertyu1"
             android:hint="@string/hint_password" />
     </android.support.design.widget.TextInputLayout>
     <Button android:id="@+id/btn_login"
