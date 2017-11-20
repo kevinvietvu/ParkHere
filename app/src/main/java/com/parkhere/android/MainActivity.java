@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity
         geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
 
         this.markers = new HashMap<>();
-
+        
     }
 
     /**
