@@ -59,7 +59,11 @@
     <string name="btn_my_reservations">My Reservations</string>
     <string name="user_reservations_heading">My Reservations</string>
 
-    <!-- Strings related to profile -->
+    <!-- Strings related to profile or review -->
+    <string name="write_review_heading">Write a Review</string>
+    <string name="enter_review">Enter Review</string>
+    <string name="btn_submit">Submit</string>
+    <string name="write_review_confirmed">Review has been submitted!</string>
 
 
 </resources>
