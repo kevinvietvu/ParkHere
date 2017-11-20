@@ -6,6 +6,9 @@
     <string name="auth_failed">Authentication error, Please enter a valid email and password or sign up</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="hint_drivers_id">Driver\'s License</string>
+    <string name="hint_phone_number">Phone Number</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_login">Already registered? Login </string>
     <string name="btn_sign_out">Sign Out</string>
@@ -13,6 +16,9 @@
     <string name="err_msg_email">Enter a valid email.</string>
     <string name="err_msg_required">Required !!</string>
     <string name="err_msg_password">Enter a valid password with min 6 characters.</string>
+    <string name="err_msg_confirm_password">Passwords are not equal.</string>
+    <string name="err_msg_drivers_id">Invalid Driver\'s License</string>
+    <string name="err_msg_phone_number">Invalid phone number.</string>
     <string name="btn_link_to_signup">Don\'t have an account? Signup </string>
     <string name="btn_create_listing"> Create Listing </string>
     <string name="btn_delete_listing"> Delete Listing </string>

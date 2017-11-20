@@ -30,7 +30,9 @@ public class SignupActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private EditText signupInputEmail, signupInputPassword;
+    private EditText signupInputConfirmPassword, signupInputDriversId, signupInputPhoneNumber;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
+    private TextInputLayout  signupInputLayoutConfirmPassword, signupInputLayoutDriversId, signupInputLayoutPhoneNumber;
 
 
     public static boolean isEmailValid(String email) {
@@ -67,10 +69,16 @@ public class SignupActivity extends AppCompatActivity {
 
         signupInputLayoutEmail = (TextInputLayout) findViewById(R.id.signup_input_layout_email);
         signupInputLayoutPassword = (TextInputLayout) findViewById(R.id.signup_input_layout_password);
+        signupInputLayoutConfirmPassword = (TextInputLayout) findViewById(R.id.signup_input__layout_confirm_password);
+        signupInputLayoutDriversId = (TextInputLayout) findViewById(R.id.signup_input_layout_drivers_id);
+        signupInputLayoutPhoneNumber = (TextInputLayout) findViewById(R.id.signup_input_layout_phone_number);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         signupInputEmail = (EditText) findViewById(R.id.signup_input_email);
         signupInputPassword = (EditText) findViewById(R.id.signup_input_password);
+        signupInputConfirmPassword = (EditText) findViewById(R.id.signup_input_confirm_password);
+        signupInputDriversId = (EditText) findViewById(R.id.signup_input_drivers_id);
+        signupInputPhoneNumber = (EditText) findViewById(R.id.signup_input_phone_number);
 
         btnSignUp = (Button) findViewById(R.id.btn_signup);
         btnLinkToLogIn = (Button) findViewById(R.id.btn_link_login);
@@ -104,6 +112,15 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
         if(!checkPassword()) {
+            return;
+        }
+        if(!confirmPassword()) {
+            return;
+        }
+        if(!driversId()) {
+            return;
+        }
+        if(!phoneNumber()) {
             return;
         }
 
@@ -205,6 +222,49 @@ public class SignupActivity extends AppCompatActivity {
             return false;
         }
         signupInputLayoutPassword.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean confirmPassword() {
+        String password = signupInputPassword.getText().toString().trim();
+        String confirmPassword = signupInputConfirmPassword.getText().toString().trim();
+        if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
+            signupInputLayoutConfirmPassword.setError(getString(R.string.err_msg_confirm_password));
+            signupInputConfirmPassword.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputConfirmPassword);
+            return false;
+        }
+        signupInputLayoutConfirmPassword.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean driversId() {
+        String driversId = signupInputDriversId.getText().toString().trim();
+        if (driversId.isEmpty() ) {
+
+            signupInputLayoutDriversId.setErrorEnabled(true);
+            signupInputLayoutDriversId.setError(getString(R.string.err_msg_drivers_id));
+            signupInputDriversId.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputDriversId);
+            return false;
+        }
+
+        signupInputLayoutEmail.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean phoneNumber() {
+        String email = signupInputEmail.getText().toString().trim();
+        if (email.isEmpty() || !isEmailValid(email)) {
+
+            signupInputLayoutEmail.setErrorEnabled(true);
+            signupInputLayoutEmail.setError(getString(R.string.err_msg_phone_number));
+            signupInputEmail.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputEmail);
+            return false;
+        }
+
+        signupInputLayoutEmail.setErrorEnabled(false);
         return true;
     }
 
