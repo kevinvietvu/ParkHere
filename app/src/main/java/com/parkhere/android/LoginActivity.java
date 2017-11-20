@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else{
                                 Toast.makeText(LoginActivity.this,
-                                        "Verify Email to Continue.",
+                                        "Verify email to continue.",
                                         Toast.LENGTH_SHORT).show();
                             }
 
