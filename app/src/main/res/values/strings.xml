@@ -68,7 +68,12 @@
 
     <!-- Strings related to view listings or reservations -->
     <string name="btn_my_listing">My Listings</string>
+    <string name="user_listings_heading">My Listings</string>
     <string name="btn_my_reservations">My Reservations</string>
+    <string name="user_reservations_heading">My Reservations</string>
+
+    <!-- Strings related to profile -->
+
 
     <!-- Strings related to profile or review -->
     <string name="write_review_heading">Write a Review</string>
