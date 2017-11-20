@@ -49,6 +49,13 @@
     <string name="purchase_listing_confirmed">Listing has been purchased!</string>
     <string name="cvv">CVV</string>
 
+    <!-- Strings related to Edit Profile -->
+    <string name="enter_firstname">First Name</string>
+    <string name="enter_lastname">Last Name</string>
+    <string name="enter_usernname">Username</string>
+    <string name="enter_email">Email</string>
+    <string name="btn_save_changes">Save</string>
+
     <!-- Strings related to view listings or reservations -->
     <string name="btn_my_listing">My Listings</string>
     <string name="btn_my_reservations">My Reservations</string>

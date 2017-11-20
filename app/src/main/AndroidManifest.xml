@@ -66,6 +66,7 @@
         <activity android:name=".TestFirebaseActivity" />
         <activity android:name=".ViewUserListingsActivity" />
         <activity android:name=".ViewUserReservationsActivity" />
+        <activity android:name=".EditProfileActivity"></activity>
     </application>
 
 </manifest>

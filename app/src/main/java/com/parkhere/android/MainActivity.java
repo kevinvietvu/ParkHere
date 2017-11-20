@@ -358,7 +358,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_edit_profile) {
             Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
             startActivity(intent);
-            finish();
 
         } else if (id == R.id.nav_change_password) {
 
