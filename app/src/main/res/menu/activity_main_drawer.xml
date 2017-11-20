@@ -13,33 +13,29 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="Profile" />
         <item
-            android:id="@+id/nav_notifications"
+            android:id="@+id/nav_edit_profile"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Notifications" />
+            android:title="Edit Profile" />
         <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_previous"
-            android:title="Logout" />
+            android:id="@+id/nav_manage_listings"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Manage Listings" />
     </group>
 
-    <item android:title="Settings">
+    <item android:title="Account">
         <menu>
-            <item
-                android:id="@+id/nav_edit_profile"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Edit Profile" />
-            <item
-                android:id="@+id/nav_change_password"
-                android:icon="@drawable/ic_menu_secure"
-                android:title="Change Password" />
             <item
                 android:id="@+id/nav_edit_email"
                 android:icon="@drawable/ic_menu_email"
                 android:title="Change Email" />
             <item
+                android:id="@+id/nav_change_password"
+                android:icon="@drawable/ic_menu_secure"
+                android:title="Change Password" />
+            <item
                 android:id="@+id/nav_edit_phone"
                 android:icon="@drawable/ic_menu_dialer"
-                android:title="Edit Phone" />
+                android:title="Phone Number" />
             <item
                 android:id="@+id/nav_payment_method"
                 android:icon="@drawable/ic_menu_send"
@@ -48,8 +44,12 @@
                 android:id="@+id/nav_legal"
                 android:icon="@drawable/ic_menu_info"
                 android:title="Legal" />
-
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_previous"
+                android:title="Logout" />
         </menu>
     </item>
+
 
 </menu>

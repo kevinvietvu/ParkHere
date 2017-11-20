@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ManageListingsActivity extends AppCompatActivity {
     private Button createListingButton;
     private Button myListingsButton;
     private Button myReservationsButton;
@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_manage_listings);
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -54,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
                     // if user is null launch login activity
-                    startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                    startActivity(new Intent(ManageListingsActivity.this, LoginActivity.class));
                     finish();
                 }
                 else {
@@ -66,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapIntent = new Intent(ProfileActivity.this, CreateListingMapsActivity.class);
+                Intent mapIntent = new Intent(ManageListingsActivity.this, CreateListingMapsActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
@@ -77,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
         myListingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, ViewUserListingsActivity.class);
+                Intent intent = new Intent(ManageListingsActivity.this, ViewUserListingsActivity.class);
                 startActivity(intent);
             }
         });
@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
         myReservationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, ViewUserReservationsActivity.class);
+                Intent intent = new Intent(ManageListingsActivity.this, ViewUserReservationsActivity.class);
                 startActivity(intent);
             }
         });

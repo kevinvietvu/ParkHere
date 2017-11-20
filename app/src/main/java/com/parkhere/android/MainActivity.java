@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,6 +20,10 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Map<String,Marker> markers;
     private FirebaseUser user;
+    public Bundle bundle;
 
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
@@ -115,13 +119,22 @@ public class MainActivity extends AppCompatActivity
 
         geoFireRef = database.getReference("/geoFireListings");
         geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
-        this.markers = new HashMap<>();
+
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
+            markers = new HashMap<>();
+        }
+        else {
+            geoQuery = geoFire.queryAtLocation(new GeoLocation((double) bundle.get("lat"), (double) bundle.get("lng")), 300);
+            markers = new HashMap<>();
+        }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
+
 
         /**
          * Nav Menu
@@ -138,6 +151,34 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i("", "Place: " + place.getName());
+                LatLng point = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                if (geoQuery != null) {
+                    geoQuery.removeAllListeners();
+                }
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,11));
+                Intent intent = getIntent();
+                intent.putExtra("lat", place.getLatLng().latitude);
+                intent.putExtra("lng", place.getLatLng().longitude);
+                finish();
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("", "An error occurred: " + status);
+            }
+        });
 
 
     }
@@ -156,10 +197,18 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
 
         // Add a marker in California, San Jose and move/zoom the camera on create
-        LatLng SanJose = new LatLng(37.3382, -121.8863);
-        //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
-        //higher the float value, the more zoomed in
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            LatLng SanJose = new LatLng(37.3382, -121.8863);
+            //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
+            //higher the float value, the more zoomed in
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
+        }
+        else {
+            LatLng newLatLng = new LatLng( (double) bundle.get("lat"),(double) bundle.get("lng"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,8));
+        }
+
 
 
         /**
@@ -352,19 +401,21 @@ public class MainActivity extends AppCompatActivity
             finish();
 
         } else if (id == R.id.nav_profile) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            startActivity(intent);
+
             //finish();
-
-        } else if (id == R.id.nav_notifications) {
-
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
             signOutButton();
             finish();
 
-        } else if (id == R.id.nav_edit_profile) {
+        }
+        else if (id == R.id.nav_manage_listings) {
+            Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
+            startActivity(intent);
+            //finish();
 
-        } else if (id == R.id.nav_change_password) {
+        }
+        else if (id == R.id.nav_change_password) {
 
         } else if (id == R.id.nav_edit_email) {
 
