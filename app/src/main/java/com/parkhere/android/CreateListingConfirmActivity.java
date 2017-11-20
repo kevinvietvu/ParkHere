@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class CreateListingConfirmActivity extends AppCompatActivity {
 
+    public static CreateListingConfirmActivity instance = null;
     private Button confirm;
     private TextView price_text_view;
     private TextView description_text_view;
@@ -39,7 +40,6 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
     private String end_date;
     private String end_time;
     private String address;
-
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
     private DatabaseReference locationsRef;
@@ -48,8 +48,6 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private Map<String, Object> listingData = new HashMap<String, Object>();
-
-    public static CreateListingConfirmActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

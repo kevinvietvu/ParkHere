@@ -351,8 +351,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_profile) {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_edit_profile) {
-            // RICKY ADD YOUR THINGS HERE1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         } else if (id == R.id.nav_manage_listings) {
             Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
             startActivity(intent);
@@ -363,8 +361,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_edit_profile) {
             Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
             startActivity(intent);
-
-        } else if (id == R.id.nav_change_password) {
 
         } else if (id == R.id.nav_edit_email) {
             // RICKY ADD YOUR THINGS HERE2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

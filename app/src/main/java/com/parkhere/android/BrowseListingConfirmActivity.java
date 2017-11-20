@@ -17,6 +17,7 @@ import java.util.Map;
 
 public class BrowseListingConfirmActivity extends AppCompatActivity {
 
+    public static BrowseListingConfirmActivity instance = null;
     private Button confirm;
     private TextView listing_address_text_view;
     private TextView card_number_text_view;
@@ -41,18 +42,13 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String vehicle_model;
     private String vehicle_color;
     private String license_plate_number;
-
     private DatabaseReference geoFireRef;
     private DatabaseReference userReservationRef;
     private DatabaseReference locationRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     private FirebaseAuth auth;
     private FirebaseUser user;
-
     private Map<String, Object> listingData = new HashMap<>();
-
-    public static BrowseListingConfirmActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

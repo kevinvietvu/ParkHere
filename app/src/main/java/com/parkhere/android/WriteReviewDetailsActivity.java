@@ -11,12 +11,21 @@ import android.widget.Toast;
 
 public class WriteReviewDetailsActivity extends AppCompatActivity {
 
+    public static WriteReviewDetailsActivity instance = null;
     private Bundle bundle;
     private Button submit;
     private float rating;
     private String reviewText;
 
-    public static WriteReviewDetailsActivity instance = null;
+    public static boolean ratingBarHasRating(float rating) {
+        if (rating > 0) return true;
+        else return false;
+    }
+
+    public static boolean reviewIsBetween1And140(String reviewText) {
+        if (reviewText.length() >= 1 && reviewText.length() <= 140) return true;
+        else return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +58,5 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         instance = null;
-    }
-
-    public static boolean ratingBarHasRating(float rating) {
-        if (rating > 0) return true;
-        else return false;
-    }
-
-    public static boolean reviewIsBetween1And140(String reviewText) {
-        if (reviewText.length() >= 1 && reviewText.length() <= 140) return true;
-        else return false;
     }
 }

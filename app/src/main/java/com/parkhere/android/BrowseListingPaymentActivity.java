@@ -10,16 +10,39 @@ import android.widget.Toast;
 
 public class BrowseListingPaymentActivity extends AppCompatActivity {
 
-    private Button next_step;
-    private Bundle bundle;
+    public static BrowseListingPaymentActivity instance = null;
     public String card_number;
     public String cvv;
     public String vehicle_make;
     public String vehicle_model;
     public String vehicle_color;
     public String license_plate_number;
+    private Button next_step;
+    private Bundle bundle;
 
-    public static BrowseListingPaymentActivity instance = null;
+    public static boolean checkCardLengthBetween12And19(String card_number) {
+        if (card_number.length() >= 12 && card_number.length() <= 19)
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean checkCVVLengthIs3(String cvv) {
+        if (cvv.length() == 3)
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean vehicleInfoIsNotNull(Object o) {
+        if (o != null) return true;
+        else return false;
+    }
+
+    public static boolean checkIfLicensePlateNumberIsBetween1And7(String license_plate_number) {
+        if (license_plate_number.length() >= 1 && license_plate_number.length() <= 7) return true;
+        else return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,30 +91,6 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public static boolean checkCardLengthBetween12And19(String card_number) {
-        if (card_number.length() >= 12 && card_number.length() <= 19)
-            return true;
-        else
-            return false;
-    }
-
-    public static boolean checkCVVLengthIs3(String cvv) {
-        if (cvv.length() == 3)
-            return true;
-        else
-            return false;
-    }
-
-    public static boolean vehicleInfoIsNotNull(Object o) {
-        if (o != null) return true;
-        else return false;
-    }
-
-    public static boolean checkIfLicensePlateNumberIsBetween1And7(String license_plate_number) {
-        if (license_plate_number.length() >= 1 && license_plate_number.length() <= 7) return true;
-        else return false;
     }
 
     @Override
