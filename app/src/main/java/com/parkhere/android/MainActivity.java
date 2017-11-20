@@ -413,7 +413,6 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
             startActivity(intent);
             //finish();
-
         }
         else if (id == R.id.nav_change_password) {
 

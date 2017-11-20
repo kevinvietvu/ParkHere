@@ -60,7 +60,6 @@ public class ViewUserListingsActivity extends AppCompatActivity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        System.out.println("Oh FuCC");
                         showDialog(listingObjects.get(position));
                     }
                 });
