@@ -41,7 +41,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/enter_make"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter_cvv" />
 
@@ -54,7 +54,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/enter_model"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter_vehicle_make" />
 
@@ -67,7 +67,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/enter_color"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter_vehicle_model" />
 
@@ -80,7 +80,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/enter_license_plate_number"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter_vehicle_color" />
 

@@ -68,10 +68,7 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
 
                     userRef.child(userID).child("Reviews").push().child("Details").setValue(reviewDetails);
 
-                    Intent intent = new Intent(WriteReviewDetailsActivity.this, WriteReviewFinalActivity.class);
-                    intent.putExtra("rating", rating);
-                    intent.putExtra("review_text", reviewText);
-                    startActivity(intent);
+                    Toast.makeText(WriteReviewDetailsActivity.this, "Review has been submitted!", Toast.LENGTH_LONG).show();
                     finish();
                 }
             }

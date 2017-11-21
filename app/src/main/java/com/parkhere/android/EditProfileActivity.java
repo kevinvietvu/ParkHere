@@ -58,8 +58,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         userRef.child("lastName").setValue(editLastName.getText().toString());
                         userRef.child("firstName").setValue(editFirstName.getText().toString());
                     }
-                    Intent mapIntent = new Intent(EditProfileActivity.this, MainActivity.class);
-                    startActivity(mapIntent);
+                    Toast.makeText(EditProfileActivity.this, "Profile has been changed successfully!", Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
         });

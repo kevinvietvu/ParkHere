@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,8 +36,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 //Add password verification before uncommenting  the database call
                 //database call
                 //user.updateEmail(passwordInput.getText().toString());
-                Intent mapIntent = new Intent(ChangePasswordActivity.this, MainActivity.class);
-                startActivity(mapIntent);
+                Toast.makeText(ChangePasswordActivity.this, "Password has been changed successfully!", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }

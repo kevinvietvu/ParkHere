@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,8 +36,8 @@ public class ChangeEmailActivity extends AppCompatActivity {
                 //Add email verification before uncommenting the database call
                 //database call
                 //user.updateEmail(emailInput.getText().toString());
-                Intent mapIntent = new Intent(ChangeEmailActivity.this, MainActivity.class);
-                startActivity(mapIntent);
+                Toast.makeText(ChangeEmailActivity.this, "Email has been changed successfully!", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }
