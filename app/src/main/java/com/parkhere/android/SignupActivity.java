@@ -226,6 +226,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean confirmPassword() {
+
         String password = signupInputPassword.getText().toString().trim();
         String confirmPassword = signupInputConfirmPassword.getText().toString().trim();
         if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
@@ -239,8 +240,12 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean driversId() {
+
+        //California Drivers Licence
+
         String driversId = signupInputDriversId.getText().toString().trim();
-        if (driversId.isEmpty() ) {
+        String valid_id = "^[A-Z]{1}[0-9]{7}$";
+        if (driversId.isEmpty() || !driversId.matches(valid_id)) {
 
             signupInputLayoutDriversId.setErrorEnabled(true);
             signupInputLayoutDriversId.setError(getString(R.string.err_msg_drivers_id));
@@ -254,17 +259,22 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean phoneNumber() {
-        String email = signupInputEmail.getText().toString().trim();
-        if (email.isEmpty() || !isEmailValid(email)) {
+        // \d{10} matches 1234567890
+        // (?:\d{3}-){2}\d{4} matches 123-456-7890
+        // \(\d{3}\)\d{3}-?\d{4} matches (123)456-7890 or (123)4567890
 
-            signupInputLayoutEmail.setErrorEnabled(true);
-            signupInputLayoutEmail.setError(getString(R.string.err_msg_phone_number));
-            signupInputEmail.setError(getString(R.string.err_msg_required));
-            requestFocus(signupInputEmail);
+        String phone = signupInputPhoneNumber.getText().toString().trim();
+        String valid_phone = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
+        if (phone.isEmpty() || !phone.matches(valid_phone)) {
+
+            signupInputLayoutPhoneNumber.setErrorEnabled(true);
+            signupInputLayoutPhoneNumber.setError(getString(R.string.err_msg_phone_number));
+            signupInputPhoneNumber.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputPhoneNumber);
             return false;
         }
 
-        signupInputLayoutEmail.setErrorEnabled(false);
+        signupInputLayoutPhoneNumber.setErrorEnabled(false);
         return true;
     }
 
