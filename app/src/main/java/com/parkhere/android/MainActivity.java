@@ -8,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
@@ -20,10 +19,6 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -57,7 +52,6 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Map<String,Marker> markers;
     private FirebaseUser user;
-    public Bundle bundle;
 
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
@@ -119,16 +113,8 @@ public class MainActivity extends AppCompatActivity
 
         geoFireRef = database.getReference("/geoFireListings");
         geoFire = new GeoFire(geoFireRef);
-
-        bundle = getIntent().getExtras();
-        if (bundle == null) {
-            geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
-            markers = new HashMap<>();
-        }
-        else {
-            geoQuery = geoFire.queryAtLocation(new GeoLocation((double) bundle.get("lat"), (double) bundle.get("lng")), 300);
-            markers = new HashMap<>();
-        }
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
+        this.markers = new HashMap<>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -151,35 +137,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        autocompleteFragment.setHint("Search Area For Listings");
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i("", "Place: " + place.getName());
-                LatLng point = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-                if (geoQuery != null) {
-                    geoQuery.removeAllListeners();
-                }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,11));
-                Intent intent = getIntent();
-                intent.putExtra("lat", place.getLatLng().latitude);
-                intent.putExtra("lng", place.getLatLng().longitude);
-                finish();
-                startActivity(intent);
-
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("", "An error occurred: " + status);
-            }
-        });
     }
 
     /**
@@ -196,17 +154,11 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
 
         // Add a marker in California, San Jose and move/zoom the camera on create
-        bundle = getIntent().getExtras();
-        if (bundle == null) {
-            LatLng SanJose = new LatLng(37.3382, -121.8863);
-            //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
-            //higher the float value, the more zoomed in
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
-        }
-        else {
-            LatLng newLatLng = new LatLng( (double) bundle.get("lat"),(double) bundle.get("lng"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,8));
-        }
+        LatLng SanJose = new LatLng(37.3382, -121.8863);
+        //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
+        //higher the float value, the more zoomed in
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
+
 
         /**
          * might need to implement later
@@ -222,16 +174,8 @@ public class MainActivity extends AppCompatActivity
 
         mMap.setInfoWindowAdapter(new InfoWindowAdapter(this));
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Intent userProfile = new Intent(MainActivity.this, ProfileActivity.class);
-                Listing selectedListing = (Listing) marker.getTag();
-                userProfile.putExtra("userID", selectedListing.getUserID());
-                startActivity(userProfile);
-            }
-        });
     }
+
 
     @Override
     protected void onStop() {
@@ -404,38 +348,38 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-
         } else if (id == R.id.nav_profile) {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
-            //finish();
-        }
-        else if (id == R.id.nav_logout) {
-            signOutButton();
-            finish();
-        }
-        else if (id == R.id.nav_edit_profile) {
-            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
-            startActivity(intent);
-        }
-        else if (id == R.id.nav_manage_listings) {
+        } else if (id == R.id.nav_manage_listings) {
             Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
             startActivity(intent);
-            //finish();
-        }
-        else if (id == R.id.nav_change_password) {
-            Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+        } else if (id == R.id.nav_logout) {
+            signOutButton();
+            finish();
+
+        } else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_edit_email) {
+            // RICKY ADD YOUR THINGS HERE2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             Intent intent = new Intent(MainActivity.this, ChangeEmailActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_change_password) {
+            // RICKY ADD YOUR THINGS HERE3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_phone) {
+            // RICKY ADD YOUR THINGS HERE4 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             Intent intent = new Intent(MainActivity.this, PhoneNumberActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_payment_method) {
             Intent intent = new Intent(MainActivity.this, PaymentMethodActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_legal) {
+
             Intent intent = new Intent(MainActivity.this, LegalActivity.class);
             startActivity(intent);
         }

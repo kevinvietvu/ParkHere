@@ -17,6 +17,7 @@ import java.util.Map;
 
 public class BrowseListingConfirmActivity extends AppCompatActivity {
 
+    public static BrowseListingConfirmActivity instance = null;
     private Button confirm;
     private TextView listing_address_text_view;
     private TextView card_number_text_view;
@@ -35,24 +36,19 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String end_time;
     private String address;
     private String creator_id;
+    private String card_number;
+    private String cvv;
     private String vehicle_make;
     private String vehicle_model;
     private String vehicle_color;
     private String license_plate_number;
-    private String card_number;
-    private String cvv;
-
     private DatabaseReference geoFireRef;
     private DatabaseReference userReservationRef;
     private DatabaseReference locationRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     private FirebaseAuth auth;
     private FirebaseUser user;
-
     private Map<String, Object> listingData = new HashMap<>();
-
-    public static BrowseListingConfirmActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +127,6 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         license_plate_number_text_view = findViewById(R.id.license_plate_number);
         license_plate_number = bundle.getString("license_plate_number");
         license_plate_number_text_view.setText(String.format("%s %s", "License Plate:", license_plate_number));
-
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override

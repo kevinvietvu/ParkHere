@@ -20,11 +20,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -34,9 +29,6 @@ public class SignupActivity extends AppCompatActivity {
     private Button btnSignUp, btnLinkToLogIn;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
-    private FirebaseUser user;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference userRef;
     private EditText signupInputEmail, signupInputPassword;
     private EditText signupInputConfirmPassword, signupInputDriversId, signupInputPhoneNumber;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
@@ -97,23 +89,6 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 submitForm();
 
-                user = auth.getCurrentUser();
-
-                userRef = database.getReference("Users").child(user.getUid()).child("Information");
-
-                Map<String,Object> userInformation = new HashMap<>();
-
-                userInformation.put("driversID", signupInputDriversId.getText().toString());
-                userInformation.put("phoneNumber", signupInputPhoneNumber.getText().toString());
-
-                userRef.setValue(userInformation);
-
-                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                if(LoginActivity.instance != null) {
-                    try {
-                        LoginActivity.instance.finish();
-                    } catch (Exception e) {}
-                }
             }
         });
 
@@ -167,16 +142,24 @@ public class SignupActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
 
+
                         if (!task.isSuccessful()) {
                             Log.d(TAG,"Authentication failed." + task.getException());
 
                         } else {
                             sendEmailVerification();
+                            startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                            if(LoginActivity.instance != null) {
+                                try {
+                                    LoginActivity.instance.finish();
+                                } catch (Exception e) {}
+                            }
                         }
                     }
                 });
         Toast.makeText(getApplicationContext(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
     }
+
 
     private boolean checkEmail() {
         String email = signupInputEmail.getText().toString().trim();
@@ -200,28 +183,28 @@ public class SignupActivity extends AppCompatActivity {
         final FirebaseUser user = auth.getCurrentUser();
 
         // [START send_email_verification]
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
-                        // Re-enable button
-                        findViewById(R.id.btn_signup).setEnabled(true);
+            user.sendEmailVerification()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // [START_EXCLUDE]
+                            // Re-enable button
+                            findViewById(R.id.btn_signup).setEnabled(true);
 
-                        if (task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this,
-                                    "Verification email sent to " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
+                            if (task.isSuccessful()) {
+                                Toast.makeText(SignupActivity.this,
+                                        "Verification email sent to " + user.getEmail(),
+                                        Toast.LENGTH_SHORT).show();
 
-                        } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
-                            Toast.makeText(SignupActivity.this,
-                                    "Failed to send verification email.",
-                                    Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e(TAG, "sendEmailVerification", task.getException());
+                                Toast.makeText(SignupActivity.this,
+                                        "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            // [END_EXCLUDE]
                         }
-                        // [END_EXCLUDE]
-                    }
-                });
+                    });
 
 
         // [END send_email_verification]

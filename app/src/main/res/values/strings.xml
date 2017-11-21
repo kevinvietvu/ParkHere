@@ -97,36 +97,4 @@
     <string name="write_review_confirmed">Review has been submitted!</string>
 
 
-    <!-- Strings related to profile or review -->
-    <string name="write_review_heading">Write a Review</string>
-    <string name="enter_review">Enter Review</string>
-    <string name="btn_submit">Submit</string>
-    <string name="write_review_confirmed">Review has been submitted!</string>
-
-    <!-- Strings related to Edit Profile -->
-    <string name="enter_first_name">First Name</string>
-    <string name="enter_last_name">Last Name</string>
-    <string name="enter_user_name">Username</string>
-    <string name="btn_save_changes">Save</string>
-
-    <!-- Strings related to Change Email -->
-    <string name="enter_email">Email</string>
-
-    <!-- Strings related to Change Password -->
-    <string name="enter_current_password">Current Password</string>
-    <string name="enter_new_password">New Password</string>
-    <string name="enter_confirm_password">Confirm Password</string>
-
-    <!-- Strings related to Legal -->
-    <string name="enter_user_agreement">Agreement</string>
-    <string name="enter_privacy_policy">Privacy</string>
-    <string name="enter_licenses">Licences</string>
-
-    <!-- Strings related to Payment -->
-    <string name="enter_cards">Cards</string>
-
-    <!-- Strings related to Phone Number -->
-    <string name="enter_phone_number">Phone Number</string>
-
-
 </resources>

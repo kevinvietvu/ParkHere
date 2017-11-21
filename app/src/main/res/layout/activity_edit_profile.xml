@@ -49,6 +49,32 @@
             android:maxLength="35"
             android:maxLines="1"
             android:scrollHorizontally="true"/>
+        <TextView
+            android:id="@+id/text_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_user_name" />
+        <EditText
+            android:id="@+id/edit_user_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLength="35"
+            android:maxLines="1"
+            android:scrollHorizontally="true"/>
+        <TextView
+            android:id="@+id/text_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_email" />
+        <EditText
+            android:id="@+id/edit_email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:maxLength="35"
+            android:maxLines="1"
+            android:scrollHorizontally="true"/>
         <Button
             android:id="@+id/save_changes"
             style="?android:textAppearanceSmall"
