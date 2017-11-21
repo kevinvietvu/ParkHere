@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
 
-
         /**
          * Nav Menu
          */
@@ -154,6 +153,8 @@ public class MainActivity extends AppCompatActivity
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setHint("Search Area For Listings");
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -179,8 +180,6 @@ public class MainActivity extends AppCompatActivity
                 Log.i("", "An error occurred: " + status);
             }
         });
-
-
     }
 
     /**
@@ -209,8 +208,6 @@ public class MainActivity extends AppCompatActivity
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,8));
         }
 
-
-
         /**
          * might need to implement later
          */
@@ -225,8 +222,16 @@ public class MainActivity extends AppCompatActivity
 
         mMap.setInfoWindowAdapter(new InfoWindowAdapter(this));
 
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Intent userProfile = new Intent(MainActivity.this, ProfileActivity.class);
+                Listing selectedListing = (Listing) marker.getTag();
+                userProfile.putExtra("userID", selectedListing.getUserID());
+                startActivity(userProfile);
+            }
+        });
     }
-
 
     @Override
     protected void onStop() {

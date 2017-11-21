@@ -64,7 +64,6 @@ public class ViewUserListingsActivity extends AppCompatActivity {
                     }
                 });
 
-
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {

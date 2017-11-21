@@ -1,5 +1,6 @@
 package com.parkhere.android;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,8 @@ public class WriteReviewFinalActivity extends AppCompatActivity {
         okay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent manageListingActivity = new Intent(WriteReviewFinalActivity.this, ManageListingsActivity.class);
+                startActivity(manageListingActivity);
                 finish();
             }
         });

@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -28,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ReservationsDialogFragment extends DialogFragment {
     int mNum;
     Button deleteListing;
+    Button writeReview;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
     private DatabaseReference locationsRef;
@@ -90,6 +89,8 @@ public class ReservationsDialogFragment extends DialogFragment {
 
         deleteListing = v.findViewById(R.id.reservation_delete_btn);
 
+        writeReview = v.findViewById(R.id.reservation_write_review_btn);
+
         deleteListing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +127,22 @@ public class ReservationsDialogFragment extends DialogFragment {
                         System.out.println("The read failed: " + firebaseError.getMessage());
                     }
                 });
+            }
+        });
 
+        writeReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String userID = (String) getArguments().get("userID");
+                final String address = (String) getArguments().get("address");
+
+                Intent writeReview = new Intent(getActivity(), WriteReviewDetailsActivity.class);
+                writeReview.putExtra("address", address);
+                writeReview.putExtra("userID", userID);
+                getActivity().finish();
+                startActivity(writeReview);
+                getActivity().getFragmentManager().popBackStack();
             }
         });
 
