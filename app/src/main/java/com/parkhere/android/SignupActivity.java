@@ -128,6 +128,9 @@ public class SignupActivity extends AppCompatActivity {
 
         signupInputLayoutEmail.setErrorEnabled(false);
         signupInputLayoutPassword.setErrorEnabled(false);
+        signupInputLayoutConfirmPassword.setErrorEnabled(false);
+        signupInputLayoutDriversId.setErrorEnabled(false);
+        signupInputLayoutPhoneNumber.setErrorEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);
         //create user
@@ -147,6 +150,7 @@ public class SignupActivity extends AppCompatActivity {
                             Log.d(TAG,"Authentication failed." + task.getException());
 
                         } else {
+                            Toast.makeText(getApplicationContext(), "Verification email sent.", Toast.LENGTH_SHORT).show();
                             sendEmailVerification();
                             startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                             if(LoginActivity.instance != null) {
@@ -254,7 +258,7 @@ public class SignupActivity extends AppCompatActivity {
             return false;
         }
 
-        signupInputLayoutEmail.setErrorEnabled(false);
+        signupInputLayoutDriversId.setErrorEnabled(false);
         return true;
     }
 
