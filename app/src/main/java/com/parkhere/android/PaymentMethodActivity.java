@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class PaymentMethodActivity extends AppCompatActivity {
 
@@ -19,8 +20,8 @@ public class PaymentMethodActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapIntent = new Intent(PaymentMethodActivity.this, MainActivity.class);
-                startActivity(mapIntent);
+                Toast.makeText(PaymentMethodActivity.this, "Payment method has been changed successfully!", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }

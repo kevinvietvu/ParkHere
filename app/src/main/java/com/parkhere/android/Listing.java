@@ -19,6 +19,10 @@ public class Listing {
     public String startDate;
     public String startTime;
     public String userID;
+    public String vehicleMake;
+    public String vehicleModel;
+    public String vehicleColor;
+    public String licensePlateNumber;
 
     public Listing() {
         // Default constructor required for calls to DataSnapshot.getValue(Listing.class)
@@ -38,9 +42,7 @@ public class Listing {
         return endTime;
     }
 
-    public Double getPrice() {
-        return price;
-    }
+    public Double getPrice() { return price; }
 
     public String getSpotType() { return spotType; }
 
@@ -53,6 +55,14 @@ public class Listing {
     }
 
     public String getUserID() { return userID; }
+
+    public String getVehicleMake() { return vehicleMake; }
+
+    public String getVehicleModel() { return vehicleModel; }
+
+    public String getVehicleColor() { return vehicleColor; }
+
+    public String getLicensePlateNumber() { return licensePlateNumber; }
 
     @Override
     public String toString() {
