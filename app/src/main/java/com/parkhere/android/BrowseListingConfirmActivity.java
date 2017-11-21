@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,12 +36,12 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
     private String end_time;
     private String address;
     private String creator_id;
-    private String card_number;
-    private String cvv;
     private String vehicle_make;
     private String vehicle_model;
     private String vehicle_color;
     private String license_plate_number;
+    private String card_number;
+    private String cvv;
 
     private DatabaseReference geoFireRef;
     private DatabaseReference userReservationRef;
@@ -132,6 +133,7 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
         license_plate_number = bundle.getString("license_plate_number");
         license_plate_number_text_view.setText(String.format("%s %s", "License Plate:", license_plate_number));
 
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,15 +145,14 @@ public class BrowseListingConfirmActivity extends AppCompatActivity {
 
                 geoFireRef.child(address).removeValue();
 
-                Intent intent = new Intent(BrowseListingConfirmActivity.this, BrowseListingFinalActivity.class);
-                startActivity(intent);
+                if(BrowseListingPaymentActivity.instance != null) {
+                    try {
+                        BrowseListingPaymentActivity.instance.finish();
+                    } catch (Exception e) {}
+                }
+                Toast.makeText(BrowseListingConfirmActivity.this, "Listing has been reserved!", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        instance = null;
     }
 }

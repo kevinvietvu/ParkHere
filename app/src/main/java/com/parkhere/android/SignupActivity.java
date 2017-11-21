@@ -19,23 +19,35 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity" ;
     public static SignupActivity instance = null;
-    private Button btnSignUp,btnLinkToLogIn;
+    private Button btnSignUp, btnLinkToLogIn;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference userRef;
     private EditText signupInputEmail, signupInputPassword;
+    private EditText signupInputConfirmPassword, signupInputDriversId, signupInputPhoneNumber;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
+    private TextInputLayout  signupInputLayoutConfirmPassword, signupInputLayoutDriversId, signupInputLayoutPhoneNumber;
+
 
     public static boolean isEmailValid(String email) {
-        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        //return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        return !TextUtils.isEmpty(email) && email.matches(emailPattern);
+        //String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+        //        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        //return !TextUtils.isEmpty(email) && email.matches(emailPattern);
     }
 
     public static boolean isPasswordValid(String password){
@@ -65,10 +77,16 @@ public class SignupActivity extends AppCompatActivity {
 
         signupInputLayoutEmail = (TextInputLayout) findViewById(R.id.signup_input_layout_email);
         signupInputLayoutPassword = (TextInputLayout) findViewById(R.id.signup_input_layout_password);
+        signupInputLayoutConfirmPassword = (TextInputLayout) findViewById(R.id.signup_input__layout_confirm_password);
+        signupInputLayoutDriversId = (TextInputLayout) findViewById(R.id.signup_input_layout_drivers_id);
+        signupInputLayoutPhoneNumber = (TextInputLayout) findViewById(R.id.signup_input_layout_phone_number);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         signupInputEmail = (EditText) findViewById(R.id.signup_input_email);
         signupInputPassword = (EditText) findViewById(R.id.signup_input_password);
+        signupInputConfirmPassword = (EditText) findViewById(R.id.signup_input_confirm_password);
+        signupInputDriversId = (EditText) findViewById(R.id.signup_input_drivers_id);
+        signupInputPhoneNumber = (EditText) findViewById(R.id.signup_input_phone_number);
 
         btnSignUp = (Button) findViewById(R.id.btn_signup);
         btnLinkToLogIn = (Button) findViewById(R.id.btn_link_login);
@@ -79,6 +97,23 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 submitForm();
 
+                user = auth.getCurrentUser();
+
+                userRef = database.getReference("Users").child(user.getUid()).child("Information");
+
+                Map<String,Object> userInformation = new HashMap<>();
+
+                userInformation.put("driversID", signupInputDriversId.getText().toString());
+                userInformation.put("phoneNumber", signupInputPhoneNumber.getText().toString());
+
+                userRef.setValue(userInformation);
+
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                if(LoginActivity.instance != null) {
+                    try {
+                        LoginActivity.instance.finish();
+                    } catch (Exception e) {}
+                }
             }
         });
 
@@ -95,7 +130,6 @@ public class SignupActivity extends AppCompatActivity {
      * Validating form
      */
     private void submitForm() {
-
         String email = signupInputEmail.getText().toString().trim();
         String password = signupInputPassword.getText().toString().trim();
 
@@ -105,6 +139,18 @@ public class SignupActivity extends AppCompatActivity {
         if(!checkPassword()) {
             return;
         }
+        if(!confirmPassword()) {
+            return;
+        }
+        if(!driversId()) {
+            return;
+        }
+        if(!phoneNumber()) {
+            return;
+        }
+
+        findViewById(R.id.btn_signup).setEnabled(false);
+
         signupInputLayoutEmail.setErrorEnabled(false);
         signupInputLayoutPassword.setErrorEnabled(false);
 
@@ -114,6 +160,7 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
                         Log.d(TAG,"createUserWithEmail:onComplete:" + task.isSuccessful());
                         progressBar.setVisibility(View.GONE);
                         // If sign in fails, Log the message to the LogCat. If sign in succeeds
@@ -124,12 +171,7 @@ public class SignupActivity extends AppCompatActivity {
                             Log.d(TAG,"Authentication failed." + task.getException());
 
                         } else {
-                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
-                            if(LoginActivity.instance != null) {
-                                try {
-                                    LoginActivity.instance.finish();
-                                } catch (Exception e) {}
-                            }
+                            sendEmailVerification();
                         }
                     }
                 });
@@ -147,9 +189,44 @@ public class SignupActivity extends AppCompatActivity {
             requestFocus(signupInputEmail);
             return false;
         }
+
         signupInputLayoutEmail.setErrorEnabled(false);
         return true;
     }
+
+
+    //Send Email Verification
+    public void sendEmailVerification() {
+        final FirebaseUser user = auth.getCurrentUser();
+
+        // [START send_email_verification]
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // [START_EXCLUDE]
+                        // Re-enable button
+                        findViewById(R.id.btn_signup).setEnabled(true);
+
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SignupActivity.this,
+                                    "Verification email sent to " + user.getEmail(),
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Log.e(TAG, "sendEmailVerification", task.getException());
+                            Toast.makeText(SignupActivity.this,
+                                    "Failed to send verification email.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        // [END_EXCLUDE]
+                    }
+                });
+
+
+        // [END send_email_verification]
+    }
+
 
     private boolean checkPassword() {
 
@@ -165,11 +242,56 @@ public class SignupActivity extends AppCompatActivity {
         return true;
     }
 
+    private boolean confirmPassword() {
+        String password = signupInputPassword.getText().toString().trim();
+        String confirmPassword = signupInputConfirmPassword.getText().toString().trim();
+        if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
+            signupInputLayoutConfirmPassword.setError(getString(R.string.err_msg_confirm_password));
+            signupInputConfirmPassword.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputConfirmPassword);
+            return false;
+        }
+        signupInputLayoutConfirmPassword.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean driversId() {
+        String driversId = signupInputDriversId.getText().toString().trim();
+        if (driversId.isEmpty() ) {
+
+            signupInputLayoutDriversId.setErrorEnabled(true);
+            signupInputLayoutDriversId.setError(getString(R.string.err_msg_drivers_id));
+            signupInputDriversId.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputDriversId);
+            return false;
+        }
+
+        signupInputLayoutEmail.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean phoneNumber() {
+        String email = signupInputEmail.getText().toString().trim();
+        if (email.isEmpty() || !isEmailValid(email)) {
+
+            signupInputLayoutEmail.setErrorEnabled(true);
+            signupInputLayoutEmail.setError(getString(R.string.err_msg_phone_number));
+            signupInputEmail.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputEmail);
+            return false;
+        }
+
+        signupInputLayoutEmail.setErrorEnabled(false);
+        return true;
+    }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
+
+
 
     @Override
     protected void onResume() {

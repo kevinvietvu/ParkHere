@@ -58,17 +58,20 @@
         <activity android:name=".CreateListingStartDateActivity" />
         <activity android:name=".CreateListingStartTimeActivity" />
         <activity android:name=".CreateListingConfirmActivity" />
-        <activity android:name=".CreateListingFinalActivity" />
         <activity android:name=".CreateListingDetailsActivity" />
         <activity android:name=".BrowseListingConfirmActivity" />
-        <activity android:name=".BrowseListingFinalActivity" />
         <activity android:name=".BrowseListingPaymentActivity" />
         <activity android:name=".TestFirebaseActivity" />
         <activity android:name=".ViewUserListingsActivity" />
         <activity android:name=".ViewUserReservationsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".WriteReviewDetailsActivity" />
-        <activity android:name=".WriteReviewFinalActivity"></activity>
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".PhoneNumberActivity" />
+        <activity android:name=".PaymentMethodActivity" />
+        <activity android:name=".LegalActivity" />
+        <activity android:name=".ChangePasswordActivity" />
+        <activity android:name=".ChangeEmailActivity"></activity>
     </application>
 
 </manifest>

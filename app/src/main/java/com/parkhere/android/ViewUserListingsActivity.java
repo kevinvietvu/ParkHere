@@ -1,9 +1,14 @@
 package com.parkhere.android;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -19,13 +24,13 @@ import java.util.ArrayList;
 
 public class ViewUserListingsActivity extends AppCompatActivity {
 
-
     private DatabaseReference userListingRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ArrayList<String> listings = new ArrayList<>();
+    private ArrayList<Listing> listingObjects = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +50,20 @@ public class ViewUserListingsActivity extends AppCompatActivity {
                     Listing post = snapshot.child(user.getUid()).child("Listings").child(d.getKey()).child("Details").getValue(Listing.class);
                     System.out.println(post.toString());
                     listings.add(post.toString());
+                    listingObjects.add(post);
                 }
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserListingsActivity.this, android.R.layout.simple_list_item_1, listings);
                 ListView listView = findViewById(R.id.list_view);
                 listView.setAdapter(adapter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        showDialog(listingObjects.get(position));
+                    }
+                });
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
@@ -57,7 +71,23 @@ public class ViewUserListingsActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    public void showDialog(Listing listing) {
+        int mStackLevel = 0;
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = ListingDialogFragment.newInstance(mStackLevel,listing);
+        newFragment.show(ft, "dialog");
     }
 
     @Override
@@ -69,7 +99,6 @@ public class ViewUserListingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_settings) {
             return true;
         }

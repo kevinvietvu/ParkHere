@@ -88,6 +88,16 @@ public class TestFirebaseActivity extends AppCompatActivity {
                     System.out.println(d.getKey());
                     System.out.println(d.getValue());
                 }*/
+
+                System.out.println("TEST 1 " + snapshot.child(user.getUid()).child("Profile").child("firstName").getValue());
+                System.out.println("TEST 2 " + snapshot.child(user.getUid()).child("Profile").child("lastName").getValue());
+
+
+                for (DataSnapshot d : snapshot.child(user.getUid()).child("Reviews").getChildren()) {
+                    System.out.println("TEST 3 " + d.child("Details").child("review").getValue());
+                    System.out.println("TEST 4 " + d.child("Details").child("rating").getValue());
+                }
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
@@ -143,7 +153,7 @@ public class TestFirebaseActivity extends AppCompatActivity {
                 locationsRef.child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Users").child("Nelson's ID").setValue(true);
                 userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
                 userListingRef.child("Nelson's ID").child("Listings").child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Details").setValue(listingData2);
-                userListingRef.child("Ricky's ID").child("Listings").child("15145 Andover St, San Leandro, CA 94579, USA").child("Details").setValue(listingData3); */
+                userListingRef.child("Ricky's ID").child("Listings").child("15145 Andover St, San Leandro, CA 94579, USA").child("Details").setValue(listingData3);
 
                 Map<String, Object> listingData = new HashMap<String, Object>();
 
@@ -156,7 +166,21 @@ public class TestFirebaseActivity extends AppCompatActivity {
                 listingData.put("endTime", "4");
                 listingData.put("address" , "15564 Calgary St, San Leandro, CA 94579, USA");
 
-                userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
+                userListingRef.child("Kevin's ID").child("Profile").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData); */
+
+                Map<String,Object> testReviewData = new HashMap<>();
+
+                testReviewData.put("review", "THIS BOI IS WACC");
+                testReviewData.put("rating", (float) 3.5);
+
+                Map<String,Object> testProfileData = new HashMap<>();
+
+                testProfileData.put("firstName", "Kevin");
+                testProfileData.put("lastName", "Vu");
+
+                userListingRef.child(user.getUid()).child("Reviews").push().child("Details").setValue(testReviewData);
+
+                userListingRef.child(user.getUid()).child("Profile").setValue(testProfileData);
 
             }
         });
@@ -164,7 +188,7 @@ public class TestFirebaseActivity extends AppCompatActivity {
         deleteListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(null);
+                 //userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(null);
             }
         });
     }

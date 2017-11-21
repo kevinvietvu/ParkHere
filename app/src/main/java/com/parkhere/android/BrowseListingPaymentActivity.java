@@ -43,18 +43,22 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                 if (!checkCardLengthBetween12And19(card_number)) {
                     Toast.makeText(BrowseListingPaymentActivity.this, "Card Length must be between 12 and 19 digits",
                             Toast.LENGTH_LONG).show();
-                } else if (!checkCVVLengthIs3(cvv)) {
+                }
+                else if (!checkCVVLengthIs3(cvv)) {
                     Toast.makeText(BrowseListingPaymentActivity.this, "CVV must be 3 digits",
                             Toast.LENGTH_LONG).show();
-                } else if (!vehicleInfoIsNotNull(vehicle_make)
+                }
+                else if (!vehicleInfoIsNotNull(vehicle_make)
                         || !vehicleInfoIsNotNull(vehicle_model)
                         || !vehicleInfoIsNotNull(vehicle_color)) {
                     Toast.makeText(BrowseListingPaymentActivity.this, "Please enter vehicle information",
                             Toast.LENGTH_LONG).show();
-                } else if (!checkIfLicensePlateNumberIsBetween1And7(license_plate_number)) {
+                }
+                else if (!checkIfLicensePlateNumberIsBetween1And7(license_plate_number)) {
                     Toast.makeText(BrowseListingPaymentActivity.this, "Please enter a valid license plate number",
                             Toast.LENGTH_LONG).show();
-                } else {
+                }
+                else {
                     Intent intent = new Intent(BrowseListingPaymentActivity.this, BrowseListingConfirmActivity.class);
 
                     intent.putExtras(bundle);
