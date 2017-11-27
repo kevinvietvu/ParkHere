@@ -96,9 +96,9 @@ public class ListingDialogFragment extends DialogFragment {
                     locationsRef.child(address).child("Users").child(userID).removeValue();
                     geoFireRef.child(address).removeValue();
                     Intent refreshList = new Intent(getActivity(), ViewUserListingsActivity.class);
-                    getActivity().finish();
                     startActivity(refreshList);
                     getActivity().getFragmentManager().popBackStack();
+                    getActivity().finish();
                 }
             });
             editListing.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +113,7 @@ public class ListingDialogFragment extends DialogFragment {
                     Intent refreshList = new Intent(getActivity(), ViewUserListingsActivity.class);
                     startActivity(refreshList);
                     getActivity().getFragmentManager().popBackStack();
+                    getActivity().finish();
                 }
             });
 

@@ -109,9 +109,9 @@ public class ReservationsDialogFragment extends DialogFragment {
                                 geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(), addressToInsertInFirebase.getLongitude()));
                                 userListingRef.child(renterID).child("Reservations").child(address).child("Details").removeValue();
                                 Intent refreshList = new Intent(getActivity(), ViewUserReservationsActivity.class);
-                                getActivity().finish();
                                 startActivity(refreshList);
                                 getActivity().getFragmentManager().popBackStack();
+                                getActivity().finish();
                             }
                             catch (Exception e) {
                                 Log.e("error", e.getMessage());
@@ -140,9 +140,9 @@ public class ReservationsDialogFragment extends DialogFragment {
                 Intent writeReview = new Intent(getActivity(), WriteReviewDetailsActivity.class);
                 writeReview.putExtra("address", address);
                 writeReview.putExtra("userID", userID);
-                getActivity().finish();
                 startActivity(writeReview);
                 getActivity().getFragmentManager().popBackStack();
+                getActivity().finish();
             }
         });
 

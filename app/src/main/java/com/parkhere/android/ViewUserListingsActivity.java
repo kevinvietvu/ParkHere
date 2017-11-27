@@ -104,4 +104,5 @@ public class ViewUserListingsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

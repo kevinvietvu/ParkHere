@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"
+    android:minWidth="450dp"
+    android:minHeight="450dp" >
+
+    <TextView
+        android:id="@+id/edit_spot_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="8dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="Edit Description"/>
+
+    <EditText
+        android:id="@+id/edit_spot_description_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Edit Description Here"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/spot_edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/spot_delete_btn"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:text="Edit" />
+
+    <Button
+        android:id="@+id/spot_delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:text="Delete This Spot" />
+
+</LinearLayout>

@@ -3,6 +3,7 @@ package com.parkhere.android;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,74 +23,72 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class ViewUserReservationsActivity extends AppCompatActivity {
+public class ManageSpotsActivity extends AppCompatActivity {
+    private Button add_spot;
 
-    private DatabaseReference userReservationRef;
+    private DatabaseReference userSpotsRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ArrayList<String> listings = new ArrayList<>();
-    private ArrayList<Listing> listingObjects = new ArrayList<>();
-
-    public static ManageSpotsActivity instance = null;
+    private ArrayList<String> spots = new ArrayList<>();
+    private ArrayList<Spot> spotObjects = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_user_reservations);
+        setContentView(R.layout.activity_manage_spots);
 
         auth = FirebaseAuth.getInstance();
 
         user = auth.getCurrentUser();
 
-        userReservationRef = database.getReference("Users");
+        add_spot = findViewById(R.id.btn_add_spot);
 
-        /**
-         Map<String, Object> listingData = new HashMap<String, Object>();
+        add_spot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ManageSpotsActivity.this, AddSpotMapsActivity.class);
+                startActivity(intent);
+            }
+        });
 
-         listingData.put("price", "1");
-         listingData.put("description", "boi");
-         listingData.put("spotType", "single");
-         listingData.put("startDate", "1");
-         listingData.put("startTime", "2");
-         listingData.put("endDate", "3");
-         listingData.put("endTime", "4");
-         listingData.put("address" , "Union City, CA, USA");
 
-         userReservationRef.child(user.getUid()).child("Reservations").child("Union City, CA, USA").child("Details").setValue(listingData); */
 
-        userReservationRef.addValueEventListener(new ValueEventListener() {
+        userSpotsRef = database.getReference("Users");
+
+        userSpotsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot d : snapshot.child(user.getUid()).child("Reservations").getChildren()) {
-                    Listing post = snapshot.child(user.getUid()).child("Reservations").child(d.getKey()).child("Details").getValue(Listing.class);
+                for (DataSnapshot d : snapshot.child(user.getUid()).child("ParkingSpots").getChildren()) {
+                    Spot post = snapshot.child(user.getUid()).child("ParkingSpots").child(d.getKey()).child("Details").getValue(Spot.class);
                     System.out.println(post.toString());
-                    listings.add(post.toString());
-                    listingObjects.add(post);
+                    spots.add(post.toString());
+                    spotObjects.add(post);
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserReservationsActivity.this, android.R.layout.simple_list_item_1, listings);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManageSpotsActivity.this, android.R.layout.simple_list_item_1, spots);
                 ListView listView = findViewById(R.id.list_view);
                 listView.setAdapter(adapter);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        showDialog(listingObjects.get(position));
+                        showDialog(spotObjects.get(position));
                     }
                 });
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+
     }
 
-    public void showDialog(Listing listing) {
+    public void showDialog(Spot spot) {
         int mStackLevel = 0;
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -101,7 +101,7 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = ReservationsDialogFragment.newInstance(mStackLevel, listing);
+        DialogFragment newFragment = SpotDialogFragment.newInstance(mStackLevel,spot);
         newFragment.show(ft, "dialog");
     }
 
@@ -118,11 +118,5 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        instance = null;
     }
 }
