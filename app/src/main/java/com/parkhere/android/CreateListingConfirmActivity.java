@@ -24,7 +24,6 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
 
     private Button confirm;
     private TextView price_text_view;
-    private TextView description_text_view;
     private TextView spot_type_text_view;
     private TextView start_date_text_view;
     private TextView end_date_text_view;
@@ -33,7 +32,6 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
     private TextView address_text_view;
     private Bundle bundle;
     private Double price;
-    private String description;
     private String spot_type;
     private String start_date;
     private String start_time;
@@ -74,12 +72,6 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
         price_text_view.setText(String.format("%s %s", "Price:", price));
 
         listingData.put("price", price);
-
-        description_text_view = findViewById(R.id.spot_description);
-        description = bundle.getString("description");
-        description_text_view.setText(String.format("%s %s", "Description:", description));
-
-        listingData.put("description" , description );
 
         spot_type_text_view = findViewById(R.id.spot_type);
         spot_type = bundle.getString("spot_type");
@@ -142,7 +134,6 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
 
                 /* test
                 System.out.println("price: " + price);
-                System.out.println("description: " + description);
                 System.out.println("spot type: " + spot_type);
                 System.out.println("start date: " + start_date);
                 System.out.println("start time: " + start_time);

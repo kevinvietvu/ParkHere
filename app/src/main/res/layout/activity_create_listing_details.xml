@@ -18,18 +18,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/enter_spot_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/enter_spot_description"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_price" />
-
     <Spinner
         android:id="@+id/choose_spot_type"
         android:layout_width="215dp"
@@ -38,7 +26,7 @@
         android:layout_marginTop="32dp"
         android:entries="@array/spot_types"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_spot_description" />
+        app:layout_constraintTop_toBottomOf="@+id/enter_price" />
 
     <Button
         android:id="@+id/next_step"

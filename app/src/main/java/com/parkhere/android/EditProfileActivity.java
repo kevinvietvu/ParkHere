@@ -33,7 +33,7 @@ public class EditProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
-        userRef = database.getReference().child("Users").child(user.getUid()).child("Profile");
+        userRef = database.getReference("Users").child(user.getUid()).child("Profile");
 
         editFirstName = findViewById(R.id.edit_first_name);
         editLastName = findViewById(R.id.edit_last_name);

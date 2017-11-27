@@ -23,7 +23,6 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     public String card_number;
     public String cvv;
     private String price;
-    private String description;
     private String spot_type;
     private String start_date;
     private String start_time;
@@ -67,8 +66,6 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
         price = bundle.getString("price");
 
-        description = bundle.getString("description");
-
         spot_type = bundle.getString("spot_type");
 
         start_date = bundle.getString("start_date");
@@ -111,8 +108,6 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                 }
                 else {
                     listingData.put("price", price);
-
-                    listingData.put("description" , description );
 
                     listingData.put("spotType" , spot_type );
 

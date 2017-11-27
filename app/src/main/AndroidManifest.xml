@@ -70,7 +70,9 @@
         <activity android:name=".PaymentMethodActivity" />
         <activity android:name=".LegalActivity" />
         <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".ChangeEmailActivity"></activity>
+        <activity android:name=".ChangeEmailActivity" />
+        <activity android:name=".SplitBookingStartDateActivity" />
+        <activity android:name=".SplitBookingEndDateActivity"></activity>
     </application>
 
 </manifest>

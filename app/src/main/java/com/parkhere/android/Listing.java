@@ -11,7 +11,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class Listing {
 
     public String address;
-    public String description;
     public String endDate;
     public String endTime;
     public Double price;
@@ -23,6 +22,7 @@ public class Listing {
     public String vehicleModel;
     public String vehicleColor;
     public String licensePlateNumber;
+    public String renterID;
 
     public Listing() {
         // Default constructor required for calls to DataSnapshot.getValue(Listing.class)
@@ -31,8 +31,6 @@ public class Listing {
     public String getAddress() {
         return address;
     }
-
-    public String getDescription() { return description; }
 
     public String getEndDate() {
         return endDate;
@@ -56,6 +54,8 @@ public class Listing {
 
     public String getUserID() { return userID; }
 
+    public String getRenterID() { return renterID; }
+
     public String getVehicleMake() { return vehicleMake; }
 
     public String getVehicleModel() { return vehicleModel; }
@@ -66,7 +66,7 @@ public class Listing {
 
     @Override
     public String toString() {
-        return "Address: " + address + " \nPrice: " + price + "\nSpot Type: " + spotType + " \nDescription: " + description + " \nStart Date: "
+        return "Address: " + address + " \nPrice: " + price + "\nSpot Type: " + spotType + " \nStart Date: "
                 + startDate + ", End Date: " + endDate + " \nStart Time: " + startTime + ", End Time: " + endTime;
     }
 

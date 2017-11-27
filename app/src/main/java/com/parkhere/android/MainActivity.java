@@ -39,7 +39,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -86,23 +88,23 @@ public class MainActivity extends AppCompatActivity
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Listing selectedListing = (Listing) selectedMarker.getTag();
-                    if (selectedListing.getUserID().equals(user.getUid())) {
+                    List<Listing> selectedListing = (List<Listing>) selectedMarker.getTag();
+                    if (selectedListing.get(0).getUserID().equals(user.getUid())) {
                         Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
                                 Toast.LENGTH_LONG).show();
                     }
-                    else {
-                        Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                    else { /**
+                        //CHANGE INTENT NAME LATER!!
+                        Intent paymentIntent = new Intent(MainActivity.this, SplitBookingStartDateActivity.class);
                         paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
                         paymentIntent.putExtra("price", selectedListing.getPrice());
-                        paymentIntent.putExtra("description", selectedListing.getDescription());
                         paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
                         paymentIntent.putExtra("start_date", selectedListing.getStartDate());
                         paymentIntent.putExtra("start_time", selectedListing.getStartTime());
                         paymentIntent.putExtra("end_date", selectedListing.getEndDate());
                         paymentIntent.putExtra("end_time", selectedListing.getEndTime());
                         paymentIntent.putExtra("creator_id", selectedListing.getUserID());
-                        startActivity(paymentIntent);
+                        startActivity(paymentIntent); */
                     }
                 }
             }
@@ -268,12 +270,13 @@ public class MainActivity extends AppCompatActivity
                             public void onDataChange(DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
-                                    //CREATE INFO WINDOW, ADDED POST != null
                                     if (post != null) {
                                         markerDetails = post.toString();
                                         marker.setSnippet(markerDetails);
                                         //Tag is an object associated with the marker
-                                        marker.setTag(post);
+                                        List<Listing> posts = new ArrayList<>();
+                                        posts.add(post);
+                                        marker.setTag(posts);
                                     }
                                 } else {
                                     System.out.println("userListing doesn't exist");
