@@ -38,6 +38,7 @@ public class PhoneNumberActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Add phone number verification before uncommenting the database call
                 //database call
                 //userRef.setValue(phoneNumberInput.getText().toString());

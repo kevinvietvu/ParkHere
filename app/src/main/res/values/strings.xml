@@ -67,6 +67,7 @@
     <string name="write_review_heading">Write a Review</string>
     <string name="enter_review">Enter Review</string>
     <string name="btn_submit">Submit</string>
+    <string name="write_review_confirmed">Review has been submitted!</string>
 
     <!-- Strings related to Edit Profile -->
     <string name="enter_first_name">First Name</string>

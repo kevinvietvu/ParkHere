@@ -50,9 +50,12 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
     private FirebaseUser user;
     private Map<String, Object> listingData = new HashMap<String, Object>();
 
+    public static CreateListingConfirmActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_create_listing_confirm);
         confirm = findViewById(R.id.confirm_button);
 
@@ -164,6 +167,7 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                     Log.e("IOException", e.getMessage());
                 }
 
+
                 if(CreateListingMapsActivity.instance != null) {
                     try {
                         CreateListingMapsActivity.instance.finish();
@@ -198,8 +202,12 @@ public class CreateListingConfirmActivity extends AppCompatActivity {
                 Toast.makeText(CreateListingConfirmActivity.this, "Listing has been created!", Toast.LENGTH_LONG).show();
                 finish();
             }
-
-
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 }

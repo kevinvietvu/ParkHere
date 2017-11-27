@@ -75,6 +75,12 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
+    }
+
     public static boolean ratingBarHasRating(float rating) {
         if (rating > 0) return true;
         else return false;

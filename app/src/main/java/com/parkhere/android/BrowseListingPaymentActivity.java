@@ -8,16 +8,43 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class BrowseListingPaymentActivity extends AppCompatActivity {
 
     private Button next_step;
     private Bundle bundle;
     public String card_number;
     public String cvv;
+    private String price;
+    private String description;
+    private String spot_type;
+    private String start_date;
+    private String start_time;
+    private String end_date;
+    private String end_time;
+    private String address;
+    private String creator_id;
     public String vehicle_make;
     public String vehicle_model;
     public String vehicle_color;
     public String license_plate_number;
+
+    private DatabaseReference geoFireRef;
+    private DatabaseReference userReservationRef;
+    private DatabaseReference locationRef;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+
+    private Map<String, Object> listingData = new HashMap<>();
 
     public static BrowseListingPaymentActivity instance = null;
 
@@ -28,7 +55,31 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browse_listing_payment);
         next_step = findViewById(R.id.next_step);
 
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        userReservationRef = database.getReference("Users");
+        locationRef = database.getReference("Locations");
+        geoFireRef = database.getReference("/geoFireListings");
+
         bundle = getIntent().getExtras();
+
+        address = bundle.getString("address");
+
+        price = bundle.getString("price");
+
+        description = bundle.getString("description");
+
+        spot_type = bundle.getString("spot_type");
+
+        start_date = bundle.getString("start_date");
+
+        start_time = bundle.getString("start_time");
+
+        end_date = bundle.getString("end_date");
+
+        end_time = bundle.getString("end_time");
+
+        creator_id = bundle.getString("creator_id");
 
         next_step.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,16 +110,47 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Intent intent = new Intent(BrowseListingPaymentActivity.this, BrowseListingConfirmActivity.class);
+                    listingData.put("price", price);
 
-                    intent.putExtras(bundle);
-                    intent.putExtra("card_number", card_number);
-                    intent.putExtra("cvv", cvv);
-                    intent.putExtra("car_make", vehicle_make);
-                    intent.putExtra("car_model", vehicle_model);
-                    intent.putExtra("car_color", vehicle_color);
-                    intent.putExtra("license_plate_number", license_plate_number);
-                    startActivity(intent);
+                    listingData.put("description" , description );
+
+                    listingData.put("spotType" , spot_type );
+
+                    listingData.put("startDate", start_date );
+
+                    listingData.put("startTime", start_time );
+
+                    listingData.put("endDate", end_date );
+
+                    listingData.put("endTime" , end_time);
+
+                    listingData.put("address" , address);
+
+                    listingData.put("userID", creator_id);
+
+                    listingData.put("vehicleMake", vehicle_make);
+
+                    listingData.put("vehicleModel", vehicle_model);
+
+                    listingData.put("vehicleColor", vehicle_color);
+
+                    listingData.put("licensePlateNumber", license_plate_number);
+
+                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child("Details").setValue(listingData);
+
+                    //might need to change database structure later
+                    locationRef.child(address).child("Users").child(creator_id).setValue(user.getUid());
+
+                    geoFireRef.child(address).removeValue();
+
+                    if(BrowseListingPaymentActivity.instance != null) {
+                        try {
+                            BrowseListingPaymentActivity.instance.finish();
+                        } catch (Exception e) {}
+                    }
+                    Toast.makeText(BrowseListingPaymentActivity.this, "Listing has been reserved!", Toast.LENGTH_LONG).show();
+                    finish();
+
                 }
             }
         });

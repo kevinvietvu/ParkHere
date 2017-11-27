@@ -32,6 +32,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Add password verification before uncommenting  the database call
                 //database call
                 //user.updateEmail(passwordInput.getText().toString());

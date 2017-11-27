@@ -32,6 +32,7 @@ public class ChangeEmailActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Add email verification before uncommenting the database call
                 //database call
                 //user.updateEmail(emailInput.getText().toString());

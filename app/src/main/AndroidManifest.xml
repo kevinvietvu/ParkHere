@@ -59,7 +59,6 @@
         <activity android:name=".CreateListingStartTimeActivity" />
         <activity android:name=".CreateListingConfirmActivity" />
         <activity android:name=".CreateListingDetailsActivity" />
-        <activity android:name=".BrowseListingConfirmActivity" />
         <activity android:name=".BrowseListingPaymentActivity" />
         <activity android:name=".TestFirebaseActivity" />
         <activity android:name=".ViewUserListingsActivity" />
