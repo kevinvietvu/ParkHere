@@ -84,27 +84,27 @@ public class MainActivity extends AppCompatActivity
                             Toast.LENGTH_LONG).show();
                 }
                 else if (selectedMarker.getTag() == null ) {
-                    Toast.makeText(MainActivity.this, "TAG PLEASE",
+                    Toast.makeText(MainActivity.this, "Please Select a Listing",
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    List<Listing> selectedListing = (List<Listing>) selectedMarker.getTag();
-                    if (selectedListing.get(0).getUserID().equals(user.getUid())) {
-                        Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
-                                Toast.LENGTH_LONG).show();
+                    List<Listing> listings = (List<Listing>) selectedMarker.getTag();
+                    if (listings.size() == 1) {
+                        if (listings.get(0).getUserID().equals(user.getUid())) {
+                            Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Listing selectedListing = listings.get(0);
+                            Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                            paymentIntent.putExtra("listing", selectedListing);
+                            startActivity(paymentIntent);
+                        }
                     }
-                    else { /**
-                        //CHANGE INTENT NAME LATER!!
-                        Intent paymentIntent = new Intent(MainActivity.this, SplitBookingStartDateActivity.class);
-                        paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
-                        paymentIntent.putExtra("price", selectedListing.getPrice());
-                        paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
-                        paymentIntent.putExtra("start_date", selectedListing.getStartDate());
-                        paymentIntent.putExtra("start_time", selectedListing.getStartTime());
-                        paymentIntent.putExtra("end_date", selectedListing.getEndDate());
-                        paymentIntent.putExtra("end_time", selectedListing.getEndTime());
-                        paymentIntent.putExtra("creator_id", selectedListing.getUserID());
-                        startActivity(paymentIntent); */
+                    else {
+                        Intent browseMultipleListingsIntent = new Intent(MainActivity.this, BrowseMultipleListingsActivity.class);
+                        browseMultipleListingsIntent.putParcelableArrayListExtra("listings", (ArrayList<Listing>) listings);
+                        startActivity(browseMultipleListingsIntent);
                     }
                 }
             }
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity
             LatLng SanJose = new LatLng(37.3382, -121.8863);
             //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
             //higher the float value, the more zoomed in
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,9));
         }
         else {
             LatLng newLatLng = new LatLng( (double) bundle.get("lat"),(double) bundle.get("lng"));
@@ -227,10 +227,14 @@ public class MainActivity extends AppCompatActivity
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Intent userProfile = new Intent(MainActivity.this, ProfileActivity.class);
-                Listing selectedListing = (Listing) marker.getTag();
-                userProfile.putExtra("userID", selectedListing.getUserID());
-                startActivity(userProfile);
+                List<Listing> listings = (List<Listing>) marker.getTag();
+                if (listings.size() == 1) {
+                    Intent userProfile = new Intent(MainActivity.this, ProfileActivity.class);
+                    userProfile.putExtra("userID", listings.get(0).getUserID());
+                    userProfile.putExtra("address", listings.get(0).getAddress());
+                    startActivity(userProfile);
+                }
+
             }
         });
     }
@@ -259,9 +263,11 @@ public class MainActivity extends AppCompatActivity
         // Add a new marker to the map
         final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
         final String address = key;
+
         locationsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                final List<Listing> posts = new ArrayList<>();
                 for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
                     final String userKey = d.getKey();
                     if (userKey != null) {
@@ -269,15 +275,21 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
-                                    if (post != null) {
-                                        markerDetails = post.toString();
-                                        marker.setSnippet(markerDetails);
-                                        //Tag is an object associated with the marker
-                                        List<Listing> posts = new ArrayList<>();
-                                        posts.add(post);
-                                        marker.setTag(posts);
+                                    for (DataSnapshot s : snapshot.child(userKey).child("Listings").child(address).getChildren()) {
+                                        Listing post = s.child("Details").getValue(Listing.class);
+                                        if (post != null) {
+                                            if (posts.size() > 0) {
+                                                markerDetails = "There are more than one listing for this parking spot \n Click on Rent Listing to view them all";
+                                            }
+                                            else {
+                                                markerDetails = post.toString();
+                                            }
+                                            marker.setSnippet(markerDetails);
+                                            //Tag is an object associated with the marker
+                                            posts.add(post);
+                                        }
                                     }
+                                    marker.setTag(posts);
                                 } else {
                                     System.out.println("userListing doesn't exist");
                                 }

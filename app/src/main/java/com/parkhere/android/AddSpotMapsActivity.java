@@ -20,19 +20,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class CreateListingMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class AddSpotMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Button submitAddressButton;
-    private String placeToSend;
+    public static String placeToSend;
 
-    public static CreateListingMapsActivity instance = null;
+    public static AddSpotMapsActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
-        setContentView(R.layout.activity_create_listing_maps);
+        setContentView(R.layout.activity_add_spot_maps);
 
         submitAddressButton = (Button) findViewById(R.id.address_submit_btn);
 
@@ -68,14 +68,14 @@ public class CreateListingMapsActivity extends FragmentActivity implements OnMap
         submitAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addressIntent = new Intent(CreateListingMapsActivity.this, CreateListingDetailsActivity.class);
+                Intent intent = new Intent(AddSpotMapsActivity.this, AddSpotDetailsActivity.class);
                 if (addressIsNull(placeToSend)) {
-                    Toast.makeText(CreateListingMapsActivity.this, "Please Enter an Address",
+                    Toast.makeText(AddSpotMapsActivity.this, "Please Enter an Address",
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    addressIntent.putExtra("address", placeToSend);
-                    startActivity(addressIntent);
+                    intent.putExtra("address", placeToSend);
+                    startActivity(intent);
                 }
             }
         });

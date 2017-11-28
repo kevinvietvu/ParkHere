@@ -66,7 +66,7 @@ public class ManageListingsActivity extends AppCompatActivity {
         createListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapIntent = new Intent(ManageListingsActivity.this, CreateListingMapsActivity.class);
+                Intent mapIntent = new Intent(ManageListingsActivity.this, CreateListingChooseSpotActivity.class);
                 //mapIntent.setPackage("com.google.android.apps.maps");
                 //if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);

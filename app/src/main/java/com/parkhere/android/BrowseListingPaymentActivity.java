@@ -22,7 +22,7 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private Bundle bundle;
     public String card_number;
     public String cvv;
-    private String price;
+    private Double price;
     private String spot_type;
     private String start_date;
     private String start_time;
@@ -30,6 +30,8 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private String end_time;
     private String address;
     private String creator_id;
+    private String userListingPushKey;
+    private String locationPushKey;
     public String vehicle_make;
     public String vehicle_model;
     public String vehicle_color;
@@ -60,23 +62,27 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
         locationRef = database.getReference("Locations");
         geoFireRef = database.getReference("/geoFireListings");
 
-        bundle = getIntent().getExtras();
+        Listing listing = getIntent().getExtras().getParcelable("listing");
 
-        address = bundle.getString("address");
+        address = listing.getAddress();
 
-        price = bundle.getString("price");
+        price = listing.getPrice();
 
-        spot_type = bundle.getString("spot_type");
+        spot_type = listing.getSpotType();
 
-        start_date = bundle.getString("start_date");
+        start_date = listing.getStartDate();
 
-        start_time = bundle.getString("start_time");
+        start_time = listing.getStartTime();
 
-        end_date = bundle.getString("end_date");
+        end_date = listing.getEndDate();
 
-        end_time = bundle.getString("end_time");
+        end_time = listing.getEndTime();
 
-        creator_id = bundle.getString("creator_id");
+        creator_id = listing.getUserID();
+
+        userListingPushKey = listing.getUserListingPushKey();
+
+        locationPushKey = listing.getLocationPushKey();
 
         next_step.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +129,12 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
                     listingData.put("userID", creator_id);
 
+                    listingData.put("renterID", user.getUid());
+
+                    listingData.put("userListingPushKey", userListingPushKey);
+
+                    listingData.put("locationPushKey", locationPushKey);
+
                     listingData.put("vehicleMake", vehicle_make);
 
                     listingData.put("vehicleModel", vehicle_model);
@@ -131,10 +143,13 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
                     listingData.put("licensePlateNumber", license_plate_number);
 
-                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child("Details").setValue(listingData);
+                    String reservationPushKey =  userReservationRef.child(user.getUid()).child("Reservations").child(address).push().getKey();
+
+                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child(reservationPushKey).child("Details").setValue(listingData);
 
                     //might need to change database structure later
-                    locationRef.child(address).child("Users").child(creator_id).setValue(user.getUid());
+                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue(reservationPushKey);
+                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue(user.getUid());
 
                     geoFireRef.child(address).removeValue();
 

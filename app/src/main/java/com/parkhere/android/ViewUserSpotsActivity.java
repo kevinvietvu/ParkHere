@@ -3,6 +3,7 @@ package com.parkhere.android;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,48 +24,58 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ViewUserListingsActivity extends AppCompatActivity {
+public class ViewUserSpotsActivity extends AppCompatActivity {
+    private Button add_spot;
 
-    private DatabaseReference userListingRef;
+    private DatabaseReference userSpotsRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ArrayList<String> listings = new ArrayList<>();
-    private ArrayList<Listing> listingObjects = new ArrayList<>();
+    private ArrayList<String> spots = new ArrayList<>();
+    private ArrayList<Spot> spotObjects = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_user_listings);
+        setContentView(R.layout.activity_view_user_spots);
 
         auth = FirebaseAuth.getInstance();
 
         user = auth.getCurrentUser();
 
-        userListingRef = database.getReference("Users").child(user.getUid()).child("Listings");
+        add_spot = findViewById(R.id.btn_add_spot);
 
-        userListingRef.addValueEventListener(new ValueEventListener() {
+        add_spot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewUserSpotsActivity.this, AddSpotMapsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+        userSpotsRef = database.getReference("Users");
+
+        userSpotsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot d : snapshot.getChildren()) {
-                    final String address = d.getKey();
-                    for (DataSnapshot s : snapshot.child(address).getChildren()) {
-                        Listing post = s.child("Details").getValue(Listing.class);
-                        System.out.println(post.toString());
-                        listings.add(post.toString());
-                        listingObjects.add(post);
-                    }
+                for (DataSnapshot d : snapshot.child(user.getUid()).child("ParkingSpots").getChildren()) {
+                    Spot post = snapshot.child(user.getUid()).child("ParkingSpots").child(d.getKey()).child("Details").getValue(Spot.class);
+                    System.out.println(post.toString());
+                    spots.add(post.toString());
+                    spotObjects.add(post);
                 }
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserListingsActivity.this, android.R.layout.simple_list_item_1, listings);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserSpotsActivity.this, android.R.layout.simple_list_item_1, spots);
                 ListView listView = findViewById(R.id.list_view);
                 listView.setAdapter(adapter);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        showDialog(listingObjects.get(position));
+                        showDialog(spotObjects.get(position));
                     }
                 });
 
@@ -76,7 +88,7 @@ public class ViewUserListingsActivity extends AppCompatActivity {
 
     }
 
-    public void showDialog(Listing listing) {
+    public void showDialog(Spot spot) {
         int mStackLevel = 0;
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
@@ -89,7 +101,7 @@ public class ViewUserListingsActivity extends AppCompatActivity {
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = ListingDialogFragment.newInstance(mStackLevel,listing);
+        DialogFragment newFragment = SpotDialogFragment.newInstance(mStackLevel,spot);
         newFragment.show(ft, "dialog");
     }
 

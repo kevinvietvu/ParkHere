@@ -41,6 +41,8 @@ public class ListingDialogFragment extends DialogFragment {
         args.putInt("num",num);
         args.putString("userID", listing.getUserID());
         args.putString("address", listing.getAddress());
+        args.putString("locationPushKey", listing.getLocationPushKey());
+        args.putString("userListingPushKey", listing.getUserListingPushKey());
         f.setArguments(args);
         return f;
     }
@@ -90,15 +92,18 @@ public class ListingDialogFragment extends DialogFragment {
             deleteListing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //probably have to delete from reservations..
                     String userID = (String) getArguments().get("userID");
                     String address = (String) getArguments().get("address");
-                    userListingRef.child(userID).child("Listings").child(address).removeValue();
-                    locationsRef.child(address).child("Users").child(userID).removeValue();
+                    String userListingPushKey = (String) getArguments().get("userListingPushKey");
+                    String locationPushKey = (String) getArguments().get("locationPushKey");
+                    userListingRef.child(userID).child("Listings").child(address).child(userListingPushKey).child("Details").removeValue();
+                    locationsRef.child(address).child("Users").child(userID).child("Renters").child(locationPushKey).child("Details").removeValue();
                     geoFireRef.child(address).removeValue();
                     Intent refreshList = new Intent(getActivity(), ViewUserListingsActivity.class);
-                    getActivity().finish();
                     startActivity(refreshList);
                     getActivity().getFragmentManager().popBackStack();
+                    getActivity().finish();
                 }
             });
             editListing.setOnClickListener(new View.OnClickListener() {
@@ -106,13 +111,16 @@ public class ListingDialogFragment extends DialogFragment {
                 public void onClick(View v) {
                     String userID = (String) getArguments().get("userID");
                     String address = (String) getArguments().get("address");
+                    String userListingPushKey = (String) getArguments().get("userListingPushKey");
+                    String locationPushKey = (String) getArguments().get("locationPushKey");
                     if (editListingInput.getText() == null || editListingInput.getText().toString().isEmpty())
-                        userListingRef.child(userID).child("Listings").child(address).child("Details").child("description").setValue("");
+                        userListingRef.child(userID).child("Listings").child(address).child(userListingPushKey).child("Details").child("description").setValue("");
                     else
-                        userListingRef.child(userID).child("Listings").child(address).child("Details").child("description").setValue(editListingInput.getText().toString());
+                        userListingRef.child(userID).child("Listings").child(address).child(userListingPushKey).child("Details").child("description").setValue(editListingInput.getText().toString());
                     Intent refreshList = new Intent(getActivity(), ViewUserListingsActivity.class);
                     startActivity(refreshList);
                     getActivity().getFragmentManager().popBackStack();
+                    getActivity().finish();
                 }
             });
 

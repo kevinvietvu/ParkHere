@@ -31,18 +31,13 @@
     <string name="action_settings">Settings</string>
 
     <!-- Strings related to create listing -->
-    <string name="enter_price">Enter Price</string>
+    <string name="create_listing_choose_spot_heading">Choose Parking Spot</string>
     <string name="enter_spot_description">Enter Description</string>
-    <string-array name="spot_types">
-        <item>Single Spot</item>
-        <item>Parking Lot</item>
-        <item>Parking Garage</item>
-    </string-array>
     <string name="choose_start_date">Choose Start Date</string>
     <string name="choose_end_date">Choose End Date</string>
     <string name="choose_start_time">Choose Start Time</string>
     <string name="choose_end_time">Choose End Time</string>>
-    <string name="listing_confirmed">Listing has been created! </string>
+    <string name="enter_price">Enter Price</string>
     <string name="btn_next_step">Next Step</string>
     <string name="btn_confirm">Confirm</string>>
     <string name="btn_okay">Okay</string>
@@ -56,12 +51,14 @@
     <string name="enter_color">Enter Vehicle Color</string>
     <string name="enter_license_plate_number">Enter License Plate</string>
     <string name="card_number">Card Number</string>
-    <string name="purchase_listing_confirmed">Listing has been purchased!</string>
     <string name="cvv">CVV</string>
 
     <!-- Strings related to view listings or reservations -->
     <string name="btn_my_listing">My Listings</string>
+    <string name="user_listings_heading">Listings I\'ve Created</string>
     <string name="btn_my_reservations">My Reservations</string>
+    <string name="user_reservations_heading">Listings I\'ve Reserved</string>
+    <string name="browse_multiple_listings_heading">All listings for this parking spot</string>
 
     <!-- Strings related to profile or review -->
     <string name="write_review_heading">Write a Review</string>
@@ -70,10 +67,20 @@
     <string name="write_review_confirmed">Review has been submitted!</string>
 
     <!-- Strings related to Edit Profile -->
+    <string name="btn_edit_name">Edit Name</string>
+    <string name="btn_manage_spots">Manage Spots</string>
     <string name="enter_first_name">First Name</string>
     <string name="enter_last_name">Last Name</string>
     <string name="enter_user_name">Username</string>
     <string name="btn_save_changes">Save</string>
+    <string name="manage_spots_heading">My Parking Spots</string>
+    <string name="btn_add_spot">Add Parking Spot</string>
+    <string name="enter_address">Enter Address</string>
+    <string-array name="spot_types">
+        <item>Single Spot</item>
+        <item>Parking Lot</item>
+        <item>Parking Garage</item>
+    </string-array>
 
     <!-- Strings related to Change Email -->
     <string name="enter_email">Email</string>
@@ -93,6 +100,9 @@
 
     <!-- Strings related to Phone Number -->
     <string name="enter_phone_number">Phone Number</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
