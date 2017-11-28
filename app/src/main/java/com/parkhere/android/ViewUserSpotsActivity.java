@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ManageSpotsActivity extends AppCompatActivity {
+public class ViewUserSpotsActivity extends AppCompatActivity {
     private Button add_spot;
 
     private DatabaseReference userSpotsRef;
@@ -38,7 +38,7 @@ public class ManageSpotsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_spots);
+        setContentView(R.layout.activity_view_user_spots);
 
         auth = FirebaseAuth.getInstance();
 
@@ -49,7 +49,7 @@ public class ManageSpotsActivity extends AppCompatActivity {
         add_spot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ManageSpotsActivity.this, AddSpotMapsActivity.class);
+                Intent intent = new Intent(ViewUserSpotsActivity.this, AddSpotMapsActivity.class);
                 startActivity(intent);
             }
         });
@@ -68,7 +68,7 @@ public class ManageSpotsActivity extends AppCompatActivity {
                     spotObjects.add(post);
                 }
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManageSpotsActivity.this, android.R.layout.simple_list_item_1, spots);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserSpotsActivity.this, android.R.layout.simple_list_item_1, spots);
                 ListView listView = findViewById(R.id.list_view);
                 listView.setAdapter(adapter);
 

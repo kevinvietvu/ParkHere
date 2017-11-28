@@ -71,7 +71,7 @@
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".ChangeEmailActivity" />
         <activity android:name=".EditProfileActivity" />
-        <activity android:name=".ManageSpotsActivity" />
+        <activity android:name=".ViewUserSpotsActivity" />
         <activity android:name=".AddSpotDetailsActivity" />
         <activity android:name=".CreateListingChooseSpotActivity"></activity>
     </application>

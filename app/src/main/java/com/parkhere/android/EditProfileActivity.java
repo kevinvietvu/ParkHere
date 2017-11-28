@@ -29,7 +29,7 @@ public class EditProfileActivity extends AppCompatActivity {
         manage_spots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EditProfileActivity.this, ManageSpotsActivity.class);
+                Intent intent = new Intent(EditProfileActivity.this, ViewUserSpotsActivity.class);
                 startActivity(intent);
             }
         });

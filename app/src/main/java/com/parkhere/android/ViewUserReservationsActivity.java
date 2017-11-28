@@ -21,8 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ViewUserReservationsActivity extends AppCompatActivity {
 
@@ -34,7 +32,7 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
     private ArrayList<String> listings = new ArrayList<>();
     private ArrayList<Listing> listingObjects = new ArrayList<>();
 
-    public static ManageSpotsActivity instance = null;
+    public static ViewUserSpotsActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

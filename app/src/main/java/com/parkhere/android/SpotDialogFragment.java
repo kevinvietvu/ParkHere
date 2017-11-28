@@ -1,11 +1,8 @@
 package com.parkhere.android;
 
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.geofire.GeoFire;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -94,7 +88,7 @@ public class SpotDialogFragment extends DialogFragment {
                 userSpotRef.child(userID).child("ParkingSpots").child(address).removeValue();
                 //locationsRef.child(address).child("Users").child(userID).removeValue();
                 //geoFireRef.child(address).removeValue();
-                Intent refreshList = new Intent(getActivity(), ManageSpotsActivity.class);
+                Intent refreshList = new Intent(getActivity(), ViewUserSpotsActivity.class);
                 startActivity(refreshList);
                 getActivity().getFragmentManager().popBackStack();
                 getActivity().finish();
@@ -109,7 +103,7 @@ public class SpotDialogFragment extends DialogFragment {
                     userSpotRef.child(userID).child("ParkingSpots").child(address).child("Details").child("description").setValue("");
                 else
                     userSpotRef.child(userID).child("ParkingSpots").child(address).child("Details").child("description").setValue(editSpotInput.getText().toString());
-                Intent refreshList = new Intent(getActivity(), ManageSpotsActivity.class);
+                Intent refreshList = new Intent(getActivity(), ViewUserSpotsActivity.class);
                 startActivity(refreshList);
                 getActivity().getFragmentManager().popBackStack();
                 getActivity().finish();
