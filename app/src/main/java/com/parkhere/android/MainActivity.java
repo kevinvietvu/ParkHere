@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,6 +20,10 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,12 +39,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GeoQueryEventListener, GoogleMap.OnMarkerClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GeoQueryEventListener, GoogleMap.OnMarkerClickListener
+{
 
     private GoogleMap mMap;
     private FirebaseAuth auth;
@@ -53,8 +59,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Map<String,Marker> markers;
     private FirebaseUser user;
+    public Bundle bundle;
 
-    private String userKey;
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
     private Marker selectedMarker;
@@ -73,23 +79,33 @@ public class MainActivity extends AppCompatActivity
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedMarkerIsNull(selectedMarker) || selectedMarker.getTag() == null )  {
+                if (selectedMarkerIsNull(selectedMarker))  {
+                    Toast.makeText(MainActivity.this, "Please Select a Listing",
+                            Toast.LENGTH_LONG).show();
+                }
+                else if (selectedMarker.getTag() == null ) {
                     Toast.makeText(MainActivity.this, "Please Select a Listing",
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                    Listing selectedListing = (Listing) selectedMarker.getTag();
-                    paymentIntent.putExtra("address", selectedListing.getAddress()); //title so far has address only, will cause problems later on with info window with extra details
-                    paymentIntent.putExtra("price", selectedListing.getPrice());
-                    paymentIntent.putExtra("description", selectedListing.getDescription());
-                    paymentIntent.putExtra("spot_type", selectedListing.getSpotType());
-                    paymentIntent.putExtra("start_date", selectedListing.getStartDate());
-                    paymentIntent.putExtra("start_time", selectedListing.getStartTime());
-                    paymentIntent.putExtra("end_date", selectedListing.getEndDate());
-                    paymentIntent.putExtra("end_time", selectedListing.getEndTime());
-                    paymentIntent.putExtra("creator_id", selectedListing.getUserID());
-                    startActivity(paymentIntent);
+                    List<Listing> listings = (List<Listing>) selectedMarker.getTag();
+                    if (listings.size() == 1) {
+                        if (listings.get(0).getUserID().equals(user.getUid())) {
+                            Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Listing selectedListing = listings.get(0);
+                            Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                            paymentIntent.putExtra("listing", selectedListing);
+                            startActivity(paymentIntent);
+                        }
+                    }
+                    else {
+                        Intent browseMultipleListingsIntent = new Intent(MainActivity.this, BrowseMultipleListingsActivity.class);
+                        browseMultipleListingsIntent.putParcelableArrayListExtra("listings", (ArrayList<Listing>) listings);
+                        startActivity(browseMultipleListingsIntent);
+                    }
                 }
             }
         });
@@ -99,15 +115,27 @@ public class MainActivity extends AppCompatActivity
 
         user = auth.getCurrentUser();
 
+        //Setting up database references
+        userListingRef = database.getReference("Users");
+        locationsRef = database.getReference("Locations");
+
+        geoFireRef = database.getReference("/geoFireListings");
+        geoFire = new GeoFire(geoFireRef);
+
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
+            markers = new HashMap<>();
+        }
+        else {
+            geoQuery = geoFire.queryAtLocation(new GeoLocation((double) bundle.get("lat"), (double) bundle.get("lng")), 300);
+            markers = new HashMap<>();
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
-
-
-        //Setting up database references
-        userListingRef = database.getReference("Users");
-        locationsRef = database.getReference("Locations");
 
         /**
          * Nav Menu
@@ -125,12 +153,35 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        geoFireRef = database.getReference("/geoFireListings");
-        geoFire = new GeoFire(geoFireRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(37.6786935, -122.1538643), 300);
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        this.markers = new HashMap<>();
+        autocompleteFragment.setHint("Search Area For Listings");
 
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i("", "Place: " + place.getName());
+                LatLng point = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                if (geoQuery != null) {
+                    geoQuery.removeAllListeners();
+                }
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,11));
+                Intent intent = getIntent();
+                intent.putExtra("lat", place.getLatLng().latitude);
+                intent.putExtra("lng", place.getLatLng().longitude);
+                finish();
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("", "An error occurred: " + status);
+            }
+        });
     }
 
     /**
@@ -147,11 +198,17 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
 
         // Add a marker in California, San Jose and move/zoom the camera on create
-        LatLng SanJose = new LatLng(37.3382, -121.8863);
-        //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
-        //higher the float value, the more zoomed in
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,8));
-
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            LatLng SanJose = new LatLng(37.3382, -121.8863);
+            //mMap.addMarker(new MarkerOptions().position(SanJose).title("Test"));
+            //higher the float value, the more zoomed in
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SanJose,9));
+        }
+        else {
+            LatLng newLatLng = new LatLng( (double) bundle.get("lat"),(double) bundle.get("lng"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,8));
+        }
 
         /**
          * might need to implement later
@@ -164,6 +221,22 @@ public class MainActivity extends AppCompatActivity
         });
 
         mMap.setOnMarkerClickListener(this);
+
+        mMap.setInfoWindowAdapter(new InfoWindowAdapter(this));
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                List<Listing> listings = (List<Listing>) marker.getTag();
+                if (listings.size() == 1) {
+                    Intent userProfile = new Intent(MainActivity.this, ProfileActivity.class);
+                    userProfile.putExtra("userID", listings.get(0).getUserID());
+                    userProfile.putExtra("address", listings.get(0).getAddress());
+                    startActivity(userProfile);
+                }
+
+            }
+        });
     }
 
     @Override
@@ -190,40 +263,53 @@ public class MainActivity extends AppCompatActivity
         // Add a new marker to the map
         final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
         final String address = key;
+
         locationsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                final List<Listing> posts = new ArrayList<>();
                 for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
-                    userKey = d.getKey();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-        userListingRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    Listing post = snapshot.child(userKey).child("Listings").child(address).child("Details").getValue(Listing.class);
-                    //CREATE INFO WINDOW, ADDED POST != null
-                    if (post != null) {
-                        markerDetails = post.toString();
-                        marker.setSnippet(markerDetails);
-                        //Tag is an object associated with the marker
-                        marker.setTag(post);
+                    final String userKey = d.getKey();
+                    if (userKey != null) {
+                        userListingRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot s : snapshot.child(userKey).child("Listings").child(address).getChildren()) {
+                                        Listing post = s.child("Details").getValue(Listing.class);
+                                        if (post != null) {
+                                            if (posts.size() > 0) {
+                                                markerDetails = "There are more than one listing for this parking spot \n Click on Rent Listing to view them all";
+                                            }
+                                            else {
+                                                markerDetails = post.toString();
+                                            }
+                                            marker.setSnippet(markerDetails);
+                                            //Tag is an object associated with the marker
+                                            posts.add(post);
+                                        }
+                                    }
+                                    marker.setTag(posts);
+                                } else {
+                                    System.out.println("userListing doesn't exist");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError firebaseError) {
+                                System.out.println("The read failed: " + firebaseError.getMessage());
+                            }
+                        });
                     }
                 }
-                else {
-                    System.out.println("userListing doesn't exist");
-                }
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+
         this.markers.put(key, marker);
     }
 
@@ -265,16 +351,6 @@ public class MainActivity extends AppCompatActivity
         selectedMarker = marker;
 
         System.out.println("Test Marker: " + selectedMarker);
-        /** Check if a click count was set, then display the click count.
-         Integer clickCount = (Integer) marker.getTag();
-         if (clickCount != null) {
-         marker.setTag(clickCount);
-         clickCount = clickCount + 1;
-         Toast.makeText(this,
-         marker.getTitle() +
-         " has been clicked " + clickCount + " times.",
-         Toast.LENGTH_SHORT).show();
-         } */
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
@@ -348,25 +424,35 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
             //finish();
-
-        } else if (id == R.id.nav_notifications) {
-
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
             signOutButton();
             finish();
-
-        } else if (id == R.id.nav_edit_profile) {
-
-        } else if (id == R.id.nav_change_password) {
-
+        }
+        else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_manage_listings) {
+            Intent intent = new Intent(MainActivity.this, ManageListingsActivity.class);
+            startActivity(intent);
+            //finish();
+        }
+        else if (id == R.id.nav_change_password) {
+            Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_email) {
-
+            Intent intent = new Intent(MainActivity.this, ChangeEmailActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_phone) {
-
+            Intent intent = new Intent(MainActivity.this, PhoneNumberActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_payment_method) {
-
+            Intent intent = new Intent(MainActivity.this, PaymentMethodActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_legal) {
-
+            Intent intent = new Intent(MainActivity.this, LegalActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

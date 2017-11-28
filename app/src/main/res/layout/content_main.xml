@@ -8,6 +8,7 @@
     tools:context="com.parkhere.android.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -15,8 +16,8 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.parkhere.android.CreateListingMapsActivity">
-    </fragment>
+        tools:context="com.parkhere.android.AddSpotMapsActivity"
+     />
 
     <Button
         android:id="@+id/btn_browse_listing"

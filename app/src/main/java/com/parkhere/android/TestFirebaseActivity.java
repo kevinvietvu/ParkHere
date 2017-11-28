@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,10 @@ public class TestFirebaseActivity extends AppCompatActivity {
 
     private DatabaseReference geoFireRef = database.getReference("geoFireListings");
     private GeoFire geoFire = new GeoFire(geoFireRef);
+
+    private DatabaseReference testRef = database.getReference("TestUsers");
+
+    private DatabaseReference testRef2 = database.getReference("TestLocations");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,28 +71,38 @@ public class TestFirebaseActivity extends AppCompatActivity {
         user = auth.getCurrentUser();
 
         userListingRef = database.getReference("Users");
-
-        userListingRef.addValueEventListener(new ValueEventListener() {
+        final List<String> posts = new ArrayList<>();
+        final String address = "15564 Calgary Street, San Leandro";
+        testRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                //System.out.println(snapshot.child("15564 Calgary St, San Leandro, CA 94579, USA").child("Users"));
-                //System.out.println(snapshot.child("15564 Calgary St, San Leandro, CA 94579, USA").child("Users").child("Kevin's ID").getKey());
+                for (DataSnapshot d : snapshot.child(address).child("Users").getChildren()) {
+                    final String userKey = d.getKey();
+                    System.out.println("USER KEY " + d.getKey());
+                    testRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for (DataSnapshot d : snapshot.child(userKey).child("Listings").child(address).getChildren())
+                                if (snapshot.exists()) {
+                                    String post = d.child("Details").child("LocationsPushKey").getValue().toString();
+                                    if (post != null) {
+                                        posts.add(post);
+                                        System.out.println(post);
+                                        System.out.println("LIST SIZE " + posts.size());
+                                    }
+                                } else {
+                                    System.out.println("userListing doesn't exist");
+                                }
+                        }
 
-                //System.out.println(snapshot.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").getKey());
-                //System.out.println(snapshot.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").getValue());
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                            System.out.println("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
 
-                /**
-                 for (DataSnapshot d : snapshot.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").getChildren()) {
-                 Listing post = d.getValue(Listing.class);
-                 System.out.println(d.getKey());
-                 System.out.println(post.getDescription() + " " + post.getPrice());
-                 }
-                 */
-                /**
-                for (DataSnapshot d : snapshot.getChildren()) {
-                    System.out.println(d.getKey());
-                    System.out.println(d.getValue());
-                }*/
+                }
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
@@ -143,7 +158,7 @@ public class TestFirebaseActivity extends AppCompatActivity {
                 locationsRef.child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Users").child("Nelson's ID").setValue(true);
                 userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
                 userListingRef.child("Nelson's ID").child("Listings").child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Details").setValue(listingData2);
-                userListingRef.child("Ricky's ID").child("Listings").child("15145 Andover St, San Leandro, CA 94579, USA").child("Details").setValue(listingData3); */
+                userListingRef.child("Ricky's ID").child("Listings").child("15145 Andover St, San Leandro, CA 94579, USA").child("Details").setValue(listingData3);
 
                 Map<String, Object> listingData = new HashMap<String, Object>();
 
@@ -156,7 +171,30 @@ public class TestFirebaseActivity extends AppCompatActivity {
                 listingData.put("endTime", "4");
                 listingData.put("address" , "15564 Calgary St, San Leandro, CA 94579, USA");
 
-                userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
+                userListingRef.child("Kevin's ID").child("Profile").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData); */
+
+                /**
+                 * TestUser -> UserID -> Listings -> Address -> Push Key -> Details -> { Listing info etc.. }
+
+                 TestLocations -> Address -> Users -> UserID -> Renters -> Push Key -> { RenterID, Listing PushKey }
+                 */
+
+                Map<String,Object> testReviewData = new HashMap<>();
+
+                String testRef2PushKey = testRef2.child("15564 Calgary Street, San Leandro").child("Users").child(user.getUid()).child("Renters").push().getKey();
+                String testRefPushKey = testRef.child(user.getUid()).child("Listings").child("15564 Calgary Street, San Leandro").push().getKey();
+                testReviewData.put("review", "BOIII");
+                testReviewData.put("rating", (float) 2.5);
+                testReviewData.put("LocationsPushKey", testRef2PushKey);
+
+                Map<String,Object> testProfileData = new HashMap<>();
+
+                testProfileData.put("firstName", "Bevin");
+                testProfileData.put("lastName", "Du");
+                testProfileData.put("ListingPushKey", testRefPushKey);
+
+                testRef.child(user.getUid()).child("Listings").child("15564 Calgary Street, San Leandro").child(testRefPushKey).child("Details").setValue(testReviewData);
+                testRef2.child("15564 Calgary Street, San Leandro").child("Users").child(user.getUid()).child("Renters").child(testRef2PushKey).setValue(testProfileData);
 
             }
         });
@@ -164,7 +202,7 @@ public class TestFirebaseActivity extends AppCompatActivity {
         deleteListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(null);
+                 //userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(null);
             }
         });
     }

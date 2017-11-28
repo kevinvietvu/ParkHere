@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textEmailAddress"
-            android:hint="@string/hint_email" />
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress" />
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
         android:id="@+id/signup_input_layout_password"
@@ -28,25 +28,64 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword"
-            android:hint="@string/hint_password" />
+            android:hint="@string/hint_password"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/signup_input__layout_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <EditText
+            android:id="@+id/signup_input_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/hint_confirm_password"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/signup_input_layout_drivers_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <EditText
+            android:id="@+id/signup_input_drivers_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/hint_drivers_id"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/signup_input_layout_phone_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <EditText
+            android:id="@+id/signup_input_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/hint_phone_number"
+            android:inputType="phone" />
     </android.support.design.widget.TextInputLayout>
     <Button android:id="@+id/btn_signup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_sign_up"
-        android:background="@color/colorPrimaryDark"
         android:layout_marginTop="40dp"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/btn_sign_up"
         android:textColor="@android:color/white"/>
     <Button android:id="@+id/btn_link_login"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_link_to_login"
-        android:background="@android:color/transparent"
         android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        android:text="@string/btn_link_to_login"
         android:textColor="@color/colorPrimaryDark"/>
     <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"/>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
