@@ -31,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Object;
 
 
 public class MainActivity extends AppCompatActivity
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Map<String,Marker> markers;
     private FirebaseUser user;
+    private int reservationCount;
     public Bundle bundle;
 
     private String markerDetails;
@@ -261,7 +264,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
-        final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+        final Marker marker = this.mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(location.latitude, location.longitude)).title(key));
         final String address = key;
 
         locationsRef.addValueEventListener(new ValueEventListener() {
@@ -288,6 +292,16 @@ public class MainActivity extends AppCompatActivity
                                             //Tag is an object associated with the marker
                                             posts.add(post);
                                         }
+                                    }
+                                    reservationCount = Integer.parseInt(snapshot.child(userKey).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue().toString());
+                                    if (reservationCount >= 10){
+                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                    }
+                                    else if(reservationCount >= 5 && reservationCount < 10){
+                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                                    }
+                                    else{
+                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                                     }
                                     marker.setTag(posts);
                                 } else {
