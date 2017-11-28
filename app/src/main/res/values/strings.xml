@@ -58,6 +58,7 @@
     <string name="user_listings_heading">Listings I\'ve Created</string>
     <string name="btn_my_reservations">My Reservations</string>
     <string name="user_reservations_heading">Listings I\'ve Reserved</string>
+    <string name="browse_multiple_listings_heading">All listings for this parking spot</string>
 
     <!-- Strings related to profile or review -->
     <string name="write_review_heading">Write a Review</string>

@@ -45,28 +45,17 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
 
         userReservationRef = database.getReference("Users");
 
-        /**
-         Map<String, Object> listingData = new HashMap<String, Object>();
-
-         listingData.put("price", "1");
-         listingData.put("description", "boi");
-         listingData.put("spotType", "single");
-         listingData.put("startDate", "1");
-         listingData.put("startTime", "2");
-         listingData.put("endDate", "3");
-         listingData.put("endTime", "4");
-         listingData.put("address" , "Union City, CA, USA");
-
-         userReservationRef.child(user.getUid()).child("Reservations").child("Union City, CA, USA").child("Details").setValue(listingData); */
-
         userReservationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.child(user.getUid()).child("Reservations").getChildren()) {
-                    Listing post = snapshot.child(user.getUid()).child("Reservations").child(d.getKey()).child("Details").getValue(Listing.class);
-                    System.out.println(post.toString());
-                    listings.add(post.toString());
-                    listingObjects.add(post);
+                    final String address = d.getKey();
+                    for (DataSnapshot s : snapshot.child(user.getUid()).child("Reservations").child(address).getChildren()) {
+                        Listing post = s.child("Details").getValue(Listing.class);
+                        System.out.println(post.toString());
+                        listings.add(post.toString());
+                        listingObjects.add(post);
+                    }
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserReservationsActivity.this, android.R.layout.simple_list_item_1, listings);
                 ListView listView = findViewById(R.id.list_view);

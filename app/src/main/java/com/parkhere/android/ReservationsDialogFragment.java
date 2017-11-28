@@ -27,6 +27,8 @@ public class ReservationsDialogFragment extends DialogFragment {
     int mNum;
     Button deleteListing;
     Button writeReview;
+    private int reservationCount;
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
     private DatabaseReference locationsRef;
@@ -42,8 +44,7 @@ public class ReservationsDialogFragment extends DialogFragment {
         // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putInt("num",num);
-        args.putString("userID", listing.getUserID());
-        args.putString("address", listing.getAddress());
+        args.putParcelable("listing", listing);
         f.setArguments(args);
         return f;
     }
@@ -94,24 +95,28 @@ public class ReservationsDialogFragment extends DialogFragment {
         deleteListing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String userID = (String) getArguments().get("userID");
-                final String address = (String) getArguments().get("address");
+                final Listing listing = getArguments().getParcelable("listing");
+                System.out.println("TEST ADD " + listing.getAddress());
+                System.out.println("TEST USERID " + listing.getUserID());
+                System.out.println("PUSH KEY " + listing.getLocationPushKey());
 
-                Query query = locationsRef.child(address).child("Users").child(userID);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                locationsRef.child(listing.getAddress()).child("Users").child(listing.getUserID()).child("Renters").child(listing.getLocationPushKey()).child("Details").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                        String renterID = snapshot.getValue().toString();
+                            String renterID = snapshot.child("renterID").getValue().toString();
+                            String reservationPushKey = snapshot.child("reservationPushKey").getValue().toString();
+
                             try {
-                                Address addressToInsertInFirebase = ManageListingsActivity.getGeoLocationFromAddress(address, getActivity());
-                                locationsRef.child(address).child("Users").child(userID).setValue("");
-                                geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(), addressToInsertInFirebase.getLongitude()));
-                                userListingRef.child(renterID).child("Reservations").child(address).child("Details").removeValue();
+                                Address addressToInsertInFirebase = ManageListingsActivity.getGeoLocationFromAddress(listing.getAddress(), getActivity());
+                                locationsRef.child(listing.getAddress()).child("Users").child(listing.getUserID()).child("Renters").child(listing.getLocationPushKey()).child("Details").child("renterID").setValue("");
+                                locationsRef.child(listing.getAddress()).child("Users").child(listing.getUserID()).child("Renters").child(listing.getLocationPushKey()).child("Details").child("reservationPushKey").setValue("");
+                                geoFire.setLocation(listing.getAddress(), new GeoLocation(addressToInsertInFirebase.getLatitude(), addressToInsertInFirebase.getLongitude()));
+                                userListingRef.child(renterID).child("Reservations").child(listing.getAddress()).child(reservationPushKey).child("Details").removeValue();
                                 Intent refreshList = new Intent(getActivity(), ViewUserReservationsActivity.class);
+                                getActivity().finish();
                                 startActivity(refreshList);
                                 getActivity().getFragmentManager().popBackStack();
-                                getActivity().finish();
                             }
                             catch (Exception e) {
                                 Log.e("error", e.getMessage());
@@ -127,22 +132,33 @@ public class ReservationsDialogFragment extends DialogFragment {
                         System.out.println("The read failed: " + firebaseError.getMessage());
                     }
                 });
+
+                userListingRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        reservationCount = Integer.parseInt(snapshot.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").getValue().toString());
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
+                        System.out.println("The read failed: " + firebaseError.getMessage());
+                    }
+                });
+
+                userListingRef.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").setValue(reservationCount - 1);
             }
         });
 
         writeReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final String userID = (String) getArguments().get("userID");
-                final String address = (String) getArguments().get("address");
+                final Listing listing = getArguments().getParcelable("listing");
 
                 Intent writeReview = new Intent(getActivity(), WriteReviewDetailsActivity.class);
-                writeReview.putExtra("address", address);
-                writeReview.putExtra("userID", userID);
+                writeReview.putExtra("address", listing.getAddress());
+                writeReview.putExtra("userID", listing.getUserID());
+                getActivity().finish();
                 startActivity(writeReview);
                 getActivity().getFragmentManager().popBackStack();
-                getActivity().finish();
             }
         });
 

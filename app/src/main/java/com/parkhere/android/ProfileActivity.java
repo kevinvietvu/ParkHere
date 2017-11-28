@@ -54,11 +54,14 @@ public class ProfileActivity extends AppCompatActivity {
                 else {
                     userID = selectedListing.get("userID").toString();
                 }
-
-                for (DataSnapshot d : snapshot.child(userID).child("Reviews").getChildren()) {
-                    String review = (String) d.child("Details").child("review").getValue();
-                    String reviewDetails = review + " \n" + d.child("Details").child("rating").getValue().toString() ;
-                    reviews.add(reviewDetails);
+                for (DataSnapshot d : snapshot.child(userID).child("ParkingSpots").getChildren()) {
+                    final String address = d.getKey();
+                    for (DataSnapshot s : snapshot.child(userID).child("ParkingSpots").child(address).child("Reviews").getChildren()) {
+                        String review = s.child("Details").child("review").getValue().toString();
+                        String rating = s.child("Details").child("rating").getValue().toString();
+                        String reviewDetails = "Parking Spot : " + address + "\n Description : " + review  + "\n Rating : " + rating;
+                        reviews.add(reviewDetails);
+                    }
                 }
                 String firstName = (String) snapshot.child(userID).child("Profile").child("firstName").getValue();
                 String lastName = (String) snapshot.child(userID).child("Profile").child("lastName").getValue();

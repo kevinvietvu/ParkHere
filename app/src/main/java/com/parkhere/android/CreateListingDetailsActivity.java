@@ -30,6 +30,7 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     private TextView start_time_text_view;
     private TextView end_time_text_view;
     private TextView address_text_view;
+    private EditText price_input;
     private Bundle bundle;
     private Double price;
     private String description;
@@ -48,12 +49,14 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private Map<String, Object> listingData = new HashMap<String, Object>();
+    private Map<String, Object> locationData = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_listing_details);
         confirm = findViewById(R.id.confirm_button);
+        price_input = findViewById(R.id.enter_price);
 
         bundle = getIntent().getExtras();
 
@@ -104,23 +107,25 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = Double.parseDouble(((EditText) findViewById(R.id.enter_price)).getText().toString());
+                price = Double.parseDouble(price_input.getText().toString());
 
                 if (!priceIsNotNull(price)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
                 } else if (!priceMustBeBetween1And999(price)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter a price between 1 and 999", Toast.LENGTH_LONG).show();
                 } else {
-                    /**
-                     locationsRef.child("16775 Ventry Way, San Lorenzo, CA 94580, USA").child("Users").child("Nelson's ID").setValue(true);
-                     userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(listingData);
-                     */
+
                     try {
                         auth = FirebaseAuth.getInstance();
                         user = auth.getCurrentUser();
 
-                        userListingRef = database.getReference("Users").child(user.getUid()).child("Listings").child(address).child("Details");
-                        locationsRef = database.getReference("Locations").child(address);
+                        userListingRef = database.getReference("Users");
+                        locationsRef = database.getReference("Locations");
+
+                        String locationPushKey = locationsRef.child(address).child("Users").child(user.getUid()).child("Renters").push().getKey();
+                        String userListingPushKey = userListingRef.child(user.getUid()).child("Listings").child(address).push().getKey();
+
+
                         geoFireRef = database.getReference("geoFireListings");
                         geoFire = new GeoFire(geoFireRef);
 
@@ -133,11 +138,16 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                         listingData.put("startDate", start_date);
                         listingData.put("startTime", start_time);
                         listingData.put("userID", user.getUid());
+                        listingData.put("locationPushKey", locationPushKey);
+                        listingData.put("userListingPushKey", userListingPushKey);
 
-                        userListingRef.setValue(listingData);
+                        locationData.put("userListingPushKey", userListingPushKey);
+                        locationData.put("locationPushKey", locationPushKey);
+                        locationData.put("reservationPushKey", "");
+                        locationData.put("renterID", "");
 
-                        //setValue to user's name later
-                        locationsRef.child(address).child("Users").child(user.getUid()).setValue("");
+                        userListingRef.child(user.getUid()).child("Listings").child(address).child(userListingPushKey).child("Details").setValue(listingData);
+                        locationsRef.child(address).child("Users").child(user.getUid()).child("Renters").child(locationPushKey).child("Details").setValue(locationData);
 
                         Address addressToInsertInFirebase = ManageListingsActivity.getGeoLocationFromAddress(address, CreateListingDetailsActivity.this);
                         geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(),addressToInsertInFirebase.getLongitude()));

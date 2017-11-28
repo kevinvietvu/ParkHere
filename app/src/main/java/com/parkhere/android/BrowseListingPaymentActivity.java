@@ -10,8 +10,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +25,7 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private Bundle bundle;
     public String card_number;
     public String cvv;
-    private String price;
-    private String description;
+    private Double price;
     private String spot_type;
     private String start_date;
     private String start_time;
@@ -31,6 +33,8 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private String end_time;
     private String address;
     private String creator_id;
+    private String userListingPushKey;
+    private String locationPushKey;
     public String vehicle_make;
     public String vehicle_model;
     public String vehicle_color;
@@ -40,6 +44,7 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
     private DatabaseReference userReservationRef;
     private DatabaseReference locationRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private int reservationCount;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -61,25 +66,27 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
         locationRef = database.getReference("Locations");
         geoFireRef = database.getReference("/geoFireListings");
 
-        bundle = getIntent().getExtras();
+        Listing listing = getIntent().getExtras().getParcelable("listing");
 
-        address = bundle.getString("address");
+        address = listing.getAddress();
 
-        price = bundle.getString("price");
+        price = listing.getPrice();
 
-        description = bundle.getString("description");
+        spot_type = listing.getSpotType();
 
-        spot_type = bundle.getString("spot_type");
+        start_date = listing.getStartDate();
 
-        start_date = bundle.getString("start_date");
+        start_time = listing.getStartTime();
 
-        start_time = bundle.getString("start_time");
+        end_date = listing.getEndDate();
 
-        end_date = bundle.getString("end_date");
+        end_time = listing.getEndTime();
 
-        end_time = bundle.getString("end_time");
+        creator_id = listing.getUserID();
 
-        creator_id = bundle.getString("creator_id");
+        userListingPushKey = listing.getUserListingPushKey();
+
+        locationPushKey = listing.getLocationPushKey();
 
         next_step.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,8 +119,6 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                 else {
                     listingData.put("price", price);
 
-                    listingData.put("description" , description );
-
                     listingData.put("spotType" , spot_type );
 
                     listingData.put("startDate", start_date );
@@ -128,6 +133,12 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
                     listingData.put("userID", creator_id);
 
+                    listingData.put("renterID", user.getUid());
+
+                    listingData.put("userListingPushKey", userListingPushKey);
+
+                    listingData.put("locationPushKey", locationPushKey);
+
                     listingData.put("vehicleMake", vehicle_make);
 
                     listingData.put("vehicleModel", vehicle_model);
@@ -136,10 +147,26 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
                     listingData.put("licensePlateNumber", license_plate_number);
 
-                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child("Details").setValue(listingData);
+                    String reservationPushKey =  userReservationRef.child(user.getUid()).child("Reservations").child(address).push().getKey();
+
+                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child(reservationPushKey).child("Details").setValue(listingData);
+
+                    userReservationRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            reservationCount = Integer.parseInt(snapshot.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue().toString());
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                            System.out.println("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
+
+                    userReservationRef.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").setValue(reservationCount + 1);
 
                     //might need to change database structure later
-                    locationRef.child(address).child("Users").child(creator_id).setValue(user.getUid());
+                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue(reservationPushKey);
+                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue(user.getUid());
 
                     geoFireRef.child(address).removeValue();
 

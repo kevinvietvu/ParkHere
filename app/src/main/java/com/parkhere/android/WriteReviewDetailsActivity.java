@@ -45,7 +45,7 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
 
         final Bundle listingInfo = getIntent().getExtras();
 
-
+        userRef = database.getReference("Users");
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +57,7 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
                 } else if (!reviewIsBetween1And140(reviewText)) {
                     Toast.makeText(WriteReviewDetailsActivity.this, "Please write a review between 1 and 140 characters", Toast.LENGTH_LONG).show();
                 } else {
+
                     String address = (String) listingInfo.get("address");
                     String userID = (String) listingInfo.get("userID");
 
@@ -65,14 +66,10 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
                     reviewDetails.put("rating", rating);
                     reviewDetails.put("review", reviewText);
 
-                    userRef = database.getReference("Users");
-                    userRef.child(userID).child(userID).child(address).child("Reviews").setValue(reviewDetails);
+                    userRef.child(userID).child("ParkingSpots").child(address).child("Reviews").push().child("Details").setValue(reviewDetails);
 
-                    ViewUserReservationsActivity.instance.finish();
                     Toast.makeText(WriteReviewDetailsActivity.this, "Review has been submitted!", Toast.LENGTH_LONG).show();
                     finish();
-                    Intent refreshList = new Intent(WriteReviewDetailsActivity.this, ViewUserReservationsActivity.class);
-                    startActivity(refreshList);
                 }
             }
         });

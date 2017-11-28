@@ -73,7 +73,10 @@
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".ViewUserSpotsActivity" />
         <activity android:name=".AddSpotDetailsActivity" />
-        <activity android:name=".CreateListingChooseSpotActivity"></activity>
+        <activity android:name=".CreateListingChooseSpotActivity" />
+        <activity android:name=".SplitBookingStartDateActivity" />
+        <activity android:name=".SplitBookingEndDateActivity" />
+        <activity android:name=".BrowseMultipleListingsActivity"></activity>
     </application>
 
 </manifest>
