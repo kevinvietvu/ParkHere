@@ -265,7 +265,9 @@ public class MainActivity extends AppCompatActivity
     public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
         final Marker marker = this.mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(location.latitude, location.longitude)).title(key));
+                .position(new LatLng(location.latitude, location.longitude))
+                .title(key)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
         final String address = key;
 
         locationsRef.addValueEventListener(new ValueEventListener() {
@@ -299,9 +301,6 @@ public class MainActivity extends AppCompatActivity
                                     }
                                     else if(reservationCount >= 5 && reservationCount < 10){
                                         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                                    }
-                                    else{
-                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                                     }
                                     marker.setTag(posts);
                                 } else {
