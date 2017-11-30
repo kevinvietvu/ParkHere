@@ -10,9 +10,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,13 +43,18 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
 
     private DatabaseReference geoFireRef;
     private DatabaseReference userReservationRef;
+    private DatabaseReference userListingRef;
     private DatabaseReference locationRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private int reservationCount;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
 
     private Map<String, Object> listingData = new HashMap<>();
+
+    private Map<String, Object> locationData = new HashMap<>();
+
 
     public static BrowseListingPaymentActivity instance = null;
 
@@ -59,29 +68,28 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userReservationRef = database.getReference("Users");
+        userListingRef = database.getReference("Users");
         locationRef = database.getReference("Locations");
         geoFireRef = database.getReference("/geoFireListings");
 
-        Listing listing = getIntent().getExtras().getParcelable("listing");
+        bundle = getIntent().getExtras();
+        final String originalStartDate = bundle.get("original_start_date").toString();
+        final String originalEndDate = bundle.get("original_end_date").toString();
+
+        final Listing listing = bundle.getParcelable("listing");
+
+        final String chosenStartDate = listing.getStartDate();
+        final String chosenEndDate = listing.getEndDate();
 
         address = listing.getAddress();
-
         price = listing.getPrice();
-
         spot_type = listing.getSpotType();
-
         start_date = listing.getStartDate();
-
         start_time = listing.getStartTime();
-
         end_date = listing.getEndDate();
-
         end_time = listing.getEndTime();
-
         creator_id = listing.getUserID();
-
         userListingPushKey = listing.getUserListingPushKey();
-
         locationPushKey = listing.getLocationPushKey();
 
         next_step.setOnClickListener(new View.OnClickListener() {
@@ -113,58 +121,256 @@ public class BrowseListingPaymentActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    listingData.put("price", price);
+                    SplitBookingUtility utility = new SplitBookingUtility();
+                    try {
+                        if (utility.checkNoSplitDate(originalStartDate, originalEndDate, chosenStartDate, chosenEndDate)) {
+                            listingData.put("price", price);
+                            listingData.put("spotType", spot_type);
+                            listingData.put("startDate", start_date);
+                            listingData.put("startTime", start_time);
+                            listingData.put("endDate", end_date);
+                            listingData.put("endTime", end_time);
+                            listingData.put("address", address);
+                            listingData.put("userID", creator_id);
+                            listingData.put("renterID", user.getUid());
+                            listingData.put("userListingPushKey", userListingPushKey);
+                            listingData.put("locationPushKey", locationPushKey);
+                            listingData.put("vehicleMake", vehicle_make);
+                            listingData.put("vehicleModel", vehicle_model);
+                            listingData.put("vehicleColor", vehicle_color);
+                            listingData.put("licensePlateNumber", license_plate_number);
 
-                    listingData.put("spotType" , spot_type );
+                            String reservationPushKey = userReservationRef.child(user.getUid()).child("Reservations").child(address).push().getKey();
 
-                    listingData.put("startDate", start_date );
+                            userReservationRef.child(user.getUid()).child("Reservations").child(address).child(reservationPushKey).child("Details").setValue(listingData);
+                            userReservationRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                                    reservationCount = Integer.parseInt(snapshot.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue().toString());
+                                }
 
-                    listingData.put("startTime", start_time );
+                                @Override
+                                public void onCancelled(DatabaseError firebaseError) {
+                                    System.out.println("The read failed: " + firebaseError.getMessage());
+                                }
+                            });
+                            userReservationRef.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").setValue(reservationCount + 1);
 
-                    listingData.put("endDate", end_date );
+                            locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue(reservationPushKey);
+                            locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue(user.getUid());
 
-                    listingData.put("endTime" , end_time);
+                            locationRef.child(address).child("Users").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    int userCount = 0;
+                                    int listingCount = 0;
+                                    for (DataSnapshot d : dataSnapshot.getChildren())
+                                        userCount++;
+                                    for (DataSnapshot d : dataSnapshot.child(creator_id).child("Renters").getChildren())
+                                        listingCount++;
 
-                    listingData.put("address" , address);
+                                    if (userCount < 2 && listingCount < 2) {
+                                        System.out.println("TEST GEO FIRE REMOVE");
+                                        geoFireRef.child(address).removeValue();
+                                    } else {
+                                        System.out.println("GEO FIRE TEST NO REMOVE");
+                                    }
+                                }
 
-                    listingData.put("userID", creator_id);
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
 
-                    listingData.put("renterID", user.getUid());
 
-                    listingData.put("userListingPushKey", userListingPushKey);
+                        } else if (utility.checkSingleSplitDate(originalStartDate, originalEndDate, chosenStartDate, chosenEndDate)) {
+                            ArrayList<Listing> splitListings = utility.singleSplitDate(originalStartDate, originalEndDate, chosenStartDate, chosenEndDate);
 
-                    listingData.put("locationPushKey", locationPushKey);
+                            for (Listing splitListing : splitListings) {
+                                if (splitListing.renterID.equals("flag")) {
+                                    System.out.println("flag " + splitListing.getStartDate() + " : " + splitListing.getEndDate());
+                                    listingData.put("price", price);
+                                    listingData.put("spotType", spot_type);
+                                    listingData.put("address", address);
+                                    listingData.put("userID", creator_id);
+                                    listingData.put("startDate", splitListing.getStartDate());
+                                    listingData.put("endDate", splitListing.getEndDate());
+                                    listingData.put("startTime", start_time);
+                                    listingData.put("endTime", end_time);
+                                    listingData.put("renterID", user.getUid());
+                                    listingData.put("vehicleMake", vehicle_make);
+                                    listingData.put("vehicleModel", vehicle_model);
+                                    listingData.put("vehicleColor", vehicle_color);
+                                    listingData.put("licensePlateNumber", license_plate_number);
 
-                    listingData.put("vehicleMake", vehicle_make);
+                                    locationData.put("userListingPushKey", userListingPushKey);
+                                    locationData.put("locationPushKey", locationPushKey);
 
-                    listingData.put("vehicleModel", vehicle_model);
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(userListingPushKey).child("Details").child("startDate").setValue(splitListing.getStartDate());
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(userListingPushKey).child("Details").child("endDate").setValue(splitListing.getEndDate());
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(userListingPushKey).child("Details").child("renterID").setValue(user.getUid());
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").setValue(locationData);
 
-                    listingData.put("vehicleColor", vehicle_color);
+                                    String reservationPushKey = userReservationRef.child(user.getUid()).child("Reservations").child(address).push().getKey();
+                                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child(reservationPushKey).child("Details").setValue(listingData);
 
-                    listingData.put("licensePlateNumber", license_plate_number);
+                                    userReservationRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot snapshot) {
+                                            reservationCount = Integer.parseInt(snapshot.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue().toString());
+                                        }
 
-                    String reservationPushKey =  userReservationRef.child(user.getUid()).child("Reservations").child(address).push().getKey();
+                                        @Override
+                                        public void onCancelled(DatabaseError firebaseError) {
+                                            System.out.println("The read failed: " + firebaseError.getMessage());
+                                        }
+                                    });
+                                    userReservationRef.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").setValue(reservationCount + 1);
 
-                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child(reservationPushKey).child("Details").setValue(listingData);
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue(reservationPushKey);
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue(user.getUid());
+                                } else {
+                                    Map<String, Object> newListingData = new HashMap<>();
+                                    System.out.println("no flag " + splitListing.getStartDate() + " : " + splitListing.getEndDate());
+                                    String newLocationPushKey = locationRef.child(address).child("Users").child(user.getUid()).child("Renters").push().getKey();
+                                    String newUserListingPushKey = userListingRef.child(user.getUid()).child("Listings").child(address).push().getKey();
+                                    newListingData.put("price", price);
+                                    newListingData.put("spotType", spot_type);
+                                    newListingData.put("address", address);
+                                    newListingData.put("userID", creator_id);
+                                    newListingData.put("userListingPushKey", newUserListingPushKey);
+                                    newListingData.put("locationPushKey", newLocationPushKey);
+                                    newListingData.put("startDate", splitListing.getStartDate());
+                                    newListingData.put("endDate", splitListing.getEndDate());
+                                    newListingData.put("startTime", start_time);
+                                    newListingData.put("endTime", end_time);
+                                    newListingData.put("renterID", "");
 
-                    //might need to change database structure later
-                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue(reservationPushKey);
-                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue(user.getUid());
+                                    locationData.put("userListingPushKey", newUserListingPushKey);
+                                    locationData.put("locationPushKey", newLocationPushKey);
+                                    locationData.put("reservationPushKey", "");
+                                    locationData.put("renterID", "");
 
-                    geoFireRef.child(address).removeValue();
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(newUserListingPushKey).child("Details").setValue(newListingData);
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(newLocationPushKey).child("Details").setValue(locationData);
+                                }
 
-                    if(BrowseListingPaymentActivity.instance != null) {
+                            }
+
+                        } else if (utility.checkDoubleSplitDate(originalStartDate, originalEndDate, chosenStartDate, chosenEndDate)) {
+                            ArrayList<Listing> splitListings = utility.doubleSplitDate(originalStartDate, originalEndDate, chosenStartDate, chosenEndDate);
+
+                            listingData.put("price", price);
+                            listingData.put("spotType", spot_type);
+                            listingData.put("address", address);
+                            listingData.put("userID", creator_id);
+                            listingData.put("startTime", start_time);
+                            listingData.put("endTime", end_time);
+                            listingData.put("userListingPushKey", userListingPushKey);
+                            listingData.put("locationPushKey", locationPushKey);
+                            for (Listing splitListing : splitListings) {
+                                listingData.put("startDate", splitListing.getStartDate());
+                                listingData.put("endDate", splitListing.getEndDate());
+                                if (splitListing.renterID.equals("flag")) {
+                                    System.out.println("flag " + splitListing.getStartDate() + " : " + splitListing.getEndDate());
+                                    listingData.put("price", price);
+                                    listingData.put("spotType", spot_type);
+                                    listingData.put("address", address);
+                                    listingData.put("userID", creator_id);
+                                    listingData.put("startDate", splitListing.getStartDate());
+                                    listingData.put("endDate", splitListing.getEndDate());
+                                    listingData.put("startTime", start_time);
+                                    listingData.put("endTime", end_time);
+                                    listingData.put("renterID", user.getUid());
+                                    listingData.put("vehicleMake", vehicle_make);
+                                    listingData.put("vehicleModel", vehicle_model);
+                                    listingData.put("vehicleColor", vehicle_color);
+                                    listingData.put("licensePlateNumber", license_plate_number);
+
+                                    locationData.put("userListingPushKey", userListingPushKey);
+                                    locationData.put("locationPushKey", locationPushKey);
+
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(userListingPushKey).child("Details").child("startDate").setValue(splitListing.getStartDate());
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(userListingPushKey).child("Details").child("endDate").setValue(splitListing.getEndDate());
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(userListingPushKey).child("Details").child("renterID").setValue(user.getUid());
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").setValue(locationData);
+
+                                    String reservationPushKey = userReservationRef.child(user.getUid()).child("Reservations").child(address).push().getKey();
+                                    userReservationRef.child(user.getUid()).child("Reservations").child(address).child(reservationPushKey).child("Details").setValue(listingData);
+
+                                    userReservationRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot snapshot) {
+                                            reservationCount = Integer.parseInt(snapshot.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue().toString());
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError firebaseError) {
+                                            System.out.println("The read failed: " + firebaseError.getMessage());
+                                        }
+                                    });
+                                    userReservationRef.child(creator_id).child("ParkingSpots").child(address).child("Details").child("reservationCount").setValue(reservationCount + 1);
+
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue(reservationPushKey);
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue(user.getUid());
+                                } else {
+                                    Map<String, Object> newListingData = new HashMap<>();
+                                    System.out.println("no flag " + splitListing.getStartDate() + " : " + splitListing.getEndDate());
+                                    String newLocationPushKey = locationRef.child(address).child("Users").child(user.getUid()).child("Renters").push().getKey();
+                                    String newUserListingPushKey = userListingRef.child(user.getUid()).child("Listings").child(address).push().getKey();
+                                    newListingData.put("price", price);
+                                    newListingData.put("spotType", spot_type);
+                                    newListingData.put("address", address);
+                                    newListingData.put("userID", creator_id);
+                                    newListingData.put("userListingPushKey", newUserListingPushKey);
+                                    newListingData.put("locationPushKey", newLocationPushKey);
+                                    newListingData.put("startDate", splitListing.getStartDate());
+                                    newListingData.put("endDate", splitListing.getEndDate());
+                                    newListingData.put("startTime", start_time);
+                                    newListingData.put("endTime", end_time);
+                                    newListingData.put("renterID", "");
+
+                                    locationData.put("userListingPushKey", newUserListingPushKey);
+                                    locationData.put("locationPushKey", newLocationPushKey);
+                                    locationData.put("reservationPushKey", "");
+                                    locationData.put("renterID", "");
+
+                                    userListingRef.child(creator_id).child("Listings").child(address).child(newUserListingPushKey).child("Details").setValue(newListingData);
+                                    locationRef.child(address).child("Users").child(creator_id).child("Renters").child(newLocationPushKey).child("Details").setValue(locationData);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    if (SplitBookingStartDateActivity.instance != null) {
+                        try {
+                            SplitBookingStartDateActivity.instance.finish();
+                        } catch (Exception e) {
+                        }
+                    }
+                    if (SplitBookingEndDateActivity.instance != null) {
+                        try {
+                            SplitBookingEndDateActivity.instance.finish();
+                        } catch (Exception e) {
+                        }
+                    }
+                    if (BrowseListingPaymentActivity.instance != null) {
                         try {
                             BrowseListingPaymentActivity.instance.finish();
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                        }
                     }
                     Toast.makeText(BrowseListingPaymentActivity.this, "Listing has been reserved!", Toast.LENGTH_LONG).show();
-                    finish();
-
+                    Intent main = new Intent(BrowseListingPaymentActivity.this, MainActivity.class);
+                    startActivity(main);
                 }
-            }
+                }
+
         });
     }
+
 
     public static boolean checkCardLengthBetween12And19(String card_number) {
         if (card_number.length() >= 12 && card_number.length() <= 19)

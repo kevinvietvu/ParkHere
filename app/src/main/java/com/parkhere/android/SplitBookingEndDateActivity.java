@@ -22,17 +22,23 @@ public class SplitBookingEndDateActivity extends AppCompatActivity {
     private Button nextStep;
     private String date;
 
+    public static SplitBookingEndDateActivity instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_split_booking);
+        nextStep = findViewById(R.id.next_step);
         datePicker = findViewById(R.id.datePicker);
         header = findViewById(R.id.split_booking_choose_start_date);
         header.setText("Choose End Date");
         bundle = getIntent().getExtras();
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-        String startDateString = bundle.getString("start_date");
-        String endDateString = bundle.getString("end_date");
+
+        final Listing listing = bundle.getParcelable("listing");
+        String startDateString = listing.getStartDate();
+        String endDateString = listing.getEndDate();
 
         Date startDate;
         Date endDate;
@@ -40,15 +46,17 @@ public class SplitBookingEndDateActivity extends AppCompatActivity {
             startDate = df.parse(startDateString);
             Calendar cal = Calendar.getInstance();
             cal.setTime(startDate);
-            endDate = df.parse(endDateString);
-
+            cal.add(Calendar.YEAR, 2000);
+            System.out.println("YEAR : " + cal.getTime());
             datePicker.setMinDate(cal.getTimeInMillis());
+            endDate = df.parse(endDateString);
             cal.setTime(endDate);
+            cal.add(Calendar.YEAR, 2000);
+            System.out.println("YEAR 2  : " + cal.getTime());
             datePicker.setMaxDate(cal.getTimeInMillis());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
 
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,8 +75,9 @@ public class SplitBookingEndDateActivity extends AppCompatActivity {
                     date = month + "-" + day + "-" + year;
 
                     Intent intent = new Intent(SplitBookingEndDateActivity.this, BrowseListingPaymentActivity.class);
+                    listing.endDate = date;
                     intent.putExtras(bundle);
-                    intent.putExtra("end_date", date);
+                    intent.putExtra("listing", listing);
                     startActivity(intent);
                 }
             }
@@ -104,5 +113,12 @@ public class SplitBookingEndDateActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
+    }
+
 
 }

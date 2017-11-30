@@ -28,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity
     private Map<String,Marker> markers;
     private FirebaseUser user;
     public Bundle bundle;
+    private int reservationCount;
+    private Object res;
 
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
@@ -94,9 +97,10 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
                                     Toast.LENGTH_LONG).show();
                         }
+
                         else {
                             Listing selectedListing = listings.get(0);
-                            Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                            Intent paymentIntent = new Intent(MainActivity.this, SplitBookingStartDateActivity.class);
                             paymentIntent.putExtra("listing", selectedListing);
                             startActivity(paymentIntent);
                         }
@@ -261,7 +265,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
-        final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+        final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
         final String address = key;
 
         locationsRef.addValueEventListener(new ValueEventListener() {
@@ -284,9 +288,23 @@ public class MainActivity extends AppCompatActivity
                                             else {
                                                 markerDetails = post.toString();
                                             }
-                                            marker.setSnippet(markerDetails);
-                                            //Tag is an object associated with the marker
-                                            posts.add(post);
+                                            if (post.getRenterID() != null) {
+                                                if (post.getRenterID().isEmpty()) {
+                                                    marker.setSnippet(markerDetails);
+                                                    //Tag is an object associated with the marker
+                                                    posts.add(post);
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    res = snapshot.child(userKey).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue();
+                                    if (res != null) {
+                                        reservationCount = Integer.parseInt(res.toString());
+                                        if (reservationCount >= 10) {
+                                            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                        } else if (reservationCount >= 5 && reservationCount < 10) {
+                                            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                                         }
                                     }
                                     marker.setTag(posts);

@@ -32,8 +32,7 @@ public class ViewUserSpotsActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ArrayList<String> spots = new ArrayList<>();
-    private ArrayList<Spot> spotObjects = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +53,11 @@ public class ViewUserSpotsActivity extends AppCompatActivity {
             }
         });
 
-
-
         userSpotsRef = database.getReference("Users");
 
         userSpotsRef.addValueEventListener(new ValueEventListener() {
+            private ArrayList<String> spots = new ArrayList<>();
+            private ArrayList<Spot> spotObjects = new ArrayList<>();
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.child(user.getUid()).child("ParkingSpots").getChildren()) {
@@ -119,4 +118,5 @@ public class ViewUserSpotsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

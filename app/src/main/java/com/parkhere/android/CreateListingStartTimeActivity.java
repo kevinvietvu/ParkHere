@@ -40,6 +40,15 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
                 TimePicker timePicker = findViewById(R.id.timePicker);
                 int h = timePicker.getCurrentHour();
                 int m = timePicker.getCurrentMinute();
+                if (m > 30) {
+                    m = 0;
+                    if (h == 23)
+                        h = 0;
+                    else
+                        h++;
+                }
+                else m = 0;
+                System.out.println("HOUR : " + h);
 
                 if (!startsOnOrAfterCurrentDateAndTime(month, day, year, h, m)) {
                     Toast.makeText(CreateListingStartTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();

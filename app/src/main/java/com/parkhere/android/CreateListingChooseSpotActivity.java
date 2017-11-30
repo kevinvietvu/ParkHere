@@ -29,13 +29,12 @@ public class CreateListingChooseSpotActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ArrayList<String> spots = new ArrayList<>();
-    private ArrayList<Spot> spotObjects = new ArrayList<>();
 
     public static CreateListingChooseSpotActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_listing_choose_spot);
 
@@ -46,6 +45,8 @@ public class CreateListingChooseSpotActivity extends AppCompatActivity {
         userSpotsRef = database.getReference("Users");
 
         userSpotsRef.addValueEventListener(new ValueEventListener() {
+            private ArrayList<String> spots = new ArrayList<>();
+            private ArrayList<Spot> spotObjects = new ArrayList<>();
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.child(user.getUid()).child("ParkingSpots").getChildren()) {

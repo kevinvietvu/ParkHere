@@ -27,8 +27,11 @@ public class ReservationsDialogFragment extends DialogFragment {
     int mNum;
     Button deleteListing;
     Button writeReview;
+    private int reservationCount;
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
+    private DatabaseReference userReservationRef;
     private DatabaseReference locationsRef;
     private DatabaseReference geoFireRef;
     private GeoFire geoFire;
@@ -74,6 +77,7 @@ public class ReservationsDialogFragment extends DialogFragment {
         setStyle(style, theme);
 
         userListingRef = database.getReference("Users");
+        userReservationRef = database.getReference("Users");
         locationsRef = database.getReference("Locations");
         geoFireRef = database.getReference("geoFireListings");
         geoFire = new GeoFire(geoFireRef);
@@ -94,23 +98,24 @@ public class ReservationsDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 final Listing listing = getArguments().getParcelable("listing");
-                System.out.println("TEST ADD " + listing.getAddress());
-                System.out.println("TEST USERID " + listing.getUserID());
-                System.out.println("PUSH KEY " + listing.getLocationPushKey());
+                final String creatorID = listing.getUserID();
+                final String address = listing.getAddress();
+                final String locationPushKey = listing.getLocationPushKey();
+                final String listingPushKey = listing.getUserListingPushKey();
+                final String renterID = listing.getRenterID();
 
-                locationsRef.child(listing.getAddress()).child("Users").child(listing.getUserID()).child("Renters").child(listing.getLocationPushKey()).child("Details").addValueEventListener(new ValueEventListener() {
+                locationsRef.child(address).child("Users").child(creatorID).child("Renters").child(locationPushKey).child("Details").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            String renterID = snapshot.child("renterID").getValue().toString();
                             String reservationPushKey = snapshot.child("reservationPushKey").getValue().toString();
-
                             try {
-                                Address addressToInsertInFirebase = ManageListingsActivity.getGeoLocationFromAddress(listing.getAddress(), getActivity());
-                                locationsRef.child(listing.getAddress()).child("Users").child(listing.getUserID()).child("Renters").child(listing.getLocationPushKey()).child("Details").child("renterID").setValue("");
-                                locationsRef.child(listing.getAddress()).child("Users").child(listing.getUserID()).child("Renters").child(listing.getLocationPushKey()).child("Details").child("reservationPushKey").setValue("");
-                                geoFire.setLocation(listing.getAddress(), new GeoLocation(addressToInsertInFirebase.getLatitude(), addressToInsertInFirebase.getLongitude()));
-                                userListingRef.child(renterID).child("Reservations").child(listing.getAddress()).child(reservationPushKey).child("Details").removeValue();
+                                Address addressToInsertInFirebase = ManageListingsActivity.getGeoLocationFromAddress(address, getActivity());
+                                locationsRef.child(address).child("Users").child(creatorID).child("Renters").child(locationPushKey).child("Details").child("renterID").setValue("");
+                                locationsRef.child(address).child("Users").child(creatorID).child("Renters").child(locationPushKey).child("Details").child("reservationPushKey").setValue("");
+                                geoFire.setLocation(address, new GeoLocation(addressToInsertInFirebase.getLatitude(), addressToInsertInFirebase.getLongitude()));
+                                userReservationRef.child(renterID).child("Reservations").child(address).child(reservationPushKey).child("Details").removeValue();
+                                userListingRef.child(creatorID).child("Listings").child(address).child(listingPushKey).child("Details").child("renterID").setValue("");
                                 Intent refreshList = new Intent(getActivity(), ViewUserReservationsActivity.class);
                                 getActivity().finish();
                                 startActivity(refreshList);
@@ -130,6 +135,20 @@ public class ReservationsDialogFragment extends DialogFragment {
                         System.out.println("The read failed: " + firebaseError.getMessage());
                     }
                 });
+
+                userListingRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        reservationCount = Integer.parseInt(snapshot.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").getValue().toString());
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
+                        System.out.println("The read failed: " + firebaseError.getMessage());
+                    }
+                });
+
+                userListingRef.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").setValue(reservationCount - 1);
+
             }
         });
 

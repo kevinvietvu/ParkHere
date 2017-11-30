@@ -29,8 +29,7 @@ public class ViewUserListingsActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ArrayList<String> listings = new ArrayList<>();
-    private ArrayList<Listing> listingObjects = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,10 @@ public class ViewUserListingsActivity extends AppCompatActivity {
 
         userListingRef = database.getReference("Users").child(user.getUid()).child("Listings");
 
+
         userListingRef.addValueEventListener(new ValueEventListener() {
+            final ArrayList<Listing> listingObjects = new ArrayList<>();
+            final ArrayList<String> listings = new ArrayList<>();
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.getChildren()) {

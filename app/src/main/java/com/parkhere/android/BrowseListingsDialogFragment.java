@@ -112,7 +112,7 @@ public class BrowseListingsDialogFragment extends DialogFragment {
                             Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Intent browseListingPayment = new Intent(getActivity(), BrowseListingPaymentActivity.class);
+                    Intent browseListingPayment = new Intent(getActivity(), SplitBookingStartDateActivity.class);
                     browseListingPayment.putExtra("listing", listing);
                     startActivity(browseListingPayment);
                     getActivity().getFragmentManager().popBackStack();

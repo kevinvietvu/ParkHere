@@ -45,6 +45,14 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
                 TimePicker timePicker = findViewById(R.id.timePicker);
                 int h = timePicker.getCurrentHour();
                 int m = timePicker.getCurrentMinute();
+                if (m > 30) {
+                    m = 0;
+                    if (h == 23)
+                        h = 0;
+                    else
+                        h++;
+                }
+                else m = 0;
 
                 if (!endsAfterStartDateAndTime(startMonth, startDay, startYear, startHour, startMinute,
                         endMonth, endDay, endYear, h, m)) {

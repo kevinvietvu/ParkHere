@@ -61,6 +61,7 @@ public class AddSpotDetailsActivity extends AppCompatActivity {
                     spotData.put("description", description);
                     spotData.put("spotType", spotType);
                     spotData.put("userID", user.getUid());
+                    spotData.put("reservationCount", 0);
                     userRef.setValue(spotData);
 
                     if(AddSpotMapsActivity.instance != null) {
