@@ -29,8 +29,7 @@ public class ViewUserListingsActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ArrayList<String> listings = new ArrayList<>();
-    private ArrayList<Listing> listingObjects = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +40,22 @@ public class ViewUserListingsActivity extends AppCompatActivity {
 
         user = auth.getCurrentUser();
 
-        userListingRef = database.getReference("Users");
+        userListingRef = database.getReference("Users").child(user.getUid()).child("Listings");
+
 
         userListingRef.addValueEventListener(new ValueEventListener() {
+            final ArrayList<Listing> listingObjects = new ArrayList<>();
+            final ArrayList<String> listings = new ArrayList<>();
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot d : snapshot.child(user.getUid()).child("Listings").getChildren()) {
-                    Listing post = snapshot.child(user.getUid()).child("Listings").child(d.getKey()).child("Details").getValue(Listing.class);
-                    System.out.println(post.toString());
-                    listings.add(post.toString());
-                    listingObjects.add(post);
+                for (DataSnapshot d : snapshot.getChildren()) {
+                    final String address = d.getKey();
+                    for (DataSnapshot s : snapshot.child(address).getChildren()) {
+                        Listing post = s.child("Details").getValue(Listing.class);
+                        System.out.println(post.toString());
+                        listings.add(post.toString());
+                        listingObjects.add(post);
+                    }
                 }
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(ViewUserListingsActivity.this, android.R.layout.simple_list_item_1, listings);

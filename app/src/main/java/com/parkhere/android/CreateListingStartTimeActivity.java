@@ -14,10 +14,63 @@ import java.util.Calendar;
 
 public class CreateListingStartTimeActivity extends AppCompatActivity {
 
-    public static CreateListingStartTimeActivity instance = null;
     private Button nextStep;
     private Bundle bundle;
     private String start_time;
+
+    public static CreateListingStartTimeActivity instance = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        instance = this;
+        setContentView(R.layout.activity_create_listing_start_time);
+        nextStep = findViewById(R.id.next_step);
+
+        bundle = getIntent().getExtras();
+
+        nextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String date = bundle.getString("start_date");
+                int month = Integer.parseInt(date.substring(0, 2));
+                int day = Integer.parseInt(date.substring(3, 5));
+                int year = Integer.parseInt(date.substring(6, 8));
+
+                TimePicker timePicker = findViewById(R.id.timePicker);
+                int h = timePicker.getCurrentHour();
+                int m = timePicker.getCurrentMinute();
+                if (m > 30) {
+                    m = 0;
+                    if (h == 23)
+                        h = 0;
+                    else
+                        h++;
+                }
+                else m = 0;
+                System.out.println("HOUR : " + h);
+
+                if (!startsOnOrAfterCurrentDateAndTime(month, day, year, h, m)) {
+                    Toast.makeText(CreateListingStartTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();
+                } else {
+                    String hour = String.format("%02d", h);
+                    String minute = String.format("%02d", m);
+                    start_time = hour + ":" + minute;
+
+                    Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
+                    intent.putExtras(bundle);
+                    intent.putExtra("start_time", start_time);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
+    }
 
     public static boolean startsOnOrAfterCurrentDateAndTime(int month, int day, int year, int hour, int minute) {
         String formattedMonth = String.format("%02d", month);
@@ -66,48 +119,5 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        instance = this;
-        setContentView(R.layout.activity_create_listing_start_time);
-        nextStep = findViewById(R.id.next_step);
-
-        bundle = getIntent().getExtras();
-
-        nextStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String date = bundle.getString("start_date");
-                int month = Integer.parseInt(date.substring(0, 2));
-                int day = Integer.parseInt(date.substring(3, 5));
-                int year = Integer.parseInt(date.substring(6, 8));
-
-                TimePicker timePicker = findViewById(R.id.timePicker);
-                int h = timePicker.getCurrentHour();
-                int m = timePicker.getCurrentMinute();
-
-                if (!startsOnOrAfterCurrentDateAndTime(month, day, year, h, m)) {
-                    Toast.makeText(CreateListingStartTimeActivity.this, "Please select a valid time", Toast.LENGTH_LONG).show();
-                } else {
-                    String hour = String.format("%02d", h);
-                    String minute = String.format("%02d", m);
-                    start_time = hour + ":" + minute;
-
-                    Intent intent = new Intent(CreateListingStartTimeActivity.this, CreateListingEndDateActivity.class);
-                    intent.putExtras(bundle);
-                    intent.putExtra("start_time", start_time);
-                    startActivity(intent);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        instance = null;
     }
 }

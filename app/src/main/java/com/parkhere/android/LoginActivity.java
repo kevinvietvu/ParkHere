@@ -17,7 +17,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -126,19 +125,9 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
 
                         } else {
-                            FirebaseUser user = auth.getCurrentUser();
-                            assert user != null;
-                            if(user.isEmailVerified()){
-                                //Intent intent = new Intent(LoginActivity.this, TestFirebaseActivity.class);
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                            }
-                            else{
-                                Toast.makeText(LoginActivity.this,
-                                        "Verify email to continue.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
+                            //Intent intent = new Intent(LoginActivity.this, SplitBookingStartTimeActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });

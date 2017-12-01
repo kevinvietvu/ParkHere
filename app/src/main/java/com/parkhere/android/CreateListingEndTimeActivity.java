@@ -8,11 +8,6 @@ import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
 public class CreateListingEndTimeActivity extends AppCompatActivity {
 
     private Button nextStep;
@@ -50,6 +45,14 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
                 TimePicker timePicker = findViewById(R.id.timePicker);
                 int h = timePicker.getCurrentHour();
                 int m = timePicker.getCurrentMinute();
+                if (m > 30) {
+                    m = 0;
+                    if (h == 23)
+                        h = 0;
+                    else
+                        h++;
+                }
+                else m = 0;
 
                 if (!endsAfterStartDateAndTime(startMonth, startDay, startYear, startHour, startMinute,
                         endMonth, endDay, endYear, h, m)) {
@@ -59,7 +62,7 @@ public class CreateListingEndTimeActivity extends AppCompatActivity {
                     String minute = String.format("%02d", m);
                     end_time = hour + ":" + minute;
 
-                    Intent intent = new Intent(CreateListingEndTimeActivity.this, CreateListingConfirmActivity.class);
+                    Intent intent = new Intent(CreateListingEndTimeActivity.this, CreateListingDetailsActivity.class);
                     intent.putExtras(bundle);
                     intent.putExtra("end_time", end_time);
                     startActivity(intent);

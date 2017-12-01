@@ -67,7 +67,7 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
                     Toast.makeText(WriteReviewDetailsActivity.this, "Please write a review between 1 and 140 characters", Toast.LENGTH_LONG).show();
                 } else {
 
-                    //String address = (String) listingInfo.get("address");
+                    String address = (String) listingInfo.get("address");
                     String userID = (String) listingInfo.get("userID");
 
                     Map<String,Object> reviewDetails = new HashMap<>();
@@ -75,7 +75,7 @@ public class WriteReviewDetailsActivity extends AppCompatActivity {
                     reviewDetails.put("rating", rating);
                     reviewDetails.put("review", reviewText);
 
-                    userRef.child(userID).child("Reviews").push().child("Details").setValue(reviewDetails);
+                    userRef.child(userID).child("ParkingSpots").child(address).child("Reviews").push().child("Details").setValue(reviewDetails);
 
                     Toast.makeText(WriteReviewDetailsActivity.this, "Review has been submitted!", Toast.LENGTH_LONG).show();
                     finish();
