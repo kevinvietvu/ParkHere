@@ -111,6 +111,13 @@ public class BrowseListingsDialogFragment extends DialogFragment {
                     Toast.makeText(getActivity(), "Cannot Reserve Own Listing",
                             Toast.LENGTH_LONG).show();
                 }
+                else if (listing.getStartDate().equals(listing.getEndDate())) {
+                    Intent splitTimeIntent = new Intent(getActivity(), SplitBookingStartTimeActivity.class);
+                    splitTimeIntent.putExtra("listing", listing);
+                    startActivity(splitTimeIntent);
+                    getActivity().getFragmentManager().popBackStack();
+                    getActivity().finish();
+                }
                 else {
                     Intent browseListingPayment = new Intent(getActivity(), SplitBookingStartDateActivity.class);
                     browseListingPayment.putExtra("listing", listing);

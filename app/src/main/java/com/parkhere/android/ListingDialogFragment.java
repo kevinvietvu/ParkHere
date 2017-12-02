@@ -102,7 +102,7 @@ public class ListingDialogFragment extends DialogFragment {
                     String locationPushKey = (String) getArguments().get("locationPushKey");
                     userListingRef.child(userID).child("Listings").child(address).child(userListingPushKey).child("Details").removeValue();
                     locationsRef.child(address).child("Users").child(userID).child("Renters").child(locationPushKey).child("Details").removeValue();
-                    locationsRef.child(address).child("Users").addValueEventListener(new ValueEventListener() {
+                    ValueEventListener listener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             int userCount = 0;
@@ -113,17 +113,22 @@ public class ListingDialogFragment extends DialogFragment {
                                 listingCount++;
 
                             if (userCount < 2 && listingCount < 2) {
-                                System.out.println("TEST GEO FIRE REMOVE");
+                                System.out.println("LISTING DIALOG TEST GEO FIRE REMOVE");
                                 geoFireRef.child(address).removeValue();
                             }
-                            System.out.println("GEO FIRE TEST NO REMOVE");
+                            else
+                                System.out.println("LISTING DIALOG GEO FIRE TEST NO REMOVE");
+                            locationsRef.child(address).child("Users").removeEventListener(this);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
                         }
-                    });
+                    };
+                    locationsRef.child(address).child("Users").addValueEventListener(listener);
+
+
                     Intent refreshList = new Intent(getActivity(), ViewUserListingsActivity.class);
                     startActivity(refreshList);
                     getActivity().getFragmentManager().popBackStack();

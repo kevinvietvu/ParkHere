@@ -1,5 +1,6 @@
 package com.parkhere.android;
 
+import android.content.Intent;
 import android.location.Address;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -107,7 +108,8 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = Double.parseDouble(price_input.getText().toString());
+                if (!price_input.getText().toString().isEmpty())
+                    price = Double.parseDouble(price_input.getText().toString());
                 if (!priceIsNotNull(price)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
                 } else if (!priceMustBeBetween1And999(price)) {
@@ -124,11 +126,8 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                         String locationPushKey = locationsRef.child(address).child("Users").child(user.getUid()).child("Renters").push().getKey();
                         String userListingPushKey = userListingRef.child(user.getUid()).child("Listings").child(address).push().getKey();
 
-
                         geoFireRef = database.getReference("geoFireListings");
                         geoFire = new GeoFire(geoFireRef);
-
-
 
                         listingData.put("address", address);
                         listingData.put("description", description);
@@ -186,6 +185,8 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(CreateListingDetailsActivity.this, "Listing has been created!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(CreateListingDetailsActivity.this, ManageListingsActivity.class);
+                    startActivity(intent);
                     finish();
                 }
             }
