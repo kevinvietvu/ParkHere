@@ -32,11 +32,6 @@ public class AddSpotDetailsActivity extends AppCompatActivity {
 
     private Map<String, Object> spotData = new HashMap<>();
 
-    public static boolean descriptionMustBeLessThan140Characters(String description) {
-        if (description.length() <= 140) return true;
-        return false;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,5 +75,10 @@ public class AddSpotDetailsActivity extends AppCompatActivity {
             }
             }
         });
+    }
+
+    public static boolean descriptionMustBeLessThan140Characters(String description) {
+        if (description.length() <= 140) return true;
+        return false;
     }
 }

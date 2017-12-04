@@ -74,19 +74,9 @@
         <activity android:name=".ViewUserSpotsActivity" />
         <activity android:name=".AddSpotDetailsActivity" />
         <activity android:name=".CreateListingChooseSpotActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".WriteReviewDetailsActivity" />
-        <activity android:name=".EditProfileActivity" />
-        <activity android:name=".PhoneNumberActivity" />
-        <activity android:name=".PaymentMethodActivity" />
-        <activity android:name=".LegalActivity" />
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".ChangeEmailActivity" />
         <activity android:name=".SplitBookingStartDateActivity" />
         <activity android:name=".SplitBookingEndDateActivity" />
-        <activity android:name=".BrowseMultipleListingsActivity" />
-        <activity android:name=".SplitBookingStartTimeActivity" />
-        <activity android:name=".SplitBookingEndTimeActivity"></activity>
+        <activity android:name=".BrowseMultipleListingsActivity"></activity>
     </application>
 
 </manifest>

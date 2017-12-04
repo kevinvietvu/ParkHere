@@ -22,10 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class BrowseListingsDialogFragment extends DialogFragment {
     int mNum;
-    Button viewUserProfileBtn;
-    Button rentListingBtn;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    Button viewUserProfileBtn;
+    Button rentListingBtn;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
     private DatabaseReference locationsRef;
@@ -111,15 +111,8 @@ public class BrowseListingsDialogFragment extends DialogFragment {
                     Toast.makeText(getActivity(), "Cannot Reserve Own Listing",
                             Toast.LENGTH_LONG).show();
                 }
-                else if (listing.getStartDate().equals(listing.getEndDate())) {
-                    Intent splitTimeIntent = new Intent(getActivity(), SplitBookingStartTimeActivity.class);
-                    splitTimeIntent.putExtra("listing", listing);
-                    startActivity(splitTimeIntent);
-                    getActivity().getFragmentManager().popBackStack();
-                    getActivity().finish();
-                }
                 else {
-                    Intent browseListingPayment = new Intent(getActivity(), SplitBookingStartDateActivity.class);
+                    Intent browseListingPayment = new Intent(getActivity(), BrowseListingPaymentActivity.class);
                     browseListingPayment.putExtra("listing", listing);
                     startActivity(browseListingPayment);
                     getActivity().getFragmentManager().popBackStack();

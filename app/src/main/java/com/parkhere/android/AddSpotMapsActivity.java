@@ -22,17 +22,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AddSpotMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-    public static String placeToSend;
-    public static AddSpotMapsActivity instance = null;
     private GoogleMap mMap;
     private Button submitAddressButton;
+    public static String placeToSend;
 
-    public static boolean addressIsNull(String address) {
-        if (address == null || address.isEmpty())
-            return true;
-        else
-            return false;
-    }
+    public static AddSpotMapsActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +80,13 @@ public class AddSpotMapsActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
+    }
+
+    public static boolean addressIsNull(String address) {
+        if (address == null || address.isEmpty())
+            return true;
+        else
+            return false;
     }
 
     /**

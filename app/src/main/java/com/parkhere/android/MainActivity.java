@@ -28,10 +28,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,13 +44,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Object;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GeoQueryEventListener, GoogleMap.OnMarkerClickListener
 {
 
-    public Bundle bundle;
     private GoogleMap mMap;
     private FirebaseAuth auth;
     private DatabaseReference geoFireRef;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     private Map<String,Marker> markers;
     private FirebaseUser user;
     private int reservationCount;
-    private Object res;
+    public Bundle bundle;
 
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
@@ -99,27 +99,9 @@ public class MainActivity extends AppCompatActivity
                         }
                         else {
                             Listing selectedListing = listings.get(0);
-                            SplitBookingUtility utility = new SplitBookingUtility();
-                            if  (selectedListing.getStartDate().equals(selectedListing.getEndDate())) {
-                                if (utility.checkOneHourTime(selectedListing.getStartTime(), selectedListing.getEndTime())) {
-                                    Intent intent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
-                                    intent.putExtra("listing", selectedListing);
-                                    intent.putExtra("original_start_date", selectedListing.getStartDate());
-                                    intent.putExtra("original_end_date", selectedListing.getEndDate());
-                                    intent.putExtra("original_start_time", selectedListing.getStartTime());
-                                    intent.putExtra("original_end_time", selectedListing.getEndTime());
-                                    startActivity(intent);
-                                } else {
-                                    Intent splitTimeIntent = new Intent(MainActivity.this, SplitBookingStartTimeActivity.class);
-                                    splitTimeIntent.putExtra("listing", selectedListing);
-                                    startActivity(splitTimeIntent);
-                                }
-                            }
-                            else {
-                                Intent paymentIntent = new Intent(MainActivity.this, SplitBookingStartDateActivity.class);
-                                paymentIntent.putExtra("listing", selectedListing);
-                                startActivity(paymentIntent);
-                            }
+                            Intent paymentIntent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                            paymentIntent.putExtra("listing", selectedListing);
+                            startActivity(paymentIntent);
                         }
                     }
                     else {
@@ -282,7 +264,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
-        final Marker marker = this.mMap.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        final Marker marker = this.mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(location.latitude, location.longitude))
+                .title(key)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
         final String address = key;
 
         locationsRef.addValueEventListener(new ValueEventListener() {
@@ -305,24 +290,17 @@ public class MainActivity extends AppCompatActivity
                                             else {
                                                 markerDetails = post.toString();
                                             }
-                                            if (post.getRenterID() != null) {
-                                                if (post.getRenterID().isEmpty()) {
-                                                    marker.setSnippet(markerDetails);
-                                                    //Tag is an object associated with the marker
-                                                    posts.add(post);
-                                                }
-                                            }
-
+                                            marker.setSnippet(markerDetails);
+                                            //Tag is an object associated with the marker
+                                            posts.add(post);
                                         }
                                     }
-                                    res = snapshot.child(userKey).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue();
-                                    if (res != null) {
-                                        reservationCount = Integer.parseInt(res.toString());
-                                        if (reservationCount >= 10) {
-                                            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                                        } else if (reservationCount >= 5 && reservationCount < 10) {
-                                            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                                        }
+                                    reservationCount = Integer.parseInt(snapshot.child(userKey).child("ParkingSpots").child(address).child("Details").child("reservationCount").getValue().toString());
+                                    if (reservationCount >= 10){
+                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                    }
+                                    else if(reservationCount >= 5 && reservationCount < 10){
+                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                                     }
                                     marker.setTag(posts);
                                 } else {

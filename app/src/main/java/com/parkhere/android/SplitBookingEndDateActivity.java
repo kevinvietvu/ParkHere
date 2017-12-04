@@ -16,12 +16,64 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SplitBookingEndDateActivity extends AppCompatActivity {
-    public static SplitBookingEndDateActivity instance;
     private TextView header;
     private Bundle bundle;
     private DatePicker datePicker;
     private Button nextStep;
     private String date;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_split_booking);
+        datePicker = findViewById(R.id.datePicker);
+        header = findViewById(R.id.split_booking_choose_start_date);
+        header.setText("Choose End Date");
+        bundle = getIntent().getExtras();
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+        String startDateString = bundle.getString("start_date");
+        String endDateString = bundle.getString("end_date");
+
+        Date startDate;
+        Date endDate;
+        try {
+            startDate = df.parse(startDateString);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startDate);
+            endDate = df.parse(endDateString);
+
+            datePicker.setMinDate(cal.getTimeInMillis());
+            cal.setTime(endDate);
+            datePicker.setMaxDate(cal.getTimeInMillis());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        nextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePicker datePicker = findViewById(R.id.datePicker);
+                int m = datePicker.getMonth() + 1;
+                int d = datePicker.getDayOfMonth();
+                int y = datePicker.getYear() % 100;
+
+                if (!startsOnOrAfterCurrentDate(m, d, y)) {
+                    Toast.makeText(SplitBookingEndDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
+                } else {
+                    String month = String.format("%02d", m);
+                    String day = String.format("%02d", d);
+                    String year = String.format("%02d", y);
+                    date = month + "-" + day + "-" + year;
+
+                    Intent intent = new Intent(SplitBookingEndDateActivity.this, BrowseListingPaymentActivity.class);
+                    intent.putExtras(bundle);
+                    intent.putExtra("end_date", date);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
 
     public static boolean startsOnOrAfterCurrentDate(int month, int day, int year) {
         String formattedMonth = String.format("%02d", month);
@@ -52,74 +104,5 @@ public class SplitBookingEndDateActivity extends AppCompatActivity {
             }
         }
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        instance = this;
-        setContentView(R.layout.activity_split_booking);
-        nextStep = findViewById(R.id.next_step);
-        datePicker = findViewById(R.id.datePicker);
-        header = findViewById(R.id.split_booking_choose_start_date);
-        header.setText("Choose End Date");
-        bundle = getIntent().getExtras();
-        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-
-        final Listing listing = bundle.getParcelable("listing");
-        String startDateString = listing.getStartDate();
-        String endDateString = listing.getEndDate();
-
-        Date startDate;
-        Date endDate;
-        try {
-            startDate = df.parse(startDateString);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(startDate);
-            cal.add(Calendar.YEAR, 2000);
-            System.out.println("YEAR : " + cal.getTime());
-            datePicker.setMinDate(cal.getTimeInMillis());
-            endDate = df.parse(endDateString);
-            cal.setTime(endDate);
-            cal.add(Calendar.YEAR, 2000);
-            System.out.println("YEAR 2  : " + cal.getTime());
-            datePicker.setMaxDate(cal.getTimeInMillis());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        nextStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePicker datePicker = findViewById(R.id.datePicker);
-                int m = datePicker.getMonth() + 1;
-                int d = datePicker.getDayOfMonth();
-                int y = datePicker.getYear() % 100;
-
-                if (!startsOnOrAfterCurrentDate(m, d, y)) {
-                    Toast.makeText(SplitBookingEndDateActivity.this, "Please select a valid date", Toast.LENGTH_LONG).show();
-                } else {
-                    String month = String.format("%02d", m);
-                    String day = String.format("%02d", d);
-                    String year = String.format("%02d", y);
-                    date = month + "-" + day + "-" + year;
-
-                    Intent intent = new Intent(SplitBookingEndDateActivity.this, BrowseListingPaymentActivity.class);
-                    listing.endDate = date;
-                    intent.putExtras(bundle);
-                    intent.putExtra("listing", listing);
-                    intent.putExtra("original_start_time", listing.getStartTime());
-                    intent.putExtra("original_end_time", listing.getEndTime());
-                    startActivity(intent);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        instance = null;
-    }
-
 
 }

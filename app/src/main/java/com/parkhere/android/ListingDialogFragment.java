@@ -11,11 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Kevin on 11/19/2017.
@@ -96,39 +93,13 @@ public class ListingDialogFragment extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     //probably have to delete from reservations..
-                    final String userID = (String) getArguments().get("userID");
-                    final String address = (String) getArguments().get("address");
+                    String userID = (String) getArguments().get("userID");
+                    String address = (String) getArguments().get("address");
                     String userListingPushKey = (String) getArguments().get("userListingPushKey");
                     String locationPushKey = (String) getArguments().get("locationPushKey");
                     userListingRef.child(userID).child("Listings").child(address).child(userListingPushKey).child("Details").removeValue();
                     locationsRef.child(address).child("Users").child(userID).child("Renters").child(locationPushKey).child("Details").removeValue();
-                    ValueEventListener listener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            int userCount = 0;
-                            int listingCount = 0;
-                            for (DataSnapshot d : dataSnapshot.getChildren())
-                                userCount++;
-                            for (DataSnapshot d : dataSnapshot.child(userID).child("Renters").getChildren())
-                                listingCount++;
-
-                            if (userCount < 2 && listingCount < 2) {
-                                System.out.println("LISTING DIALOG TEST GEO FIRE REMOVE");
-                                geoFireRef.child(address).removeValue();
-                            }
-                            else
-                                System.out.println("LISTING DIALOG GEO FIRE TEST NO REMOVE");
-                            locationsRef.child(address).child("Users").removeEventListener(this);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    };
-                    locationsRef.child(address).child("Users").addValueEventListener(listener);
-
-
+                    geoFireRef.child(address).removeValue();
                     Intent refreshList = new Intent(getActivity(), ViewUserListingsActivity.class);
                     startActivity(refreshList);
                     getActivity().getFragmentManager().popBackStack();

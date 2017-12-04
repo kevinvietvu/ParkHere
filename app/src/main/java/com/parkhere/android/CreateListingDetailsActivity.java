@@ -1,6 +1,5 @@
 package com.parkhere.android;
 
-import android.content.Intent;
 import android.location.Address;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,16 +50,6 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     private FirebaseUser user;
     private Map<String, Object> listingData = new HashMap<String, Object>();
     private Map<String, Object> locationData = new HashMap<>();
-
-    public static boolean priceIsNotNull(Object o) {
-        if (o != null) return true;
-        else return false;
-    }
-
-    public static boolean priceMustBeBetween1And999(Double price) {
-        if (price >= 1.0 && price <= 999.0) return true;
-        return false;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +107,8 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!price_input.getText().toString().isEmpty())
-                    price = Double.parseDouble(price_input.getText().toString());
+                price = Double.parseDouble(price_input.getText().toString());
+
                 if (!priceIsNotNull(price)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
                 } else if (!priceMustBeBetween1And999(price)) {
@@ -136,6 +125,7 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                         String locationPushKey = locationsRef.child(address).child("Users").child(user.getUid()).child("Renters").push().getKey();
                         String userListingPushKey = userListingRef.child(user.getUid()).child("Listings").child(address).push().getKey();
 
+
                         geoFireRef = database.getReference("geoFireListings");
                         geoFire = new GeoFire(geoFireRef);
 
@@ -150,7 +140,6 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                         listingData.put("userID", user.getUid());
                         listingData.put("locationPushKey", locationPushKey);
                         listingData.put("userListingPushKey", userListingPushKey);
-                        listingData.put("renterID", "");
 
                         locationData.put("userListingPushKey", userListingPushKey);
                         locationData.put("locationPushKey", locationPushKey);
@@ -195,11 +184,19 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(CreateListingDetailsActivity.this, "Listing has been created!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CreateListingDetailsActivity.this, ManageListingsActivity.class);
-                    startActivity(intent);
                     finish();
                 }
             }
         });
+    }
+
+    public static boolean priceIsNotNull(Object o) {
+        if (o != null) return true;
+        else return false;
+    }
+
+    public static boolean priceMustBeBetween1And999(Double price) {
+        if (price >= 1.0 && price <= 999.0) return true;
+        return false;
     }
 }

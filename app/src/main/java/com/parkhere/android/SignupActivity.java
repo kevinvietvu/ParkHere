@@ -20,6 +20,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -29,6 +34,9 @@ public class SignupActivity extends AppCompatActivity {
     private Button btnSignUp, btnLinkToLogIn;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference userRef;
     private EditText signupInputEmail, signupInputPassword;
     private EditText signupInputConfirmPassword, signupInputDriversId, signupInputPhoneNumber;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
@@ -89,6 +97,23 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 submitForm();
 
+                user = auth.getCurrentUser();
+
+                userRef = database.getReference("Users").child(user.getUid()).child("Information");
+
+                Map<String,Object> userInformation = new HashMap<>();
+
+                userInformation.put("driversID", signupInputDriversId.getText().toString());
+                userInformation.put("phoneNumber", signupInputPhoneNumber.getText().toString());
+
+                userRef.setValue(userInformation);
+
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                if(LoginActivity.instance != null) {
+                    try {
+                        LoginActivity.instance.finish();
+                    } catch (Exception e) {}
+                }
             }
         });
 
@@ -128,9 +153,6 @@ public class SignupActivity extends AppCompatActivity {
 
         signupInputLayoutEmail.setErrorEnabled(false);
         signupInputLayoutPassword.setErrorEnabled(false);
-        signupInputLayoutConfirmPassword.setErrorEnabled(false);
-        signupInputLayoutDriversId.setErrorEnabled(false);
-        signupInputLayoutPhoneNumber.setErrorEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);
         //create user
@@ -145,25 +167,16 @@ public class SignupActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
 
-
                         if (!task.isSuccessful()) {
                             Log.d(TAG,"Authentication failed." + task.getException());
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "Verification email sent.", Toast.LENGTH_SHORT).show();
                             sendEmailVerification();
-                            startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                            if(LoginActivity.instance != null) {
-                                try {
-                                    LoginActivity.instance.finish();
-                                } catch (Exception e) {}
-                            }
                         }
                     }
                 });
         Toast.makeText(getApplicationContext(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
     }
-
 
     private boolean checkEmail() {
         String email = signupInputEmail.getText().toString().trim();
@@ -187,28 +200,28 @@ public class SignupActivity extends AppCompatActivity {
         final FirebaseUser user = auth.getCurrentUser();
 
         // [START send_email_verification]
-            user.sendEmailVerification()
-                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // [START_EXCLUDE]
-                            // Re-enable button
-                            findViewById(R.id.btn_signup).setEnabled(true);
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // [START_EXCLUDE]
+                        // Re-enable button
+                        findViewById(R.id.btn_signup).setEnabled(true);
 
-                            if (task.isSuccessful()) {
-                                Toast.makeText(SignupActivity.this,
-                                        "Verification email sent to " + user.getEmail(),
-                                        Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SignupActivity.this,
+                                    "Verification email sent to " + user.getEmail(),
+                                    Toast.LENGTH_SHORT).show();
 
-                            } else {
-                                Log.e(TAG, "sendEmailVerification", task.getException());
-                                Toast.makeText(SignupActivity.this,
-                                        "Failed to send verification email.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                            // [END_EXCLUDE]
+                        } else {
+                            Log.e(TAG, "sendEmailVerification", task.getException());
+                            Toast.makeText(SignupActivity.this,
+                                    "Failed to send verification email.",
+                                    Toast.LENGTH_SHORT).show();
                         }
-                    });
+                        // [END_EXCLUDE]
+                    }
+                });
 
 
         // [END send_email_verification]
@@ -230,7 +243,6 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean confirmPassword() {
-
         String password = signupInputPassword.getText().toString().trim();
         String confirmPassword = signupInputConfirmPassword.getText().toString().trim();
         if (confirmPassword.isEmpty() || !password.equals(confirmPassword)) {
@@ -244,12 +256,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean driversId() {
-
-        //California Drivers Licence
-
         String driversId = signupInputDriversId.getText().toString().trim();
-        String valid_id = "^[A-Z]{1}[0-9]{7}$";
-        if (driversId.isEmpty() || !driversId.matches(valid_id)) {
+        if (driversId.isEmpty() ) {
 
             signupInputLayoutDriversId.setErrorEnabled(true);
             signupInputLayoutDriversId.setError(getString(R.string.err_msg_drivers_id));
@@ -258,27 +266,22 @@ public class SignupActivity extends AppCompatActivity {
             return false;
         }
 
-        signupInputLayoutDriversId.setErrorEnabled(false);
+        signupInputLayoutEmail.setErrorEnabled(false);
         return true;
     }
 
     private boolean phoneNumber() {
-        // \d{10} matches 1234567890
-        // (?:\d{3}-){2}\d{4} matches 123-456-7890
-        // \(\d{3}\)\d{3}-?\d{4} matches (123)456-7890 or (123)4567890
+        String email = signupInputEmail.getText().toString().trim();
+        if (email.isEmpty() || !isEmailValid(email)) {
 
-        String phone = signupInputPhoneNumber.getText().toString().trim();
-        String valid_phone = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
-        if (phone.isEmpty() || !phone.matches(valid_phone)) {
-
-            signupInputLayoutPhoneNumber.setErrorEnabled(true);
-            signupInputLayoutPhoneNumber.setError(getString(R.string.err_msg_phone_number));
-            signupInputPhoneNumber.setError(getString(R.string.err_msg_required));
-            requestFocus(signupInputPhoneNumber);
+            signupInputLayoutEmail.setErrorEnabled(true);
+            signupInputLayoutEmail.setError(getString(R.string.err_msg_phone_number));
+            signupInputEmail.setError(getString(R.string.err_msg_required));
+            requestFocus(signupInputEmail);
             return false;
         }
 
-        signupInputLayoutPhoneNumber.setErrorEnabled(false);
+        signupInputLayoutEmail.setErrorEnabled(false);
         return true;
     }
 
