@@ -13,6 +13,16 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Listing implements Parcelable {
 
+    public static final Parcelable.Creator CREATOR
+            = new Parcelable.Creator() {
+        public Listing createFromParcel(Parcel in) {
+            return new Listing(in);
+        }
+
+        public Listing[] newArray(int size) {
+            return new Listing[size];
+        }
+    };
     public String address;
     public String endDate;
     public String endTime;
@@ -31,6 +41,20 @@ public class Listing implements Parcelable {
 
     public Listing() {
         // Default constructor required for calls to DataSnapshot.getValue(Listing.class)
+    }
+
+    private Listing(Parcel in) {
+        address = in.readString();
+        endDate = in.readString();
+        endTime = in.readString();
+        price = in.readDouble();
+        startDate = in.readString();
+        startTime = in.readString();
+        spotType = in.readString();
+        userID = in.readString();
+        locationPushKey = in.readString();
+        userListingPushKey = in.readString();
+
     }
 
     public String getAddress() {
@@ -101,31 +125,6 @@ public class Listing implements Parcelable {
         dest.writeString(licensePlateNumber);dest.writeString(renterID); */
         dest.writeString(locationPushKey);
         dest.writeString(userListingPushKey);
-
-    }
-
-    public static final Parcelable.Creator CREATOR
-            = new Parcelable.Creator() {
-        public Listing createFromParcel(Parcel in) {
-            return new Listing(in);
-        }
-
-        public Listing[] newArray(int size) {
-            return new Listing[size];
-        }
-    };
-
-    private Listing(Parcel in) {
-        address = in.readString();
-        endDate = in.readString();
-        endTime = in.readString();
-        price = in.readDouble();
-        startDate = in.readString();
-        startTime = in.readString();
-        spotType = in.readString();
-        userID = in.readString();
-        locationPushKey = in.readString();
-        userListingPushKey = in.readString();
 
     }
 

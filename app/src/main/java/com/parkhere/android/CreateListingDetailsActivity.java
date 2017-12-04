@@ -51,6 +51,16 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
     private Map<String, Object> listingData = new HashMap<String, Object>();
     private Map<String, Object> locationData = new HashMap<>();
 
+    public static boolean priceIsNotNull(Object o) {
+        if (o != null) return true;
+        else return false;
+    }
+
+    public static boolean priceMustBeBetween1And999(Double price) {
+        if (price >= 1.0 && price <= 999.0) return true;
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,15 +198,5 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public static boolean priceIsNotNull(Object o) {
-        if (o != null) return true;
-        else return false;
-    }
-
-    public static boolean priceMustBeBetween1And999(Double price) {
-        if (price >= 1.0 && price <= 999.0) return true;
-        return false;
     }
 }

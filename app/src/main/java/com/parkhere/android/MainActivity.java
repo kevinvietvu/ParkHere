@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GeoQueryEventListener, GoogleMap.OnMarkerClickListener
 {
 
+    public Bundle bundle;
     private GoogleMap mMap;
     private FirebaseAuth auth;
     private DatabaseReference geoFireRef;
@@ -62,8 +63,6 @@ public class MainActivity extends AppCompatActivity
     private Map<String,Marker> markers;
     private FirebaseUser user;
     private int reservationCount;
-    public Bundle bundle;
-
     private String markerDetails;
     //IMPLEMENT THIS NEXT TIME
     private Marker selectedMarker;
