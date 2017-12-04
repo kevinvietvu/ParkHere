@@ -97,12 +97,29 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(MainActivity.this, "Cannot Reserve Own Listing",
                                     Toast.LENGTH_LONG).show();
                         }
-
                         else {
                             Listing selectedListing = listings.get(0);
-                            Intent paymentIntent = new Intent(MainActivity.this, SplitBookingStartDateActivity.class);
-                            paymentIntent.putExtra("listing", selectedListing);
-                            startActivity(paymentIntent);
+                            SplitBookingUtility utility = new SplitBookingUtility();
+                            if  (selectedListing.getStartDate().equals(selectedListing.getEndDate())) {
+                                if (utility.checkOneHourTime(selectedListing.getStartTime(), selectedListing.getEndTime())) {
+                                    Intent intent = new Intent(MainActivity.this, BrowseListingPaymentActivity.class);
+                                    intent.putExtra("listing", selectedListing);
+                                    intent.putExtra("original_start_date", selectedListing.getStartDate());
+                                    intent.putExtra("original_end_date", selectedListing.getEndDate());
+                                    intent.putExtra("original_start_time", selectedListing.getStartTime());
+                                    intent.putExtra("original_end_time", selectedListing.getEndTime());
+                                    startActivity(intent);
+                                } else {
+                                    Intent splitTimeIntent = new Intent(MainActivity.this, SplitBookingStartTimeActivity.class);
+                                    splitTimeIntent.putExtra("listing", selectedListing);
+                                    startActivity(splitTimeIntent);
+                                }
+                            }
+                            else {
+                                Intent paymentIntent = new Intent(MainActivity.this, SplitBookingStartDateActivity.class);
+                                paymentIntent.putExtra("listing", selectedListing);
+                                startActivity(paymentIntent);
+                            }
                         }
                     }
                     else {

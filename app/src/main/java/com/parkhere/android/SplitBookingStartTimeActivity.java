@@ -22,14 +22,13 @@ public class SplitBookingStartTimeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_split_booking_start_time);
 
         bundle = getIntent().getExtras();
-        //final Listing listing = bundle.getParcelable("listing");
+        final Listing listing = bundle.getParcelable("listing");
 
         nextStep = findViewById(R.id.pick_start_time_btn);
         startTimePicker = findViewById(R.id.numberPicker);
 
-       //String startTimeString = listing.getStartTime();
-        String startTimeString = "4:0 PM";
-        String endTimeString = "11:0 PM";
+        String startTimeString = listing.getStartTime();
+        String endTimeString = listing.getEndTime();
         int startTimeInt;
         int endTimeInt;
         if (startTimeString.substring(0,2).equals("10") || startTimeString.substring(0,2).equals("11") || startTimeString.substring(0,2).equals("12"))
@@ -45,8 +44,8 @@ public class SplitBookingStartTimeActivity extends AppCompatActivity {
         System.out.println("TEST TIME START : " + startTimeInt + " | AM OR PM TEST : " + amPmStart);
         System.out.println("TEST TIME END : " + endTimeInt + " | AM OR PM TEST : " + amPmEnd);
 
-        String startTime = startTimeInt + amPmStart;
-        String endTime = endTimeInt + amPmEnd;
+        final String startTime = startTimeInt + amPmStart;
+        final String endTime = endTimeInt + amPmEnd;
         ArrayList<String> list = new ArrayList<>();
         int indexOfStart = 0;
         for (int i = 0; i < times.length; i++) {
@@ -54,7 +53,11 @@ public class SplitBookingStartTimeActivity extends AppCompatActivity {
                 indexOfStart = i;
         }
         for (int i = indexOfStart; i < times.length; i++) {
-            if(times[i].equals(endTime)) {
+            if (times[i].equals("11PM")) {
+                list.add(times[i]);
+                i = -1;
+            }
+            else if(times[i].equals(endTime)) {
                 break;
             }
             else list.add(times[i]);
@@ -71,10 +74,14 @@ public class SplitBookingStartTimeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent pickEndTime = new Intent(SplitBookingStartTimeActivity.this, SplitBookingEndTimeActivity.class);
-                       // pickerTimes[startTimePicker.getValue()];
+                listing.startTime = pickerTimes[startTimePicker.getValue()];
+                pickEndTime.putExtra("listing", listing);
+                pickEndTime.putExtra("original_start_time", startTime);
+                pickEndTime.putExtra("original_end_time", endTime);
+                System.out.println(listing.startTime);
+                startActivity(pickEndTime);
             }
         });
-
 
     }
 }

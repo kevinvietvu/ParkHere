@@ -104,6 +104,7 @@ public class SpotDialogFragment extends DialogFragment {
                 else
                     userSpotRef.child(userID).child("ParkingSpots").child(address).child("Details").child("description").setValue(editSpotInput.getText().toString());
                 Intent refreshList = new Intent(getActivity(), ViewUserSpotsActivity.class);
+
                 startActivity(refreshList);
                 getActivity().getFragmentManager().popBackStack();
                 getActivity().finish();

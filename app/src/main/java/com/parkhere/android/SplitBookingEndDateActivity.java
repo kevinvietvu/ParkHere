@@ -107,6 +107,8 @@ public class SplitBookingEndDateActivity extends AppCompatActivity {
                     listing.endDate = date;
                     intent.putExtras(bundle);
                     intent.putExtra("listing", listing);
+                    intent.putExtra("original_start_time", listing.getStartTime());
+                    intent.putExtra("original_end_time", listing.getEndTime());
                     startActivity(intent);
                 }
             }

@@ -117,9 +117,9 @@ public class ReservationsDialogFragment extends DialogFragment {
                                 userReservationRef.child(renterID).child("Reservations").child(address).child(reservationPushKey).child("Details").removeValue();
                                 userListingRef.child(creatorID).child("Listings").child(address).child(listingPushKey).child("Details").child("renterID").setValue("");
                                 Intent refreshList = new Intent(getActivity(), ViewUserReservationsActivity.class);
-                                getActivity().finish();
                                 startActivity(refreshList);
                                 getActivity().getFragmentManager().popBackStack();
+                                getActivity().finish();
                             }
                             catch (Exception e) {
                                 Log.e("error", e.getMessage());
@@ -140,6 +140,7 @@ public class ReservationsDialogFragment extends DialogFragment {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         reservationCount = Integer.parseInt(snapshot.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").getValue().toString());
+                        reservationCount =- 1;
                     }
                     @Override
                     public void onCancelled(DatabaseError firebaseError) {
@@ -147,7 +148,7 @@ public class ReservationsDialogFragment extends DialogFragment {
                     }
                 });
 
-                userListingRef.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").setValue(reservationCount - 1);
+                userListingRef.child(listing.getUserID()).child("ParkingSpots").child(listing.getAddress()).child("Details").child("reservationCount").setValue(reservationCount);
 
             }
         });
@@ -160,9 +161,9 @@ public class ReservationsDialogFragment extends DialogFragment {
                 Intent writeReview = new Intent(getActivity(), WriteReviewDetailsActivity.class);
                 writeReview.putExtra("address", listing.getAddress());
                 writeReview.putExtra("userID", listing.getUserID());
-                getActivity().finish();
                 startActivity(writeReview);
                 getActivity().getFragmentManager().popBackStack();
+                getActivity().finish();
             }
         });
 
