@@ -17,13 +17,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SplitBookingStartDateActivity extends AppCompatActivity {
+    public static SplitBookingStartDateActivity instance = null;
     private TextView header;
     private Bundle bundle;
     private Button nextStep;
     private DatePicker datePicker;
     private String date;
-
-    public static SplitBookingStartDateActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

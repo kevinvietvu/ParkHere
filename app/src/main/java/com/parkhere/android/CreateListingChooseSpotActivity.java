@@ -24,13 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class CreateListingChooseSpotActivity extends AppCompatActivity {
+    public static CreateListingChooseSpotActivity instance = null;
     private DatabaseReference userSpotsRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     private FirebaseAuth auth;
     private FirebaseUser user;
-
-    public static CreateListingChooseSpotActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

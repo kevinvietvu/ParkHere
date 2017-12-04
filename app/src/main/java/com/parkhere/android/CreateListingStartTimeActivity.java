@@ -14,11 +14,59 @@ import java.util.Calendar;
 
 public class CreateListingStartTimeActivity extends AppCompatActivity {
 
+    public static CreateListingStartTimeActivity instance = null;
     private Button nextStep;
     private Bundle bundle;
     private String start_time;
 
-    public static CreateListingStartTimeActivity instance = null;
+    public static boolean startsOnOrAfterCurrentDateAndTime(int month, int day, int year, int hour, int minute) {
+        String formattedMonth = String.format("%02d", month);
+        String formattedDay = String.format("%02d", day);
+        String formattedYear = String.format("%02d", year);
+        String formattedHour = String.format("%02d", hour);
+        String formattedMinute = String.format("%02d", minute);
+        String start_date = formattedMonth + "-" + formattedDay + "-" + formattedYear + " " + formattedHour + ":" + formattedMinute;
+
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy HH:mm");
+        String current_date = dateFormat.format(Calendar.getInstance().getTime());
+
+        int startYear =  Integer.parseInt(start_date.substring(6, 8));
+        int currentYear = Integer.parseInt(current_date.substring(6, 8));
+
+        if (startYear > currentYear) return true;
+        else if (startYear < currentYear) return false;
+        else {
+            int startMonth = Integer.parseInt(start_date.substring(0, 2));
+            int currentMonth = Integer.parseInt(current_date.substring(0, 2));
+
+            if (startMonth > currentMonth) return true;
+            else if (startMonth < currentMonth) return false;
+            else {
+                int startDay = Integer.parseInt(start_date.substring(3, 5));
+                int currentDay = Integer.parseInt(current_date.substring(3, 5));
+
+                if (startDay > currentDay) return true;
+                else if (startDay < currentDay) return false;
+                else {
+                    int startHour =  Integer.parseInt(start_date.substring(9, 11));
+                    int currentHour = Integer.parseInt(current_date.substring(9, 11));
+
+                    if (startHour > currentHour) return true;
+                    else if (startHour < currentHour) return false;
+                    else {
+                        int startMinute =  Integer.parseInt(start_date.substring(12, 14));
+                        int currentMinute = Integer.parseInt(current_date.substring(12, 14));
+
+                        if (startMinute >= currentMinute) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,54 +118,5 @@ public class CreateListingStartTimeActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         instance = null;
-    }
-
-    public static boolean startsOnOrAfterCurrentDateAndTime(int month, int day, int year, int hour, int minute) {
-        String formattedMonth = String.format("%02d", month);
-        String formattedDay = String.format("%02d", day);
-        String formattedYear = String.format("%02d", year);
-        String formattedHour = String.format("%02d", hour);
-        String formattedMinute = String.format("%02d", minute);
-        String start_date = formattedMonth + "-" + formattedDay + "-" + formattedYear + " " + formattedHour + ":" + formattedMinute;
-
-        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy HH:mm");
-        String current_date = dateFormat.format(Calendar.getInstance().getTime());
-
-        int startYear =  Integer.parseInt(start_date.substring(6, 8));
-        int currentYear = Integer.parseInt(current_date.substring(6, 8));
-
-        if (startYear > currentYear) return true;
-        else if (startYear < currentYear) return false;
-        else {
-            int startMonth = Integer.parseInt(start_date.substring(0, 2));
-            int currentMonth = Integer.parseInt(current_date.substring(0, 2));
-
-            if (startMonth > currentMonth) return true;
-            else if (startMonth < currentMonth) return false;
-            else {
-                int startDay = Integer.parseInt(start_date.substring(3, 5));
-                int currentDay = Integer.parseInt(current_date.substring(3, 5));
-
-                if (startDay > currentDay) return true;
-                else if (startDay < currentDay) return false;
-                else {
-                    int startHour =  Integer.parseInt(start_date.substring(9, 11));
-                    int currentHour = Integer.parseInt(current_date.substring(9, 11));
-
-                    if (startHour > currentHour) return true;
-                    else if (startHour < currentHour) return false;
-                    else {
-                        int startMinute =  Integer.parseInt(start_date.substring(12, 14));
-                        int currentMinute = Integer.parseInt(current_date.substring(12, 14));
-
-                        if (startMinute >= currentMinute) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
     }
 }

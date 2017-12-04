@@ -24,15 +24,13 @@ import java.util.ArrayList;
 
 public class ViewUserReservationsActivity extends AppCompatActivity {
 
+    public static ViewUserSpotsActivity instance = null;
     private DatabaseReference userReservationRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ArrayList<String> listings = new ArrayList<>();
     private ArrayList<Listing> listingObjects = new ArrayList<>();
-
-    public static ViewUserSpotsActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

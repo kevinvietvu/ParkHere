@@ -22,10 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class BrowseListingsDialogFragment extends DialogFragment {
     int mNum;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
     Button viewUserProfileBtn;
     Button rentListingBtn;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userListingRef;
     private DatabaseReference locationsRef;

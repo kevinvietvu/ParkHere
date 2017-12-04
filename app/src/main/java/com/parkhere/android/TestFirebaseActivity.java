@@ -45,6 +45,24 @@ public class TestFirebaseActivity extends AppCompatActivity {
 
     private DatabaseReference testRef2 = database.getReference("TestLocations");
 
+    /**
+     * User Activity
+     */
+
+    //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
+    public static Address getGeoLocationFromAddress(String address, Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = geocoder.getFromLocationName(address, 1);
+        return addresses.get(0);
+    }
+
+    //might have to use LatLong object instead
+    public static Address getAddressFromGeoLocation(GeoLocation LatLong, Context context) throws IOException {
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
+        return addresses.get(0);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,23 +223,6 @@ public class TestFirebaseActivity extends AppCompatActivity {
                  //userListingRef.child("Kevin's ID").child("Listings").child("15564 Calgary St, San Leandro, CA 94579, USA").child("Details").setValue(null);
             }
         });
-    }
-
-    /**
-     * User Activity
-     */
-
-    //https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public static Address getGeoLocationFromAddress(String address, Context context) throws IOException {
-        Geocoder geocoder = new Geocoder(context);
-        List<Address> addresses = geocoder.getFromLocationName(address, 1);
-        return addresses.get(0);
-    }
-    //might have to use LatLong object instead
-    public static Address getAddressFromGeoLocation(GeoLocation LatLong, Context context) throws IOException {
-        Geocoder geocoder = new Geocoder(context);
-        List<Address> addresses = geocoder.getFromLocation(LatLong.latitude, LatLong.longitude, 1);
-        return addresses.get(0);
     }
 
     @Override

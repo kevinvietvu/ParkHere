@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 public class BrowseMultipleListingsActivity extends AppCompatActivity {
 
-    private ArrayList<String> listings = new ArrayList<>();
     ArrayList<Listing> listingsBundle;
+    private ArrayList<String> listings = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
