@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class EditProfileActivity extends AppCompatActivity {
+    ImageButton imgButton;
     private Button edit_profile;
     private Button manage_spots;
 
@@ -33,5 +35,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 }

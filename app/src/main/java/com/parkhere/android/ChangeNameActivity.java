@@ -1,9 +1,12 @@
 package com.parkhere.android;
 
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,15 +17,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class ChangeNameActivity extends AppCompatActivity {
 
+    ImageButton imgButton;
     private TextView editFirstName;
     private TextView editLastName;
     private Button saveButton;
-
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userRef;
-
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private Bitmap bitmap;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,20 @@ public class ChangeNameActivity extends AppCompatActivity {
                     }
                     Toast.makeText(ChangeNameActivity.this, "Profile has been changed successfully!", Toast.LENGTH_LONG).show();
                     finish();
+                }
+            }
+        });
+        imgButton =(ImageButton)findViewById(R.id.profile_pic);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bitmap == null) {
+                    Toast.makeText(getApplicationContext(),
+                            "Please select image", Toast.LENGTH_SHORT).show();
+                } else {
+                    dialog = ProgressDialog.show(ChangeNameActivity.this, "Uploading",
+                            "Please wait...", true);
+                    //new ImageUploadTask().execute();
                 }
             }
         });
