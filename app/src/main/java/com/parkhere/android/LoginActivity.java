@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intent);
+                finish();
                 if(SignupActivity.instance != null) {
                     try {
                         SignupActivity.instance.finish();
@@ -128,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                             //Intent intent = new Intent(LoginActivity.this, SplitBookingStartTimeActivity.class);
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     }
                 });

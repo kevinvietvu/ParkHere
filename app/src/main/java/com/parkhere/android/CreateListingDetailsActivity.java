@@ -1,5 +1,6 @@
 package com.parkhere.android;
 
+import android.content.Intent;
 import android.location.Address;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -90,12 +91,22 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         String t1 = bundle.getString("start_time");
         int h1 = Integer.parseInt(t1.substring(0, 2));
         int m1 = Integer.parseInt(t1.substring(3, 5));
-        String meridiem1;
-        if (h1 < 12) meridiem1 = "AM";
-        else meridiem1 = "PM";
+        String startMeridiem;
+        if (h1 < 12) startMeridiem = "AM";
+        else startMeridiem = "PM";
         h1 = h1 % 12;
         if (h1 == 0) { h1 = 12; }
-        start_time = h1 + ":" + m1 + " " + meridiem1;
+
+        String startHour;
+        String startMinute;
+        if (h1 < 10) {
+            startHour = "0" + h1;
+        } else {
+            startHour = "" + h1;
+        }
+        startMinute = "00";
+
+        start_time = startHour + ":" + startMinute + " " + startMeridiem;
         start_time_text_view.setText(String.format("%s %s", "Start Time:", start_time));
 
         end_date_text_view = findViewById(R.id.listing_end_date);
@@ -106,19 +117,30 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
         String t2 = bundle.getString("end_time");
         int h2 = Integer.parseInt(t2.substring(0, 2));
         int m2 = Integer.parseInt(t2.substring(3, 5));
-        String meridiem2;
-        if (h2 < 12) meridiem2 = "AM";
-        else meridiem2 = "PM";
+        String endMeridiem;
+        if (h2 < 12) endMeridiem = "AM";
+        else endMeridiem = "PM";
         h2 = h2 % 12;
         if (h2 == 0) { h2 = 12; }
-        end_time = h2 + ":" + m2 + " " + meridiem2;
-        end_time_text_view.setText(String.format("%s %s", "End Time:", end_time));
 
+        String endHour;
+        String endMinute;
+        if (h2 < 10) {
+            endHour = "0" + h2;
+        } else {
+            endHour = "" + h2;
+        }
+        endMinute = "00";
+
+        end_time = endHour + ":" + endMinute + " " + endMeridiem;
+        end_time_text_view.setText(String.format("%s %s", "End Time:", end_time));
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = Double.parseDouble(price_input.getText().toString());
-
+                if (!price_input.getText().toString().isEmpty())
+                    price = Double.parseDouble(price_input.getText().toString());
+                if (!startTimeAndEndTimeMustNotBeSame(Integer.parseInt(start_time.substring(0,2)) ,(Integer.parseInt(end_time.substring(0,2)))))
+                    Toast.makeText(CreateListingDetailsActivity.this, "Start and end hour cannot be the same", Toast.LENGTH_LONG).show();
                 if (!priceIsNotNull(price)) {
                     Toast.makeText(CreateListingDetailsActivity.this, "Please enter a value for price", Toast.LENGTH_LONG).show();
                 } else if (!priceMustBeBetween1And999(price)) {
@@ -194,9 +216,16 @@ public class CreateListingDetailsActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(CreateListingDetailsActivity.this, "Listing has been created!", Toast.LENGTH_LONG).show();
+                    Intent map = new Intent(CreateListingDetailsActivity.this, MainActivity.class);
+                    startActivity(map);
                     finish();
                 }
             }
         });
+    }
+
+    public static boolean startTimeAndEndTimeMustNotBeSame(int startHour, int endHour) {
+        if (startHour != endHour) return true;
+        return false;
     }
 }

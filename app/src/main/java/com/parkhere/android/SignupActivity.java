@@ -36,7 +36,7 @@ public class SignupActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference userRef;
+    private DatabaseReference userRef, userProfileRef;
     private EditText signupInputEmail, signupInputPassword;
     private EditText signupInputConfirmPassword, signupInputDriversId, signupInputPhoneNumber;
     private TextInputLayout  signupInputLayoutEmail, signupInputLayoutPassword;
@@ -101,10 +101,15 @@ public class SignupActivity extends AppCompatActivity {
 
                 userRef = database.getReference("Users").child(user.getUid()).child("Information");
 
+                userProfileRef = database.getReference("Users").child(user.getUid()).child("Profile");
+
                 Map<String,Object> userInformation = new HashMap<>();
 
                 userInformation.put("driversID", signupInputDriversId.getText().toString());
                 userInformation.put("phoneNumber", signupInputPhoneNumber.getText().toString());
+
+                userProfileRef.child("lastName").setValue("");
+                userProfileRef.child("firstName").setValue("");
 
                 userRef.setValue(userInformation);
 

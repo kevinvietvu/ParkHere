@@ -76,6 +76,8 @@ public class AddSpotDetailsActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(AddSpotDetailsActivity.this, "Spot has been added!", Toast.LENGTH_LONG).show();
+                    Intent editProfile = new Intent(AddSpotDetailsActivity.this, EditProfileActivity.class);
+                    startActivity(editProfile);
                     finish();
             }
             }
