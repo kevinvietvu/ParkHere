@@ -88,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
+/*
         imgButton =(ImageButton)findViewById(R.id.account_picture);
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
-
+*/
         helloUserText = (TextView) findViewById(R.id.text_user);
 
         authListener = new FirebaseAuth.AuthStateListener() {

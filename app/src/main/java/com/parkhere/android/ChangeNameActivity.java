@@ -66,6 +66,7 @@ public class ChangeNameActivity extends AppCompatActivity {
                 }
             }
         });
+        /*
         imgButton =(ImageButton)findViewById(R.id.profile_pic);
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,5 +81,6 @@ public class ChangeNameActivity extends AppCompatActivity {
                 }
             }
         });
+        */
     }
 }

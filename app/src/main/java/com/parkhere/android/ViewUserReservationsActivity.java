@@ -95,7 +95,7 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -104,7 +104,7 @@ public class ViewUserReservationsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+*/
     @Override
     public void finish() {
         super.finish();

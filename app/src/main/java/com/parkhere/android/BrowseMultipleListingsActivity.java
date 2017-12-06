@@ -73,7 +73,7 @@ public class BrowseMultipleListingsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -82,4 +82,5 @@ public class BrowseMultipleListingsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    */
 }
